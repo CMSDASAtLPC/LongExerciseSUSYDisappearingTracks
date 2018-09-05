@@ -3,7 +3,11 @@ from utils import *
 from random import shuffle
 gROOT.SetBatch(1)
 gStyle.SetOptStat(0)
+
+#create dictionaries of event types pointing to files:
 execfile('tools/EventCategories.py')
+
+
 UseOptimizedCuts = True
 dolog = True
 lumi = 35900
@@ -18,16 +22,17 @@ fnew = TFile('canvases.root','recreate')
 
 
 cutsets = {}
-cutsets['NoCuts'] = 'Mht>0'
+cutsets['NoCuts'] = 'Mht>100'
+cutsets['BestTry'] = 'NLeptons==0 && Mht>300 && NJets>3'
 
 histframes = {}
-histframes['Met'] = TH1F('Met','',14,100,800)
-histframes['Ht'] = TH1F('Ht','',15,100,3100)
-histframes['NJets'] = TH1F('Ht','',10,0,10)
+histframes['Met'] = TH1F('Met','',7,100,800)
+histframes['Mht'] = TH1F('Mht','',7,100,800)
+histframes['Ht'] = TH1F('Ht','',5,100,3100)
+histframes['NJets'] = TH1F('NJets','',7,0,7)
 histframes['BTags'] = TH1F('BTags','',5,0,5)
 histframes['NTags'] = TH1F('NTags','',4,0,4)
-histframes['MinDeltaPhiMetJets'] = TH1F('DPhiMetSumTags','',16,0,3.2)
-histframes['SumTagPtOverMht'] = TH1F('SumTagPtOverMht','',11,0,2.2)
+histframes['MinDeltaPhiMetJets'] = TH1F('DPhiMetSumTags','',5,0,3.2)
 
 for selectionkey in cutsets:
  hists = {}
@@ -61,7 +66,7 @@ for selectionkey in cutsets:
 		histsStack[category] = growinghist.Clone(category+'_stack')
 	sighists = []
 	for key in SignalChainDict:
-		print 'drawing', key
+		print 'drawing', key, 'with', SignalChainDict[key]
 		SignalChainDict[key].Draw(drawarg,weightstring)
 		hsig = SignalChainDict[key].GetHistogram()
 		hsig.SetDirectory(0)

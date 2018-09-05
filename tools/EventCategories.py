@@ -3,6 +3,8 @@ from random import shuffle
 from glob import glob
 
 skimDirectory = '/nfs/dust/cms/user/beinsam/CMSDAS2018b/Skims/'
+sigfilelist = glob('Signal/*.root')
+print 'sigfilelist', sigfilelist
 
 SubcategoryChainDictsByCategoryDict= {}
 WJetsToLNu_SubcategoryChainDict = {}
@@ -54,6 +56,7 @@ SubcategoryChainDictsByCategoryDict['Rare'] = Rare_SubcategoryChainDict
 
 ColorsByCategory = {'WJetsToLNu':kGreen+1,'TTJets':kOrange+1,'ZJetsToNuNu':kViolet,'Diboson':kTeal-4,'DYJets':kBlue+1,'QCD':kYellow,'Rare':kBlack}
 CategoryKeysBigToSmall = ['WJetsToLNu','TTJets','QCD','ZJetsToNuNu','Diboson','DYJets','Rare']
+#CategoryKeysBigToSmall = ['DYJets']
 CategoryKeysSmallToBig = list(CategoryKeysBigToSmall)
 CategoryKeysSmallToBig.reverse()
 for category in CategoryKeysSmallToBig:
@@ -62,9 +65,8 @@ for category in CategoryKeysSmallToBig:
 			print 'processing', fname
 			SubcategoryChainDictsByCategoryDict[category][subcategory].Add(fname)
 
-sigfilelist = glob(skimDirectory+'/Signal/*.root')
+#sigfilelist = glob(skimDirectory+'/Signal/*.root')
 smallsigfilelist = list(sigfilelist)
-#shuffle(smallsigfilelist)
 colors = [kRed-1,kRed-0,kRed+1,kRed+2,kPink-1,kPink+0,kPink+1,kPink+2,kAzure-1,kAzure+0,kAzure+1,kAzure+2, kBlack, kGray]
 shuffle(colors)
 ColorsBySignal = {}
