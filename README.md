@@ -1,10 +1,9 @@
-# cmsdas
-
+#CMSDAS @ DESY 2018
 
 
 The following are a set of guidelines for running the 2018 DESY CMSDAS Exercise on the search for SUSY with disappearing tracks
 
-*Set up a working area*
+##Set up a working area
 
 First, login to a NAF machine using the details you received via email: 
 
@@ -46,7 +45,7 @@ cd cmsdas2018
 
 *Events with long-lived charginos*
 
-
+##Viewing events
 
 Let's make some distributions of various event-level quantities, comparing signal and background events. 
 
