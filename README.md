@@ -1,9 +1,9 @@
-#CMSDAS @ DESY 2018
+# CMSDAS @ DESY 2018
 
 
 The following are a set of guidelines for running the 2018 DESY CMSDAS Exercise on the search for SUSY with disappearing tracks
 
-##Set up a working area
+## Set up a working area
 
 First, login to a NAF machine using the details you received via email: 
 
@@ -45,7 +45,7 @@ cd cmsdas2018
 
 *Events with long-lived charginos*
 
-##Viewing events
+## Viewing events
 
 Let's make some distributions of various event-level quantities, comparing signal and background events. 
 
@@ -60,6 +60,7 @@ We can edit tools/CharacterizeEvents.py. Try adding a few sets of selection you 
 
 Time to get systematic with the optimization. Many tools exist that help in choosing a set of event selection that gives the highest sensitivity. 
 
+## Performing an optimization
 ```
 git clone https://github.com/hbprosper/RGS.git
 cd RGS
