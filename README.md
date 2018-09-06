@@ -103,7 +103,7 @@ Clicking around on the canvases, you will now be able to see the signal overlaid
 
 You just performed a so-called eyeball optimization. Can you count the total weighted signal and background events that pass your selection? Write these numbers down in a safe place; we can use them later.
 
-## Performing an optimization
+## 4.) Performing an optimization
 
 Now it's time to get systematic with the optimization. Many tools exist that help to choose an event selection that gives a good sensitivity. The main challenge is that an exaustive scan over all possible cut values of all observables in an n-dimensional space of observables becomes computationally prohibitive if n(observables) is larger than X. 
 
