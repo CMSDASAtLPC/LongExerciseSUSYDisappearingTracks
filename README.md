@@ -69,13 +69,9 @@ root -l canvases.root
 
 After clicking through a few plots, can you identify which are the main backgrounds? 
 
-```json
-// Question 1: What is the main background in events with low missing transverse momentum, MHT?
-// Question 2: What is the main background in events with at least 2 b-tagged jets?
-```
-<p style='color:red'>This is some red text.</p>
-<font color="red">This is some text!</font>
-These are <b style='color:red'>red words</b>.
+<b style='color:red'>Question 1: What is the main background in events with low missing transverse momentum, MHT?</b>
+
+<b style='color:red'>Question 2: What is the main background in events with at least 2 b-tagged jets?</b>
 
 Hint: the most useful observables have distributions that are different in shape between signal and background.
 
