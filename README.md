@@ -81,7 +81,7 @@ We'd like to overlay some signal distributions onto these plots, but there are c
 python tools/SkimTreeMaker.py /nfs/dust/cms/user/beinsam/CMSDAS2018b/Ntuples/g1800_chi1400_27_200970_step4_30.root
 ```
 
-Created a directory called signal for the new file, move the file into Signal/ and re-run the plot maker:
+Create a directory called signal for the new file, move the file into Signal/ and re-run the plot maker:
 
 ```
 mkdir Signal
@@ -90,7 +90,13 @@ python tools/CharacterizeEvents.py
 root -l canvases.root
 ```
 
-If you click around on the canvases, you will now be able to see the signal overlaid (not stacked!). 
+Clicking around on the canvases, you will now be able to see the signal overlaid (not stacked). Can you identify any observables/kinematic regions where the signal to background ratio looks more favorable? Look at several observables and try to come up with a set of cuts that improves the sensitivity. Your selection can be tested by adding elements to the python dictionary called ```cutsets``` in ```tools/CharacterizeEvents.py.```
+
+
+```
+next thingy
+```
+
 
 Hint: the most useful observables have distributions that are different in shape between signal and background.
 
