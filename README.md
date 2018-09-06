@@ -1,7 +1,8 @@
 # CMSDAS @ DESY 2018
 
 
-The following are a set of guidelines for running the 2018 DESY CMSDAS Exercise on the search for SUSY with disappearing tracks
+The following are a set of guidelines for running the 2018 DESY 
+CMSDAS Exercise on the search for SUSY with disappearing tracks
 
 ## Set up a working area
 
@@ -27,7 +28,8 @@ cd longlivedLE
 cmsrel CMSSW_10_1_0
 ```
 
-Change to your newly created working environment and initialize the CMSSW software environment: 
+Change to your newly created working environment and initialize the 
+CMSSW software environment: 
 
 ```
 cd CMSSW_10_1_0/src
@@ -41,19 +43,37 @@ git clone https://github.com/ShortTrackSusy/cmsdas.git cmsdas2018
 cd cmsdas2018
 ```
 
+## A look at tracks
+
 *Tracks of long-lived charginos*
 
 *Events with long-lived charginos*
 
-## Viewing events
+## A look at events
 
-Let's make some distributions of various event-level quantities, comparing signal and background events. 
+Let's make some distributions of various event-level quantities, 
+comparing signal and background events. 
 
 ```
 python tools/CharacterizeEvents.py
 ```
 
-Open up canvases.root and have a look at the canvases stored there. Can you identify any potentially useful observables? Hint: the most useful observables have distributions that are different in shape between signal and background.
+This script created histograms with a minimal set of selection, 
+and saved them in a new file called canvases.root. Open up canvases.root 
+and have a look at the canvases stored there. 
+
+```
+root -l canvases.root
+[inside ROOT command prompt]: TBrowser b
+```
+
+After clicking through a few plots, can you identify which are the main backgrounds? 
+
+Question 1: What is the main background in events with low missing transverse momentum, MHT?
+
+Question 2: What is the main background in events with at least 2 b-tagged jets?
+
+Hint: the most useful observables have distributions that are different in shape between signal and background.
 
 We can edit tools/CharacterizeEvents.py. Try adding a few sets of selection you think might help the signal/background estimation and re-run the code. Afterwards, open up canvases.root and have another look at the distributions.
 
