@@ -76,7 +76,7 @@ main backgrounds?
 <b style='color:red'>Question 2: What is the main background in 
   events with at least 2 b-tagged jets?</b>
 
-## 3.) Skimming events (with signal)
+## 4.) Skimming events (with signal)
 
 We'd like to overlay some signal distributions onto these plots, 
 but there are currently no skims for the signal. We are interested in a wide range of 
@@ -111,7 +111,7 @@ You just performed a so-called eyeball optimization. Can you count the total wei
 
 <b style='color:red'>Question 4: How many weighted signal and background events were there passing your selection? What was the expected significance, in terms of s/sqrt(s+b)</b>
 
-## 4.) Performing an optimization
+## 5.) Performing an optimization
 
 Now it's time to get systematic with the optimization. Many tools exist that help to select events with a good sensitivity. The main challenge is that an exaustive scan over all possible cut values on all observables in an n-dimensional space of observables becomes computationally prohibitive for n>4. 
 
