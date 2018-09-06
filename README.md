@@ -87,6 +87,9 @@ tools/SkimTreeMaker.py, and after a quick glance, run the script:
 python tools/SkimTreeMaker.py /nfs/dust/cms/user/beinsam/CMSDAS2018b/Ntuples/g1800_chi1400_27_200970_step4_30.root
 ```
 
+
+<b style='color:red'>Question 3: How many skimmed events are there?</b>
+  
 Create a directory called Signal for the new file, move the new file into Signal/ 
 and re-run the plot maker:
 
@@ -102,6 +105,8 @@ Clicking around on the canvases, you will now be able to see the signal overlaid
 <b style='color:red'>When you have a decent set of selection and nice looking plots, you can save the canvases as pdfs for the record. </b>
 
 You just performed a so-called eyeball optimization. Can you count the total weighted signal and background events that pass your selection? Write these numbers down in a safe place; we can use them later.
+
+<b style='color:red'>Question 4: How many weighted signal and background events were there passing your selection? What was the expected significance, in terms of s/sqrt(s+b)</b>
 
 ## 4.) Performing an optimization
 
