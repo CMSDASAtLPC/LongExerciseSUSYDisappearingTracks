@@ -79,8 +79,11 @@ main backgrounds?
 ## 3.) Skimming events (with signal)
 
 We'd like to overlay some signal distributions onto these plots, 
-but there are currently no skims for the signal. Have a look 
-in the pre-made pyroot script to skim signal events, 
+but there are currently no skims for the signal. We are interested in a wide range of 
+signal models, but we will consider the important example of gluino pair production,
+with a small mass splitting between the gluino and LSP, called T1qqqqLL(1800,1400,30); 
+where 1800 GeV is the gluino mass, 1400 is the LSP mass, and the chargino proper decay 
+length is 30 cm. Have a look  in the pre-made pyroot script to skim signal events, 
 tools/SkimTreeMaker.py, and after a quick glance, run the script:
 
 ```
