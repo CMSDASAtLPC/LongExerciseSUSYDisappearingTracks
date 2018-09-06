@@ -67,21 +67,28 @@ root -l canvases.root
 [inside ROOT command prompt]: TBrowser b
 ```
 
-After clicking through a few plots, can you identify which are the main backgrounds? 
+After clicking through a few plots, can you identify which are the 
+main backgrounds? 
 
-<b style='color:red'>Question 1: What is the main background in events with low missing transverse momentum, MHT?</b>
+<b style='color:red'>Question 1: What is the main background in 
+  events with low missing transverse momentum, MHT?</b>
 
-<b style='color:red'>Question 2: What is the main background in events with at least 2 b-tagged jets?</b>
+<b style='color:red'>Question 2: What is the main background in 
+  events with at least 2 b-tagged jets?</b>
 
 ## 3.) Skimming events (with signal)
 
-We'd like to overlay some signal distributions onto these plots, but there are currently no skims for the signal. Have a look in the pre-made pyroot script to skim signal events, tools/SkimTreeMaker.py, and after a quick glance, run the script:
+We'd like to overlay some signal distributions onto these plots, 
+but there are currently no skims for the signal. Have a look 
+in the pre-made pyroot script to skim signal events, 
+tools/SkimTreeMaker.py, and after a quick glance, run the script:
 
 ```
 python tools/SkimTreeMaker.py /nfs/dust/cms/user/beinsam/CMSDAS2018b/Ntuples/g1800_chi1400_27_200970_step4_30.root
 ```
 
-Create a directory called signal for the new file, move the file into Signal/ and re-run the plot maker:
+Create a directory called Signal for the new file, move the new file into Signal/ 
+and re-run the plot maker:
 
 ```
 mkdir Signal
@@ -90,22 +97,17 @@ python tools/CharacterizeEvents.py
 root -l canvases.root
 ```
 
-Clicking around on the canvases, you will now be able to see the signal overlaid (not stacked). Can you identify any observables/kinematic regions where the signal to background ratio looks more favorable? Look at several observables and try to come up with a set of cuts that improves the sensitivity. Your selection can be tested by adding elements to the python dictionary called ```cutsets``` in ```tools/CharacterizeEvents.py.```
+Clicking around on the canvases, you will now be able to see the signal overlaid (not stacked). Can you identify any observables/kinematic regions where the signal-to-background ratio looks more favorable? Look at several observables and try to come up with a set of cuts that improves the sensitivity. Your selection can be tested by adding elements to the python dictionary called ```cutsets``` in ```tools/CharacterizeEvents.py.``` Hint: the most useful observables have distributions that are different in shape between signal and background.
 
+<b style='color:red'>When you have a decent set of selection and nice looking plots, you can save the canvases as pdfs for the record. </b>
 
-```
-next thingy
-```
-
-
-Hint: the most useful observables have distributions that are different in shape between signal and background.
-
-We can edit tools/CharacterizeEvents.py. Try adding a few sets of selection you think might help the signal/background estimation and re-run the code. Afterwards, open up canvases.root and have another look at the distributions.
-
-
-Time to get systematic with the optimization. Many tools exist that help in choosing a set of event selection that gives the highest sensitivity. 
+You just performed a so-called eyeball optimization. Can you count the total weighted signal and background events that pass your selection? Write them down, since we'll need them later. 
 
 ## Performing an optimization
+
+Now it's time to get systematic with the optimization. Many tools exist that help in choosing a set of event selection that gives the highest sensitivity. 
+
+
 ```
 git clone https://github.com/hbprosper/RGS.git
 cd RGS
