@@ -112,7 +112,7 @@ You just performed a so-called eyeball optimization. Can you count the total wei
 
 Now it's time to get systematic with the optimization. Many tools exist that help to select events so as to give a good sensitivity. The main challenge is that an exaustive scan over all possible cut values of all observables in an n-dimensional space of observables becomes computationally prohibitive if n(observables) is larger than X. 
 
-One interesting tool that seeks to overcome this curse of dimensionality is called a random grid search (RGS), which is documented in the publication, "Optimizing Event Selection with the Random Grid Search" https://arxiv.org/abs/1706.09907. RGS performs a scan over the observable hyperplane, using a set of available simulated signal (or background) events to define steps in the scan. For each step in the scan, the cut values defining the event selection are taken to be the values of the observables of the event. We are going to run RGS on the signal/background samples, and compare the sensitivity of the selection to the hand-picked cuts you obtained previously.  
+One interesting tool that seeks to overcome this curse of dimensionality is called a random grid search (RGS), which is documented in the publication, "Optimizing Event Selection with the Random Grid Search" https://arxiv.org/abs/1706.09907. RGS performs a scan over the observable hyperplane, using a set of available simulated signal (or background) events to define steps in the scan. For each step in the scan, the cut values defining the selection are taken to be the values of the observables of the event. We are going to run RGS on the signal/background samples, and compare the sensitivity of the selection to the hand-picked cuts you obtained previously.  
 
 
 ```
