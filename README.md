@@ -49,7 +49,7 @@ cd cmsdas2018
 
 *Events with long-lived charginos*
 
-## 3.) A look at events
+## 3.) A look at background events
 
 Let's make some distributions of various event-level quantities, 
 comparing signal and background events. 
@@ -72,6 +72,25 @@ After clicking through a few plots, can you identify which are the main backgrou
 <b style='color:red'>Question 1: What is the main background in events with low missing transverse momentum, MHT?</b>
 
 <b style='color:red'>Question 2: What is the main background in events with at least 2 b-tagged jets?</b>
+
+## 3.) Skimming events (with signal)
+
+We'd like to overlay some signal distributions onto these plots, but there are currently no skims for the signal. Have a look in the pre-made pyroot script to skim signal events, tools/SkimTreeMaker.py, and after a quick glance, run the script:
+
+```
+python tools/SkimTreeMaker.py /nfs/dust/cms/user/beinsam/CMSDAS2018b/Ntuples/g1800_chi1400_27_200970_step4_30.root
+```
+
+Created a directory called signal for the new file, move the file into Signal/ and re-run the plot maker:
+
+```
+mkdir Signal
+mv skim_g1800_chi1400_27_200970_step4_30.root Signal/
+python tools/CharacterizeEvents.py
+root -l canvases.root
+```
+
+If you click around on the canvases, you will now be able to see the signal overlaid (not stacked!). 
 
 Hint: the most useful observables have distributions that are different in shape between signal and background.
 
