@@ -4,7 +4,7 @@
 The following are a set of guidelines for running the 2018 DESY 
 CMSDAS Exercise on the search for SUSY with disappearing tracks
 
-## Set up a working area
+## 1.) Set up a working area
 
 First, login to a NAF machine using the details you received via email: 
 
@@ -43,13 +43,13 @@ git clone https://github.com/ShortTrackSusy/cmsdas.git cmsdas2018
 cd cmsdas2018
 ```
 
-## A look at tracks
+## 2.) A look at tracks
 
 *Tracks of long-lived charginos*
 
 *Events with long-lived charginos*
 
-## A look at events
+## 3.) A look at events
 
 Let's make some distributions of various event-level quantities, 
 comparing signal and background events. 
@@ -69,9 +69,9 @@ root -l canvases.root
 
 After clicking through a few plots, can you identify which are the main backgrounds? 
 
--Question 1: What is the main background in events with low missing transverse momentum, MHT?
+<span style="color: green"> Question 1: What is the main background in events with low missing transverse momentum, MHT? </span>
 
--Question 2: What is the main background in events with at least 2 b-tagged jets?
+<span style="color: green"> Question 2: What is the main background in events with at least 2 b-tagged jets? </span>
 
 Hint: the most useful observables have distributions that are different in shape between signal and background.
 
