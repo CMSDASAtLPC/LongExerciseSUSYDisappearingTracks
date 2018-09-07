@@ -15,18 +15,15 @@ lumi = 35900
 fnew = TFile('canvases.root','recreate')
 
 #this code combines events stored in trees in many files such as
-#/nfs/dust/cms/user/beinsam/CMSDAS2018b/Skims/Signal/skim_pMSSM12_MCMC1_44_855871.root
-#and
 #/nfs/dust/cms/user/beinsam/CMSDAS2018b/Skims/Background/skim_TTJets_HT-600to800.root 
 #the list of braches can be shown by opening a file and using the TTree::Show(0) method
 
 
 cutsets = {}
 cutsets['NoCuts'] = 'Mht>100'
-cutsets['BestTry'] = 'NLeptons==0 && Mht>300 && NJets>3'
+#can add 
 
 histframes = {}
-histframes['Met'] = TH1F('Met','',7,100,800)
 histframes['Mht'] = TH1F('Mht','',7,100,800)
 histframes['Ht'] = TH1F('Ht','',5,100,3100)
 histframes['NJets'] = TH1F('NJets','',7,0,7)
@@ -100,6 +97,7 @@ for selectionkey in cutsets:
 	c1.Update()
 	fnew.cd()	
 	c1.Write('c_'+histkey+'_'+selectionkey)
+	del cwaste
 print 'just created', fnew.GetName()
 fnew.Close()
 			
