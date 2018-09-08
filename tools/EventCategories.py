@@ -14,12 +14,14 @@ WJetsToLNu_SubcategoryChainDict['WJetsToLNu_HT-400To600'] = TChain('tEvent')
 #WJetsToLNu_SubcategoryChainDict['WJetsToLNu_HT-600To800'] = TChain('tEvent')
 WJetsToLNu_SubcategoryChainDict['WJetsToLNu_HT-800To1200'] = TChain('tEvent')
 WJetsToLNu_SubcategoryChainDict['WJetsToLNu_HT-1200To2500'] = TChain('tEvent')#WJetsToLNuSubcategoryChainDict['HT-2500ToInf'] = TChain('tEvent')
+WJetsToLNu_SubcategoryChainDict['WJetsToLNu_HT-2500ToInf'] = TChain('tEvent')
 SubcategoryChainDictsByCategoryDict['WJetsToLNu'] = WJetsToLNu_SubcategoryChainDict
 TTJets_SubcategoryChainDict = {}
 TTJets_SubcategoryChainDict['TTJets_TuneCUETP8M1'] = TChain('tEvent')
 TTJets_SubcategoryChainDict['TTJets_HT-600to800'] = TChain('tEvent')
 #TTJets_SubcategoryChainDict['TTJets_HT-800to1200'] = TChain('tEvent')
-TTJets_SubcategoryChainDict['TTJets_HT-1200to2500'] = TChain('tEvent')#TTJetsSubcategoryChainDict['HT-2500toInf'] = TChain('tEvent')
+TTJets_SubcategoryChainDict['TTJets_HT-1200to2500'] = TChain('tEvent')
+TTJets_SubcategoryChainDict['TTJets_HT-2500toInf'] = TChain('tEvent')
 SubcategoryChainDictsByCategoryDict['TTJets'] = TTJets_SubcategoryChainDict
 ZJetsToNuNu_SubcategoryChainDict = {}
 ZJetsToNuNu_SubcategoryChainDict['ZJetsToNuNu_HT-200To400'] = TChain('tEvent')
@@ -28,8 +30,10 @@ ZJetsToNuNu_SubcategoryChainDict['ZJetsToNuNu_HT-600To800'] = TChain('tEvent')#Z
 SubcategoryChainDictsByCategoryDict['ZJetsToNuNu'] = ZJetsToNuNu_SubcategoryChainDict
 VV_SubcategoryChainDict = {}
 VV_SubcategoryChainDict['WWTo1L1Nu2Q_13TeV'] = TChain('tEvent')
+VV_SubcategoryChainDict['WZTo1L1Nu2Q_13TeV'] = TChain('tEvent')
 VV_SubcategoryChainDict['WZTo1L3Nu_13TeV'] = TChain('tEvent')
-VV_SubcategoryChainDict['WZTo1L3Nu_13TeV'] = TChain('tEvent')
+VV_SubcategoryChainDict['ZZTo2L2Q_13TeV'] = TChain('tEvent')
+VV_SubcategoryChainDict['ZZTo2Q2Nu_13TeV'] = TChain('tEvent')
 #VV_SubcategoryChainDict['WWTo2L2Nu_13TeV'] = TChain('tEvent')
 SubcategoryChainDictsByCategoryDict['Diboson'] = VV_SubcategoryChainDict
 DYJets_SubcategoryChainDict = {}

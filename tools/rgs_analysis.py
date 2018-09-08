@@ -52,7 +52,7 @@ def main():
 	x, y = array( 'd' ), array( 'd' )
 	zmax = 0
 	izmax = -1
-	sys = 0.5
+	sys = 1.0
 
 	msize = 0.30  # marker size for points in ROC plot
 	xbins =  25   # number of bins in x (background)
@@ -75,7 +75,7 @@ def main():
 		s = t.count_s
 		b = t.count_b
 		if not t.NJets<7: continue
-		if b<0.01: continue
+		if b<.1: continue
 		if not s>0.01: continue
 		z = s/TMath.Sqrt(b+pow(sys*b,2))
 		if z>zmax: 
@@ -85,8 +85,8 @@ def main():
 		fb = t.fraction_b	
 		x.append(fb)
 		y.append(fs)
-		ibinx = xaxRoc.FindBin(fb)
-		ibiny = yaxRoc.FindBin(fs)
+		ibinx = min(xaxRoc.FindBin(fb),xaxRoc.GetNbins())
+		ibiny = min(yaxRoc.FindBin(fs),yaxRoc.GetNbins())
 		hroc.SetBinContent(ibinx, ibiny, max(z, hroc.GetBinContent(ibinx, ibiny)))
 			
 	t.GetEntry(izmax)

@@ -67,11 +67,11 @@ def main():
 	maxcuts    = -1 #30000   # maximum number of cut-points to consider
 	treename   = "tEvent"  # name of Root tree 
 	weightname = "weight"    # name of event weight variable
-	lumi = 36000
+	lumi = 35900
 	#lumi = 150000
 	#weightname = '1'
 	# One can add an optional selection, which, if true, keeps the event.
-	selection  = "(Mht >= 150 && NLeptons==0 && NTags==1)"
+	selection  = "(Mht >= 150 && NTags==1)"
 
 	rgs = RGS(cutdatafilename, start, maxcuts, treename, weightname, selection, lumi)
 
