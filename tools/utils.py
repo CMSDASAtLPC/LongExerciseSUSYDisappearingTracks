@@ -316,12 +316,30 @@ def stamp(lumi='35.9', showlumi = False):
 	tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
 	tl.SetTextFont(regularfont)
 	tl.SetTextSize(0.81*tl.GetTextSize())    
-	thingy = '#sqrt{s}=13 TeV'
-	if showlumi: thing+=', L = '+str(lumi)+' fb^{-1}'
+	thingy = ''
+	if showlumi: thingy+='#sqrt{s}=13 TeV, L = '+str(lumi)+' fb^{-1}'
 	xthing = 0.6202
 	if not showlumi: xthing+=0.13
 	tl.DrawLatex(xthing,0.915,thingy)
-	tl.SetTextSize(1.0/0.81*tl.GetTextSize())        
+	tl.SetTextSize(1.0/0.81*tl.GetTextSize())  
+	
+	
+def stamp2(lumi='35.9', showlumi = False):    
+	tl.SetTextFont(cmsTextFont)
+	tl.SetTextSize(0.98*tl.GetTextSize())
+	tl.DrawLatex(0.1,0.91, 'CMS')
+	tl.SetTextFont(extraTextFont)
+	tl.SetTextSize(1.0/0.98*tl.GetTextSize())
+	xlab = 0.213
+	tl.DrawLatex(xlab,0.91, ('MC' in datamc)*' simulation '+'preliminary')
+	tl.SetTextFont(regularfont)
+	tl.SetTextSize(0.81*tl.GetTextSize())    
+	thingy = ''
+	if showlumi: thingy+='#sqrt{s}=13 TeV, L = '+str(lumi)+' fb^{-1}'
+	xthing = 0.6202
+	if not showlumi: xthing+=0.13
+	tl.DrawLatex(xthing,0.91,thingy)
+	tl.SetTextSize(1.0/0.81*tl.GetTextSize()) 
 
 
 #------------------------------------------------------------------------------
@@ -450,7 +468,7 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	hComponents[0].Draw('axis same')                    
 	leg.Draw()        
 	cGold.Update()
-	stamp2(lumi,datamc)
+	stampFab(lumi,datamc)
 	cGold.Update()
 	cGold.cd()
 	pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.4)
@@ -495,7 +513,8 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	return hRatio
 
 
-def stamp2(lumi,datamc='MC'):
+
+def stampFab(lumi,datamc='MC'):
 	tl.SetTextFont(cmsTextFont)
 	tl.SetTextSize(1.6*tl.GetTextSize())
 	tl.DrawLatex(0.15,0.82, 'CMS')
@@ -505,20 +524,6 @@ def stamp2(lumi,datamc='MC'):
 	#tl.DrawLatex(0.57,0.82,'#sqrt{s} = 13 TeV, L = '+str(lumi)+' fb^{-1}')
 	tl.SetTextSize(tl.GetTextSize()/1.6)
 	
-
-def stamp2_(datamc='MC'):
-	tl.SetTextFont(cmsTextFont)
-	tl.SetTextSize(0.98*tl.GetTextSize())
-	tl.DrawLatex(0.135,0.915, 'CMS')
-	tl.SetTextFont(extraTextFont)
-	tl.SetTextSize(1.0/1.1*tl.GetTextSize())
-	xlab = 0.235
-	tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
-	tl.SetTextFont(regularfont)
-	#tl.SetTextSize(0.81*tl.GetTextSize())    
-	tl.DrawLatex(0.7,0.915,'#sqrt{s}=13 TeV')
-	tl.SetTextSize(1.1/0.98*tl.GetTextSize())   
-
 
 def stampE(energy):
     tl.SetTextFont(cmsTextFont)

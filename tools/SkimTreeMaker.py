@@ -202,7 +202,7 @@ for filename in filenamelist:
 	c.Add(fname)
 
 c.Show(0)
-nentries = min(100000,c.GetEntries())
+nentries = min(10000,c.GetEntries())
 print 'will analyze', nentries
 
 if isDasAndSignal: var_weight[0] = 1.0*xsecInPb/nentries
