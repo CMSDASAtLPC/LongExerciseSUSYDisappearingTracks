@@ -10,7 +10,7 @@ execfile('tools/EventCategories.py')
 
 UseOptimizedCuts = True
 dolog = True
-lumi = 35900
+lumi = 1#
 
 fnew = TFile('canvases.root','recreate')
 

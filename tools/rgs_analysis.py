@@ -22,13 +22,7 @@ gStyle.SetOptStat(0)
 #from rgsexamples import *
 # ---------------------------------------------------------------------
 NAME = 'LLSUSY'
-def cut(event):
-	skip = \
-	  (event.njet <     3) or \
-	  (event.j1pT <=  200) or \
-	  (event.nb   <     1) or \
-	  (event.nW   <     1)
-	return skip
+
 # ---------------------------------------------------------------------
 def main():
 	global cut
@@ -52,7 +46,7 @@ def main():
 	x, y = array( 'd' ), array( 'd' )
 	zmax = 0
 	izmax = -1
-	sys = 1.0
+	sys = 0.05 #fractional uncertainty on b
 
 	msize = 0.30  # marker size for points in ROC plot
 	xbins =  25   # number of bins in x (background)
