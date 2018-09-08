@@ -46,7 +46,7 @@ def main():
 		error("unable to open variables file %s" % varfilename)
 
 	# Name of signal file
-	sigfilename = "/nfs/dust/cms/user/beinsam/CMSDAS2018b/longlivedLE/CMSSW_10_1_0/src/cmsdas2018/Signal/skim_g1800_chi1400_27_200970_step4_30.root"
+	sigfilename = "<path to your signal file>"
 	if not os.path.exists(sigfilename):
 		error("unable to open signal file %s" % sigfilename)
 
@@ -67,11 +67,9 @@ def main():
 	maxcuts    = -1 #30000   # maximum number of cut-points to consider
 	treename   = "tEvent"  # name of Root tree 
 	weightname = "weight"    # name of event weight variable
-	lumi = 36000
-	#lumi = 150000
-	#weightname = '1'
+	lumi = 1 # in 1/pb
 	# One can add an optional selection, which, if true, keeps the event.
-	selection  = "(Mht >= 150 && NLeptons==0 && NTags==1)"
+	selection  = "(Mht >= 150 && NTags==1)"
 
 	rgs = RGS(cutdatafilename, start, maxcuts, treename, weightname, selection, lumi)
 

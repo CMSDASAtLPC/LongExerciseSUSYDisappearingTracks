@@ -10,7 +10,7 @@ execfile('tools/EventCategories.py')
 
 UseOptimizedCuts = True
 dolog = True
-lumi = 35900
+lumi = 1#
 
 fnew = TFile('canvases.root','recreate')
 
@@ -21,13 +21,15 @@ fnew = TFile('canvases.root','recreate')
 
 cutsets = {}
 cutsets['NoCuts'] = 'Mht>100'
+ 
 #can add 
 
 histframes = {}
 histframes['Mht'] = TH1F('Mht','',7,100,800)
 histframes['Ht'] = TH1F('Ht','',5,100,3100)
-histframes['NJets'] = TH1F('NJets','',7,0,7)
+histframes['NJets'] = TH1F('NJets','',9,0,9)
 histframes['BTags'] = TH1F('BTags','',5,0,5)
+histframes['NLeptons'] = TH1F('NLeptons','',4,0,4)
 histframes['NTags'] = TH1F('NTags','',4,0,4)
 histframes['MinDeltaPhiMetJets'] = TH1F('DPhiMetSumTags','',5,0,3.2)
 
@@ -57,15 +59,16 @@ for selectionkey in cutsets:
 		for subcategory in SubcategoryChainDictsByCategoryDict[category]:
 			SubcategoryChainDictsByCategoryDict[category][subcategory].Draw(drawarg,weightstring)
 			h = SubcategoryChainDictsByCategoryDict[category][subcategory].GetHistogram()
+			#if histkey==histframes.keys()[0]: print 'drawing', subcategory, 'with integral', h.Integral()			
 			hCategory.Add(h)
 		growinghist.Add(hCategory)			
 		hists[category] = hCategory.Clone(category)
 		histsStack[category] = growinghist.Clone(category+'_stack')
 	sighists = []
 	for key in SignalChainDict:
-		print 'drawing', key, 'with', SignalChainDict[key]
-		SignalChainDict[key].Draw(drawarg,weightstring)
+		SignalChainDict[key].Draw(drawarg+' text',weightstring)
 		hsig = SignalChainDict[key].GetHistogram()
+		if histkey==histframes.keys()[0]: print 'drawing', key, 'with', hsig.Integral()
 		hsig.SetDirectory(0)
 		hsig.SetTitle(key)
 		sighists.append(hsig)
@@ -93,7 +96,7 @@ for selectionkey in cutsets:
 	histsStack[CategoryKeysBigToSmall[0]].Draw('axis same')	
 	legBkg.Draw()
 	legSig.Draw()
-	stamp(round(1.0*lumi/1000,1))
+	stamp(round(1.0*lumi/1000,1), True)
 	c1.Update()
 	fnew.cd()	
 	c1.Write('c_'+histkey+'_'+selectionkey)
@@ -101,4 +104,6 @@ for selectionkey in cutsets:
 print 'just created', fnew.GetName()
 fnew.Close()
 			
+			
+#cutsets['hmmm'] = 'Mht > 327.216 && NJets>=6 && NLeptons == 0 && BTags == 0 && MinDeltaPhiMetJets > 0.369945'
 			

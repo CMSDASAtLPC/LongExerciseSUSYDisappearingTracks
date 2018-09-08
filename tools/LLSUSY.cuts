@@ -1,5 +1,6 @@
 # uni-directional cuts
-Mht                 >=
+Mht                 >
 NJets               >=
-BTags               >=
-MinDeltaPhiMetJets  >=
+NLeptons            ==
+BTags               ==
+MinDeltaPhiMetJets  >
