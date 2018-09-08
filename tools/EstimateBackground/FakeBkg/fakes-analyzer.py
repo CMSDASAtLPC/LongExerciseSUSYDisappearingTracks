@@ -475,15 +475,7 @@ def do_tree(choose_bdt, nevents):
 if __name__ == "__main__":
 
     nevents = 1000
-    #do_tree("complete", nevents)
-    #do_plots("fakes_complete.root", "region_fakes_complete", header = "ZJetsToNuNu, complete DT tag")
-
-    #do_tree("noVtx", nevents)
-    #do_plots("fakes_noVtx.root", "region_fakes_noVtx", header = "ZJetsToNuNu, noVtx DT tag")
-    #do_abcd("fakes_noVtx.root")
-    #do_abcd_chi2("fakes_noVtx.root")
 
     do_tree("nodxyVtx", nevents)
     do_abcd_chi2("fakes_nodxyVtx.root")
 
-    #do_tree_bg("noVtx", nevents)
