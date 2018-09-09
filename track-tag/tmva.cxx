@@ -39,12 +39,6 @@ int tmva() {
     weight = 59.18 * lumi / Nev->GetBinContent(1);
     factory->AddBackgroundTree(bgTree_wjets_400To600, weight);
 
-    //TFile* fbackground_wjets_600To800 = new TFile((path + "/Summer16.WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RA2AnalysisTree.root").c_str());
-    //TTree* bgTree_wjets_600To800 = (TTree*)(fbackground_wjets_600To800->Get(treename));
-    //Nev = (TH1D*)(fbackground_wjets_600To800->Get("Nev"));
-    //weight = 14.58 * lumi / Nev->GetBinContent(1);
-    //factory->AddBackgroundTree(bgTree_wjets_600To800, weight);
-
     TFile* fbackground_wjets_800To1200 = new TFile((path + "/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RA2AnalysisTree.root").c_str());
     TTree* bgTree_wjets_800To1200 = (TTree*)(fbackground_wjets_800To1200->Get(treename));
     Nev = (TH1D*)(fbackground_wjets_800To1200->Get("Nev"));
@@ -74,12 +68,6 @@ int tmva() {
     Nev = (TH1D*)(fbackground_ttjets_600To800->Get("Nev"));
     weight = 2.734 * lumi / Nev->GetBinContent(1);
     factory->AddBackgroundTree(bgTree_ttjets_600To800, weight);
-
-    //TFile* fbackground_ttjets_800To1200 = new TFile((path + "/Summer16.TTJets_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_RA2AnalysisTree.root").c_str());
-    //TTree* bgTree_ttjets_800To1200 = (TTree*)(fbackground_ttjets_800To1200->Get(treename));
-    //Nev = (TH1D*)(fbackground_ttjets_800To1200->Get("Nev"));
-    //weight = 1.121 * lumi / Nev->GetBinContent(1);
-    //factory->AddBackgroundTree(bgTree_ttjets_800To1200, weight);
 
     TFile* fbackground_ttjets_1200To2500 = new TFile((path + "/Summer16.TTJets_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_RA2AnalysisTree.root").c_str());
     TTree* bgTree_ttjets_1200To2500 = (TTree*)(fbackground_ttjets_1200To2500->Get(treename));
@@ -116,12 +104,6 @@ int tmva() {
     Nev = (TH1D*)(fbackground_dyjets_400To600->Get("Nev"));
     weight = 6.984 * lumi / Nev->GetBinContent(1);
     factory->AddBackgroundTree(bgTree_dyjets_400To600, weight);
-
-    //TFile* fbackground_dyjets_600To800 = new TFile((path + "/Summer16.DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RA2AnalysisTree.root").c_str());
-    //TTree* bgTree_dyjets_600To800 = (TTree*)(fbackground_dyjets_600To800->Get(treename));
-    //Nev = (TH1D*)(fbackground_dyjets_600To800->Get("Nev"));
-    //weight = 1.681 * lumi / Nev->GetBinContent(1);
-    //factory->AddBackgroundTree(bgTree_dyjets_600To800, weight);
 
     TFile* fbackground_dyjets_800To1200 = new TFile((path + "/Summer16.DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RA2AnalysisTree.root").c_str());
     TTree* bgTree_dyjets_800To1200 = (TTree*)(fbackground_dyjets_800To1200->Get(treename));
