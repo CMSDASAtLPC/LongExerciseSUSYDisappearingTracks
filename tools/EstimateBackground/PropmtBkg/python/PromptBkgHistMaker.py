@@ -9,6 +9,8 @@ from random import shuffle
 from FWCore.ParameterSet.VarParsing import VarParsing
 import random
 
+NOSMEARTEST = True
+
 options = VarParsing ('python')
 options.parseArguments()
 weight = 1 #################################WEIGHT 
@@ -19,7 +21,7 @@ inputFiles = options.inputFiles
 verbose = False
 if inputFiles ==  []:
         print 'running on small default DYtoLL sample'
-	inputFiles = ["/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_88_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_19_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_100_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_107_RA2AnalysisTree.root "]
+	inputFiles = ["/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_88_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_19_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_100_RA2AnalysisTree.root","/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_107_RA2AnalysisTree.root"]
 x = len(inputFiles)
 
 c = TChain("TreeMaker2/PreSelection")
@@ -30,12 +32,13 @@ print mZ
 doGenVersion = True
 RelaxGenKin = True
 
-fileKappa = '/nfs/dust/cms/user/singha/LLCh/BACKGROUNDII/CMSSW_8_0_20/src/Kappa_DYgenandTPTagLoopTag25pt.root'
+#fileKappa = '/nfs/dust/cms/user/singha/LLCh/BACKGROUNDII/CMSSW_8_0_20/src/Kappa_DYgenandTPTagLoopTag25pt.root'
+fileKappa = 'Kappa.root'
 fKappa  = TFile(fileKappa)
-KappaMap = fKappa.Get("AkappaPtvsEta")
-KappaMapPlus = fKappa.Get("AkappaPtvsEtaPlus")
-KappaMapMinus = fKappa.Get("AkappaPtvsEtaMinus")
-KappaMapPt = fKappa.Get("AkappaGenInfoPt")
+KappaMap = fKappa.Get("kappaPtvsEta")#had to change this from AkappaPtvsEta
+KappaMapPlus = fKappa.Get("kappaPtvsEtaPlus")#similar
+KappaMapMinus = fKappa.Get("kappaPtvsEtaMinus")#similar
+KappaMapPt = fKappa.Get("kappaGenInfoPt")#similar
 
 print KappaMapPt.GetBinContent(0)
 print KappaMapPt.GetBinContent(1)
@@ -210,6 +213,7 @@ def getSF(Eta, Pt, Draw = False):
 	for histkey in  dResponseHist:
 		if abs(Eta) > histkey[0][0] and abs(Eta) < histkey[0][1] and Pt > histkey[1][0] and Pt < histkey[1][1]:
 			SF_trk = 10**(dResponseHist[histkey].GetRandom())
+			if NOSMEARTEST: SF_trk = 1.0
 			return SF_trk
 	return 1
 
@@ -241,7 +245,7 @@ print c.GetEntries(), 'evets to be Analysed'
 for ientry in range(nentries):
 	if ientry%verbosity==0:
 		a = 1
-		print 'now processing event number', ientry
+		print 'now processing event number', ientry, 'of', nentries
 	if verbose:
 		if not ientry in [15385]: continue
 #	print 'getting entry', ientry

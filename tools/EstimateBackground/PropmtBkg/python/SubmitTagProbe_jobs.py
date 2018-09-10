@@ -55,7 +55,7 @@ cd -
 python python_/ANALYZER inputFiles="INFILE"
 rm -rf python_
 
-mv *.root CWD/TagProbeTrees/
+mv *.root CWD/Output/
 cd ../
 pwd
 rmdir $timestamp

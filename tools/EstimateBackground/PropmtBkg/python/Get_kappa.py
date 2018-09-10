@@ -3,6 +3,7 @@ from utils import *
 from namelib import *
 import sys
 from random import shuffle
+gROOT.SetBatch(1)
 
 gStyle.SetOptStat(0)
 gStyle.SetFrameBorderMode(0)
@@ -58,8 +59,9 @@ for key in keys:
     leg.Draw()                                                                                                                                                
     c1.Update()
 
-    pause()
-    c1.Print('pdfs/kappa/kappa'+name.replace('DTeff','').replace('DTmeff','').replace('RECOeff','').replace('EleProbe','TagandProbe').replace('h','').replace('EleGen','GenInfo')+'.pdf')
+    #pause()
+    #c1.Print('pdfs/kappa/kappa'+name.replace('DTeff','').replace('DTmeff','').replace('RECOeff','').replace('EleProbe','TagandProbe').replace('h','').replace('EleGen','GenInfo')+'.pdf')
+    c1.Write('ckappa'+name.replace('DTeff','').replace('DTmeff','').replace('RECOeff','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo'))
     hnum.Write('kappa'+name.replace('DTeff','').replace('DTmeff','').replace('RECOeff','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo'))
     print 'root file updated with histo', 'kappa'+name.replace('DTeff','').replace('DTmeff','').replace('RECOeff','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo')
 fnew.Close()

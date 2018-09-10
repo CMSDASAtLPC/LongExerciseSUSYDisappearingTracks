@@ -62,7 +62,7 @@ for key in keys:
 	c1.cd(1)
 	hVarControl.Draw('same p')
 	c1.Update()
-	c1.Print('pdfs/closureTests/'+shortname.replace('_','')+'.pdf')
+	#c1.Print('pdfs/closureTests/'+shortname.replace('_','')+'.pdf')
 	#pause()
 	fnew.cd()
 	c1.Write()

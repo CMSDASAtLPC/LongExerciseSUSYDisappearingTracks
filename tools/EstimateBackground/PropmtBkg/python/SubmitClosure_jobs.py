@@ -47,6 +47,7 @@ export timestamp=$(date +%Y%m%d_%H%M%S%N)
 mkdir $timestamp
 cd $timestamp
 cp -r CWD/python python_
+cp -r CWD/Kappa.root .
 pwd
 ls python_                                                                                                          
 cd python_                    
@@ -54,8 +55,7 @@ pwd
 cd -  
 python python_/ANALYZER inputFiles="INFILE"
 rm -rf python_
-
-mv *.root CWD/ClosreHists/
+mv *.root CWD/Output/
 cd ../
 pwd
 rmdir $timestamp
