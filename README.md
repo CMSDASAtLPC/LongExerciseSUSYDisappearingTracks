@@ -1,8 +1,7 @@
 # CMSDAS @ DESY 2018
 
 
-The following are a set of guidelines for running the 2018 DESY 
-CMSDAS Exercise on the search for SUSY with disappearing tracks
+Welcome to the 2018 DESY CMSDAS exercise on eisappearing tracks! Here, you'll learn the basics for how to set up and implement a search for new physics with the CMS detector.
 
 ## Introduction
 
