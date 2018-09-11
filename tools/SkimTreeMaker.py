@@ -240,7 +240,7 @@ for ientry in range(nentries):
 	mindphi = 9999
 	nj = 0
 	nb = 0
-	for ijet, jet in enumerate(c.Jets):
+	for ijet, jet in enumerate(c.Jets): #need dphi w.r.t. the modified mht
 		if not (abs(jet.Eta())<5.0 and jet.Pt()>30): continue
 		nj+=1
 		if c.Jets_bDiscriminatorCSV[ijet]>csv_b: nb+=1
