@@ -226,34 +226,91 @@ def loop(args):
                 is_tracker_track = True
 
             if choose_bdt == "complete":
-                # TODO:
-                # check if event passes the TMVA preselection
+                # apply TMVA preselection with modified pt (30 instead of 15 GeV):
+                if event.tracks[iCand].Pt() > 30 and \
+                    abs(event.tracks[iCand].Eta()) < 2.4 and \
+                    event.tracks_trkRelIso[iCand] < 0.2 and \
+                    event.tracks_dxyVtx[iCand] < 0.1 and \
+                    event.tracks_dzVtx[iCand] < 0.1 and \
+                    ptErrOverPt2 < 10 and \
+                    event.tracks_nMissingMiddleHits[iCand] == 0 and \
+                    bool(event.tracks_trackQualityHighPurity[iCand]) == 1 and \
+                    bool(event.tracks_passPFCandVeto[iCand]) == 1:
+                        is_present_after_preselection = True
+                else:
+                    continue
 
-                # TODO:
-                # store all event variables in the tmva_variables dictionary
-                # to evaluate the BDT classifier for each event, you need to get all variables which were used in the training
+                # evalulate BDT:
                 tmva_variables["dxyVtx"][0] = event.tracks_dxyVtx[iCand]
+                tmva_variables["dzVtx"][0] = event.tracks_dzVtx[iCand]
+                tmva_variables["matchedCaloEnergy"][0] = event.tracks_matchedCaloEnergy[iCand]
+                tmva_variables["trkRelIso"][0] = event.tracks_trkRelIso[iCand]
+                tmva_variables["nValidPixelHits"][0] = event.tracks_nValidPixelHits[iCand]
+                tmva_variables["nValidTrackerHits"][0] = event.tracks_nValidTrackerHits[iCand]
+                tmva_variables["nMissingOuterHits"][0] = event.tracks_nMissingOuterHits[iCand]
+                tmva_variables["ptErrOverPt2"][0] = ptErrOverPt2
 
             elif choose_bdt == "nodxyVtx":
-                # TODO:
-                # same for the relaxed BDT.
+                # apply TMVA preselection with modified pt (30 instead of 15 GeV):
+                if event.tracks[iCand].Pt() > 30 and \
+                    abs(event.tracks[iCand].Eta()) < 2.4 and \
+                    event.tracks_trkRelIso[iCand] < 0.2 and \
+                    event.tracks_dzVtx[iCand] < 0.1 and \
+                    ptErrOverPt2 < 10 and \
+                    event.tracks_nMissingMiddleHits[iCand] == 0 and \
+                    bool(event.tracks_trackQualityHighPurity[iCand]) == 1 and \
+                    bool(event.tracks_passPFCandVeto[iCand]) == 1:
+                        is_present_after_preselection = True
+                else:
+                    continue
 
-            # TODO:
-            # check if real fake (no genparticle around track)
+                # evalulate BDT:
+                tmva_variables["dzVtx"][0] = event.tracks_dzVtx[iCand]
+                tmva_variables["matchedCaloEnergy"][0] = event.tracks_matchedCaloEnergy[iCand]
+                tmva_variables["trkRelIso"][0] = event.tracks_trkRelIso[iCand]
+                tmva_variables["nValidPixelHits"][0] = event.tracks_nValidPixelHits[iCand]
+                tmva_variables["nValidTrackerHits"][0] = event.tracks_nValidTrackerHits[iCand]
+                tmva_variables["nMissingOuterHits"][0] = event.tracks_nMissingOuterHits[iCand]
+                tmva_variables["ptErrOverPt2"][0] = ptErrOverPt2
 
-            # finally, you can evaluate the BDT classifier like this:
-            # mva = readerPixelOnly.EvaluateMVA("BDT")
-            # 
-            # before, check if you are looking at pixel-only or pixel+strips tracks (see category definition)
+            # re-check PF lepton veto:
+            for k in range(len(event.Muons)):
+                deltaR = event.tracks[iCand].DeltaR(event.Muons[k])
+                if deltaR < 0.001:
+                    is_a_PF_lepton = True
+            for k in range(len(event.Electrons)):
+                deltaR = event.tracks[iCand].DeltaR(event.Electrons[k])
+                if deltaR < 0.001:
+                    is_a_PF_lepton = True
 
-            # TODO:
-            # For each event, we want to determine the track with the highest BDT value and save its properties.
-            # Update the variables highest_bdt_value and highest_bdt_index (the track index).
-            # Also, update the number of disappearing tracks (n_DT) and if the track is "real" fake track (n_DT_realfake).
-
+            # check if real fake (no genparticle around track):
+            if tree.GetBranch("GenParticles"):
+                for k in range(len(event.GenParticles)):
+                    deltaR = event.tracks[iCand].DeltaR(event.GenParticles[k])
+                    if deltaR < 0.001:
+                        is_a_real_fake = False
             
+            mva = -1
+            # final categorization:
+            if is_pixel_track:
+                mva = readerPixelOnly.EvaluateMVA("BDT")
+                if mva>bdt_bestcut_pixelonly and is_present_after_preselection and not is_a_PF_lepton:
+                    is_disappearing_track = True
+            elif is_tracker_track:
+                mva = readerPixelStrips.EvaluateMVA("BDT")
+                if mva>bdt_bestcut_pixelstrips and is_present_after_preselection and not is_a_PF_lepton:
+                    is_disappearing_track = True
 
+            if is_present_after_preselection and not is_a_PF_lepton:
 
+                if mva > highest_bdt_value:
+                    highest_bdt_value = mva
+                    highest_bdt_index = iCand
+
+                if is_disappearing_track:
+                    n_DT += 1
+                    if is_a_real_fake:
+                        n_DT_realfake += 1
 
         # veto event if no track survives preselection:
         if highest_bdt_index == -1: continue
@@ -288,10 +345,8 @@ def loop(args):
 def do_abcd_chi2(tree_file):
 
     # define regions:
-    # TODO:
-    # Get region definiton from RGS
-    region_dxy = 0
-    region_chi2 = 0
+    region_dxy = 0.02
+    region_chi2 = 1.5
 
     fin = TFile(tree_file)
     tree = fin.Get("Events")
@@ -369,7 +424,6 @@ def do_tree(choose_bdt, nevents):
 
 if __name__ == "__main__":
 
-    # TODO: Adjust number of events, can select low number for testing
     nevents = 1000
 
     do_tree("nodxyVtx", nevents)
