@@ -1,16 +1,16 @@
 from ROOT import *
 from array import array
+import numpy as np
 
 r'''
 of the barrel (|eta| < 1.4442). The outer circumferences of the endcaps are obscured by services passing between the barrel and the endcaps, and this area is removed from the fiducial region by excluding the first ring of trigger towers of the endcaps (|eta| > 1.566). The fiducial region terminates at |eta| = 2.5 where the tracker coverage ends.
 '''
 
-PtBinEdges = [15, 30, 50, 70, 90, 120, 200, 300, 310]#for Akshansh
-EtaBinEdges = [0,1.4442,1.566,2.4]# for Akshansh
-
-PtBinEdges = [15, 30, 60, 120, 130]#try squat little bins
+PtBinEdges = [0,20, 30,40, 50, 70, 90, 120, 200, 300, 310]
 EtaBinEdges = [0,1.4442,1.566,2.4]
 
+    
+    
 tl = TLatex()
 tl.SetNDC()
 cmsTextFont = 61
@@ -32,21 +32,18 @@ epsilon = 0.0001
 
 
 binning = {}
-binning['Met']=[0,20,50,100,150,200,300,600,900]
+binning['Met']=[0,20,50,100,150,200,300,600,900,910]
 binning['Mht']=binning['Met']
 #binning['TrkPt']=[15,30,50,100,300]
 #binning['TrkPt']=[15,30,50,70,90,120,200,300,400,410]#good for gen check, and two eta bins
-#binning['TrkPt']=[15,30,50,70,90,120,200,300,310]
-binning['TrkPt']=[15, 30, 60, 120, 130]#just seemed to work very well
+binning['TrkPt']=[0,20,30,40,50,70,90,120,200,300,310]
 binning['TrkEta']=[0,1.4442,1.566,2.4]
-
-binning['TrkPt']=[15, 30, 60,100,110]
-
-binning['TrkLen']=[2, 1, 3]
-
+#binning['TrkEta']=[0,0.5,1.4442,1.566,1.9,2.4]
+#binning['TrkEta']=[0,2.4]
 binning['NJets']=[10,0,10]
 binning['BTags']=[0,1,2,3,4,5,6,7]
 binning['Ht']=[10,0,2000]
+binning['MinDeltaPhiMhtJets'] = [8,0,3.2]
 
 
 #ptbins = [(15, 30),(30,50),(50,90),(90,9999)]
@@ -68,8 +65,8 @@ def findbin(thebins, value):
 selectionsets = {}
 inf = 9999
 #selectionsets order: HT,MET,NJets,DeltaPhi1,DeltaPhi2
-selectionsets['nocuts'] = [(0,inf),(0,inf),(0,inf),(0,inf),(0,inf)]
-selectionsets['highmet'] = [(0,inf),(250,inf),(0,inf),(0,inf),(0,inf)]
+#selectionsets['nocuts'] = [(0,inf),(0,inf),(0,inf),(0,inf),(0,inf)]
+#selectionsets['baseline'] = [(100,inf),(200,inf),(1,inf),(0,inf),(0,inf)]
 CutStages = {}
 CutStages[1] = 'All tracks'
 CutStages[2] = 'pt>15, |eta|<2.4'
@@ -106,9 +103,15 @@ def histoStyler(h,color):
 	h.GetYaxis().SetTitleOffset(1.05)
 	if not h.GetSumw2N(): h.Sumw2()
 	
-def makeHist(name, title, nb, low, high, color):
-	h = TH1F(name,title,nb,low,high)
-	histoStyler(h,color)
+def makeTh1(name, title, nbins, low, high, color=kBlack): 
+	h = TH1F(name, title, nbins, low, high)
+	histoStyler(h, color)
+	return h
+	
+	
+def makeTh1VB(name, title, nbins, arrayOfBins): 
+	h = TH1F(name, title, nbins, np.asarray(arrayOfBins, 'd'))
+	histoStyler(h, 1)
 	return h
 
 def graphStyler(g,color):
@@ -316,30 +319,12 @@ def stamp(lumi='35.9', showlumi = False):
 	tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
 	tl.SetTextFont(regularfont)
 	tl.SetTextSize(0.81*tl.GetTextSize())    
-	thingy = ''
-	if showlumi: thingy+='#sqrt{s}=13 TeV, L = '+str(lumi)+' fb^{-1}'
+	thingy = '#sqrt{s}=13 TeV'
+	if showlumi: thing+=', L = '+str(lumi)+' fb^{-1}'
 	xthing = 0.6202
 	if not showlumi: xthing+=0.13
 	tl.DrawLatex(xthing,0.915,thingy)
-	tl.SetTextSize(1.0/0.81*tl.GetTextSize())  
-	
-	
-def stamp2(lumi='35.9', showlumi = False):    
-	tl.SetTextFont(cmsTextFont)
-	tl.SetTextSize(0.98*tl.GetTextSize())
-	tl.DrawLatex(0.1,0.91, 'CMS')
-	tl.SetTextFont(extraTextFont)
-	tl.SetTextSize(1.0/0.98*tl.GetTextSize())
-	xlab = 0.213
-	tl.DrawLatex(xlab,0.91, ('MC' in datamc)*' simulation '+'preliminary')
-	tl.SetTextFont(regularfont)
-	tl.SetTextSize(0.81*tl.GetTextSize())    
-	thingy = ''
-	if showlumi: thingy+='#sqrt{s}=13 TeV, L = '+str(lumi)+' fb^{-1}'
-	xthing = 0.6202
-	if not showlumi: xthing+=0.13
-	tl.DrawLatex(xthing,0.91,thingy)
-	tl.SetTextSize(1.0/0.81*tl.GetTextSize()) 
+	tl.SetTextSize(1.0/0.81*tl.GetTextSize())        
 
 
 #------------------------------------------------------------------------------
@@ -372,7 +357,7 @@ def mkroc(name, hsig, hbkg, lcolor=kBlue, lwidth=2, ndivx=505, ndivy=505):
 	g.GetXaxis().SetLimits(0,1)
 
 	g.GetYaxis().SetTitle("#epsilon_{b}")
-	g.GetHistogram().SetAxisRange(0,1, "Y")
+	g.GetHistogram().SetAxisRange(0,1, "Y");
 
 	g.GetHistogram().SetNdivisions(ndivx, "X")
 	g.GetHistogram().SetNdivisions(ndivy, "Y")
@@ -468,7 +453,7 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	hComponents[0].Draw('axis same')                    
 	leg.Draw()        
 	cGold.Update()
-	stampFab(lumi,datamc)
+	stamp2(lumi,datamc)
 	cGold.Update()
 	cGold.cd()
 	pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.4)
@@ -513,8 +498,7 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	return hRatio
 
 
-
-def stampFab(lumi,datamc='MC'):
+def stamp2(lumi,datamc='MC'):
 	tl.SetTextFont(cmsTextFont)
 	tl.SetTextSize(1.6*tl.GetTextSize())
 	tl.DrawLatex(0.15,0.82, 'CMS')
@@ -525,119 +509,24 @@ def stampFab(lumi,datamc='MC'):
 	tl.SetTextSize(tl.GetTextSize()/1.6)
 	
 
+def stamp2_(datamc='MC'):
+	tl.SetTextFont(cmsTextFont)
+	tl.SetTextSize(0.98*tl.GetTextSize())
+	tl.DrawLatex(0.135,0.915, 'CMS')
+	tl.SetTextFont(extraTextFont)
+	tl.SetTextSize(1.0/1.1*tl.GetTextSize())
+	xlab = 0.235
+	tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
+	tl.SetTextFont(regularfont)
+	#tl.SetTextSize(0.81*tl.GetTextSize())    
+	tl.DrawLatex(0.7,0.915,'#sqrt{s}=13 TeV')
+	tl.SetTextSize(1.1/0.98*tl.GetTextSize())   
+	
+
+
+
 def stampE(energy):
     tl.SetTextFont(cmsTextFont)
     tl.SetTextSize(.8*tl.GetTextSize())
     tl.SetTextFont(regularfont)
     tl.DrawLatex(0.68,.91,'#sqrt{s} = 13 TeV')#(L = '+str(lumi)+' '#fb^{-1}')##from Akshansh
-    
-
-def prepareReader(reader, xmlfilename):
-    reader.AddVariable("dxyVtx",_dxyVtx_)
-    reader.AddVariable("dzVtx",_dzVtx_)
-    reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
-    reader.AddVariable("trkRelIso",_trkRelIso_)
-    reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
-    reader.AddVariable("nValidTrackerHits",_nValidTrackerHits_)
-    reader.AddVariable("nMissingOuterHits",_nMissingOuterHits_)
-    reader.AddVariable("ptErrOverPt2",_ptErrOverPt2_)
-    reader.AddSpectator("trkRelIso*pt",_trkRelIso_)
-    reader.AddSpectator("neutralPtSum",_neutralPtSum_)
-    reader.AddSpectator("chargedPtSum",_chargedPtSum_)
-    reader.AddSpectator("pixelLayersWithMeasurement",_pixelLayersWithMeasurement_)
-    reader.AddSpectator("trackerLayersWithMeasurement",_trackerLayersWithMeasurement_)
-    reader.AddSpectator("pt",_pt_)
-    reader.AddSpectator("eta",_eta_)
-    reader.AddSpectator("phi",_phi_)
-    reader.AddSpectator("nMissingMiddleHits",_nMissingMiddleHits_)
-    reader.AddSpectator("deDxHarmonic2",_deDxHarmonic2_)
-    reader.AddSpectator("trkMiniRelIso",_trkMiniRelIso_)
-    reader.AddSpectator("passExo16044JetIso",_passExo16044JetIso_)
-    reader.AddSpectator("passExo16044LepIso",_passExo16044LepIso_)
-    reader.AddSpectator("passExo16044Tag",_passExo16044Tag_)
-    reader.AddSpectator("trackJetIso",_trackJetIso_)
-    reader.AddSpectator("trackLeptonIso",_trackLeptonIso_)
-    reader.AddSpectator("madHT",_madHT_)  
-    reader.AddSpectator("MET",_MET_)
-    reader.AddSpectator("HT",_HT_)
-    reader.AddSpectator("nCandPerEevent",_nCandPerEevent_)
-    _deDxHarmonic2_[0] = 0.0
-    _chargedPtSum_[0] = 0.0
-    _nMissingMiddleHits_[0] = 0.0
-    _trkMiniRelIso_[0] = 0.0
-    _passExo16044JetIso_[0] = 0.0
-    _passExo16044LepIso_[0] = 0.0
-    _passExo16044Tag_[0] = 0.0
-    _trackJetIso_[0] = 0.0
-    _trackLeptonIso_[0] = 0.0
-    _madHT_[0] = 0.0
-    _MET_[0] = 0.0
-    _HT_[0] = 0.0
-    _nCandPerEevent_[0] = 0.0
-    _pixelLayersWithMeasurement_[0] = 0.0
-    _trackerLayersWithMeasurement_[0] = 0.0
-    _pt_[0] = 0.0
-    _eta_[0] = 0.0
-    _phi_[0] = 0.0
-
-def evaluateBDT(reader, trackv):
-    _dxyVtx_[0] = trackv[0]
-    _dzVtx_[0] = trackv[1]
-    _matchedCaloEnergy_[0] = trackv[2]    
-    _trkRelIso_[0] = trackv[3]
-    _nValidPixelHits_[0] = trackv[4]
-    _nValidTrackerHits_[0] = trackv[5]
-    _nMissingOuterHits_[0] = trackv[6]
-    _ptErrOverPt2_[0] = trackv[6]
-    return  reader.EvaluateMVA("BDT")
-    
-    
-def isBasicTrack(tree,itrack):		
-	if not abs(track.Eta())<2.4: return False
-	if not (abs(track.Eta())<1.4442 or abs(track.Eta())>1.566): return False		
-	if not tree.tracks_trkRelIso[itrack]<0.2: return False		
-	if not abs(tree.tracks_dxyVtx[itrack])<0.02: return False						
-	if not abs(tree.tracks_dzVtx[itrack])<0.05: return False
-	if not bool(tree.tracks_trackQualityHighPurity[itrack]): return False	
-	if not (tree.tracks_nMissingInnerHits[itrack]==0): return False 		
-	if not track.Pt()*tree.tracks_trkRelIso[itrack]<10: return False
-	return True
-
-def isDisappearingTrack(tree,itrack):		
-	phits = tree.tracks_nValidPixelHits[itrack]
-	thits = tree.tracks_nValidTrackerHits[itrack]
-	tlayers = tree.tracks_trackerLayersWithMeasurement[itrack]			
-	short = phits>0 and thits==phits
-	medium = tlayers< 7 and (thits-phits)>0
-	long   = tlayers>=7 and (thits-phits)>0  
-	if short: passesDXY = abs(tree.tracks_dxyVtx[itrack])<0.02
-	else: passesDXY = abs(tree.tracks_dxyVtx[itrack])<0.01		
-	if not passesDXY: return -1
-	if not (c.tracks_nMissingOuterHits[itrack]>=2): return -1	
-	neutralIso = c.tracks_neutralPtSum[itrack]/track.Pt()
-	if not (c.tracks_neutralPtSum[itrack]<=10 and neutralIso<=0.1): return -1
-	chargedIso = c.tracks_chargedPtSum[itrack]/track.Pt() ### things to leave out of ele id
-	if not (c.tracks_chargedPtSum[itrack]<=10 and chargedIso<=0.1): return -1
-	if not c.tracks_passPFCandVeto[itrack]: return -1
-	nhits = c.tracks_nValidTrackerHits[itrack]
-	nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-	if not (nlayers>=2 and nhits>=2): return -1
-	pterr = c.tracks_ptError[itrack]/(track.Pt()*track.Pt())
-	if short: 
-		if not (pterr<0.2): return -1
-		return 1
-	elif medium: 
-		if not (pterr<0.05): return -1
-		return 2
-	elif long: 
-		if not (pterr<0.005): return -1	
-		return 2
-	print 'something wrong'
-	exit(0)
-	
-	
-def overflow(h):
-    bin = h.GetNbinsX()+1
-    c = h.GetBinContent(bin)
-    h.AddBinContent((bin-1),c)
-	
