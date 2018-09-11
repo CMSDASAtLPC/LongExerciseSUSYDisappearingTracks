@@ -8,6 +8,10 @@ gROOT.SetBatch(1)
 
 try: fname = sys.argv[1]
 except: fname = 'test.root'
+
+try: fnameOut = sys.argv[2]
+except: fnameOut = 'closure.root'
+
 lumi = 35900
 
 BkgComponents = {}
@@ -19,7 +23,7 @@ hBkgComponents = {}
 infile = TFile(fname)
 infile.ls()
 
-fnew = TFile('newfile.root','recreate')
+fnew = TFile(fnameOut,'recreate')
 
 keys = infile.GetListOfKeys()
 for key in keys:
