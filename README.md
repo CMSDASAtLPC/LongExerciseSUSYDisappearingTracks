@@ -1,7 +1,7 @@
 # CMSDAS @ DESY 2018
 
 
-Welcome to the 2018 DESY CMSDAS exercise on eisappearing tracks! Here, you'll learn the basics for how to set up and implement a search for new physics with the CMS detector.
+Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy!
 
 ## Introduction
 
@@ -9,7 +9,7 @@ Long-lived (LL) charged particles are featured in many models of physics beyond 
 
 The most recent public result of the search for long-lived particles with disappearing tracks at sqrt(s)=13 TeV is available [here](https://cds.cern.ch/record/2306201). This PAS (Physics Analysis Summary) gives a good overview of the general search approach and the characteristics and difficulties one encounters when looking at this particular signature. 
 
-The exercise is organized in sections as follows: After setting up the working area, you will start on the track-level analysis and identify the relevant properties of disappearing tracks (DT). This DT identification is then used on event level where you study the event topology and the background contributions, which are estimated with data-driven methods.
+The exercise is organized in sections as follows: First, the recipe for setting up a working area will be described. Then, you'll start on a track-level analysis and identify the relevant properties of disappearing tracks (DT). This DT identification is then used on event level where you study the event topology and the background contributions, which are estimated with data-driven methods.
 
 ## 1.) Set up a working area
 
@@ -46,7 +46,7 @@ cmsenv
 Now you need to clone the git repository which contains the analysis-specific code: 
 
 ```
-git clone https://github.com/ShortTrackSusy/cmsdas.git cmsdas2018
+git clone https://github.com/https://github.com/DisappearingTrack/cmsdas.git cmsdas2018
 cd cmsdas2018
 ```
 
@@ -54,7 +54,7 @@ cd cmsdas2018
 
 In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
 
-### Short introduction to tracking variables
+### 2.a) Short introduction to tracking variables
 
 For an introduction to CMS tracking, see the [tracking short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise).
 
@@ -81,13 +81,13 @@ root [0] PreSelection->Draw("nMissingOuterHits:dxyVtx", "dxyVtx<0.01", "COLZ")
 ```
 You are looking at a couple of observables that are key to selecting signal disappearing tracks.
 
-### Plot signal and background
+### 2.b) Plot signal and background
 
 TODO: use plotting script to make plots with weighted signal+bg.
 
 <b style='color:black'>Exercise: Create plots of more variables to familiarize yourself with the tracking properties.</b>
 
-### Constructing a DT tag (training a BDT)
+### 2.c) Disappearing track tag (training a BDT)
 
 After having looked at some of the tracking variables, you now have to develop a set of criteria for selecting disappearing tracks that  discriminates between such tracks and the Standard Model (SM) background. One approach is to choose a set of thresholds (cuts) to apply to the relevant track properties by hand/eye. By applying these cuts to simulated signal and background samples, one can evaluate performance of the cuts. With the large number of tracking variables available, however, it is worthwhile to consider other approaches, such as a random grid search (RGS) or a boosted decision tree (BDT). In the following, we will train a BDT for the track selection.
 
@@ -118,7 +118,10 @@ $ root tmva.cxx
 
 The configuration and training of the BDT is set up in a ROOT macro, tmva.cxx. If everything went well, you will see the TMVA GUI which you can use to evaluate the training and how well you did:
 
+<center>
+
 ![](https://i.imgur.com/nAlEGrx.png)
+</center>
 
 You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmva/TMVAUsersGuide.pdf). The most imporant functions accessible here are:
   * 1a) View input variables
@@ -210,10 +213,12 @@ We will provide two BDTs for pixel-only and pixel+strips tracks which you can co
 
 You have now learned how to train a BDT with signal and background samples and to come up with a first track tag for disppearing tracks. A similar track tag is used in the skims provided in the following sections.
 
-## 3.) A look at background events
+## 3.) Event-based analysis
 
-Let's make some distributions of various event-level quantities, 
+Background skim files have been Let's make some distributions of various event-level quantities, 
 comparing signal and background events. 
+
+### 3.a) Background events
 
 ```
 python tools/CharacterizeEvents.py
@@ -237,7 +242,7 @@ main backgrounds?
 <b style='color:black'>Question 2: What is the main background in 
   events with at least 2 b-tagged jets?</b>
 
-## 4.) Skimming events 
+### 3.b) Skimming signal events 
 
 We'd like to overlay some signal distributions onto these plots, 
 but there are currently no skims for the signal. We are interested in a wide range of 
@@ -272,11 +277,11 @@ You just performed a so-called eyeball optimization. Can you count the total wei
 
 <b style='color:black'>Question 4: How many weighted signal and background events were there passing your selection? What was the expected significance, in terms of s/sqrt(s+b)</b>
 
-## 5.) Performing an optimization
+## 3.c) Cut-based optimization (RGS)
 
-Let's get systematic with the optimization. Many tools exist that help to select events with a good sensitivity. The main challenge is that an exaustive scan over all possible cut values on all observables in an n-dimensional space of observables becomes computationally prohibitive for n>3. 
+Let's get systematic with the optimization. Many tools exist that help to select events with a good sensitivity. The main challenge is that an exaustive scan over all possible cut values on all observables in an n-dimensional space of observables becomes computationally intensive or prohibitive for n>3. 
 
-One interesting tool that seeks to overcome this curse of dimensionality is called a random grid search (RGS), which is documented in the publication, "Optimizing Event Selection with the Random Grid Search" https://arxiv.org/abs/1706.09907. RGS performs a scan over the observable hyperplane, using a set of available simulated signal (or background) events to define steps in the scan. For each step in the scan (each simulated event), a proposed selection is defined taking the cut values to be the values of the observables of the event. We are going to run RGS on the signal/background samples, and compare the sensitivity of the selection to the hand-picked cuts you obtained previously.  
+One interesting tool that seeks to overcome this curse of dimensionality is called a random grid search (RGS), which is documented in the publication, "Optimizing Event Selection with the Random Grid Search" https://arxiv.org/abs/1706.09907. RGS performs a scan over the observable hyperplane, using a set of available simulated signal (or background) events to define steps in the scan. For each step in the scan (each simulated event), a proposed selection set is defined taking the cut values to be the values of the observables of the event. We are going to run RGS on the signal/background samples, and compare the sensitivity of the selection to the hand-picked cuts you obtained previously.  
 
 
 ```
@@ -288,51 +293,179 @@ cd ../
 pwd
 ```
 
-The first script to run is tools/rgs_train.py. Open this script up, edit the lumi appropriately (to 35900/pb), give the path to the signal event file you just created, and tweak anything else as you see fit. Then open tools/LLSUSY.cuts. This file specifies the observables you want RGS to scan over and cut on, as well as the type of cut to apply (greater than, less than, equal to...). Run the first RGS script:
+The first script to run is tools/rgs_train.py. Open this script up, edit the lumi appropriately (to 35900/pb), give the path to the signal event file you just created, and tweak anything else as you see fit. When finished, save and open tools/LLSUSY.cuts. This file specifies the observables you want RGS to scan over and cut on, as well as the type of cut to apply (greater than, less than, equal to, etc.). Run the (first) training RGS script:
 
 ```
 python tools/rgs_train.py
 ```
-This creates the file LLSUSY.root which contains signal and background counts for each possible selection set in the scan. Now run the second RGS script:
+This creates the file LLSUSY.root which contains a tree of signal and background counts for each possible selection set in the scan. To determine the most optimal cut set, run the (second) analysis RGS script:
 
 ```
 python tools/rgs_analyze.py
 ```
-This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts. It will also print the approximate signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
+This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts, and an estimate of the signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
 
-You'll have noticed the script also draws a canvase. The scatter plot shows the ROC cloud, defined as the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance falling into a given bin. 
+You'll have noticed the script also draws a canvas. The scatter plot depicts the ROC cloud, which shows the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance of the various cut sets falling into each bin. 
 
 Open up tools/rgs_analyze.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
 
 <b style='color:black'>Question 5. What happened to the optimum thresholds after doubling the SU? How about the expected significance? </b>
 
-<b style='color:black'>Question 6. What value of the systematic uncertainty would correspond to a significance of 2 sigma, which is the worst case scenario that would allow us to exclude this signal model? </b>
+<b style='color:black'>Question 6. What value of the systematic uncertainty would correspond to a significance of 2 sigma? This is the worst case uncertainty that would allow us to exclude this signal model. </b>
 
-## 6.) Background estimation
+## 4.) Background estimation
 
-   * explain main backgrounds
-   * explain why we need a data-diven method here. 
-   * nice introduction to data-diven methods [here](http://www.desy.de/~csander/Talks/120223_SFB_DataDrivenBackgrounds.pdf)
+There are two main sources of backgrounds contributing to the search, *prompt* and *fake* background. The prompt background is due to charged leptons which failed the lepton reconstruction, but leave a track in the tracker and are thus not included in the ParticleFlow candidates. Fake tracks originate from pattern recogniction errors, which produce tracks not originating from real particles.
 
-### Prompt background
+A precise determination for these types of backgrounds requires a data-diven method. A general introduction to data-diven methods is given [here](http://www.desy.de/~csander/Talks/120223_SFB_DataDrivenBackgrounds.pdf).
+ 
+### 4.a) Prompt background
 
-   * estimation method
+The prompt background is the name given to SM events with a disappearing track that arises because of the presence of a true electron. The method for estimating this background is based on a single-lepton control region. Transfer factors (kappa factors) are derived that relate the count in the single lepton control region to the count in the signal region. 
 
-### Fake tracks
+The single-lepton control region is defined as being analogous to the signal region, but where the requirement of there being 1 disappearing track is replaced by the requirement of there being one well-reconstructed lepton:
 
-Another source of background are fake tracks, which are not from a real particle but originate from pattern recognition errors in the tracking algorithm. Such tracks are also expected to have higher impact parameters (dxy, dz) as they do not necessarily seem to originate from the primary vertex. A general strategy to estimate this background is to loosen the disappearing track tag by removing the impact parameter from the training and preselection.
+n(bkg in SR) = kappa * n(single lepton)
+
+Kappa factors are derived using a data-driven tag and probe method. A well-reconstructed lepton is identified as the tag, and the event is checked for an isolated track (probe) that can be paired with the tag such that the invariant mass of the pair falls within 20 GeV of the Z mass, 90 GeV. In such a case, the track is identified as either being a well-reconstructed lepton, a disappearing track, or neither. The ratio of probes that are disappearing tracks to probes that are well-reconstructed leptons is taken as the estimate of kappa. 
+
+#### step 1. Create histograms for deriving kappa factors
+
+To compute kappa factors via both the gen-matching and tag and probe methods,  first do a test run. 
+
+```
+
+python tools/TagNProbeHistMaker_BDT.py /pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_391_RA2AnalysisTree.root
+
+```
+
+When the script has finished running, you'll be able to open up the file and see that it contains low-statistics histograms of pT and eta distributions of tags and probes. One of you (not all) should proceed to do a large submission on the condor batch system. The script SubmitJobs_condor.py will create one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
+```
+mkdir Output/
+mkdir bird/
+
+python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL*.root"
+
+```
+After the jobs are submitted, you can check the status of the jobs by doing 
+```
+condor_q | <your user name> 
+#or simply
+condor_q 
+```
+
+Once all the jobs are finished, you can merge the files using an hadd (pronounced like "H"-add) command, and then proceed to compute the kappa factors from the histogram file: 
+
+```
+python tools/ahadd.py -f TagnProbe_DYJetsToLL.root Output/BDT_TagnProbeEleHists*.root
+```
+
+#### step 2. Compute the kappa factors
+```
+python tools/ComputeKappa.py TagnProbe_DYJetsToLL.root
+#then run a script to look at a comparison between the two kappas:
+python tools/CompareKappas.py
+```
+note: there is an input for the disappearing track response distributions have to be produced through an analysis involving track hit removal.
+
+
+#### step 3. peform closure test
+Step 3 : Construct a single lepton control region and weight each event by the corresponding kappa factor. The result is the prediction for the prompt electron background. The script called PromptBkgHistMaker_BDT.py creates histograms of these three populations as a function of the analysis variables. 
+
+USAGE: python python/SubmitClosure_jobs.py python/PromptBkgHistMaker.py "INPUT DATA"
+
+Step 4: Plot the closure test histograms using closurePromptBkg.py. Script overlays the control region, predicted bakground, the true background and plots the the ratio between the predicted background and true background.
+Input for the script:
+a) Root file obtained in step 3
+output: Closure Plots
+
+USAGE: python python/closurePromptBkg.py inputfile outputfile
+
+### 4.b) Fake track background
+
+Another source of background are fake tracks, which are not from real particles but originate from pattern recognition errors in the tracking algorithm. Such tracks are also expected to have higher impact parameters (dxy, dz) as they do not necessarily seem to originate from the primary vertex. A general strategy to estimate this background is to relax the disappearing track tag by removing the impact parameter from the training and preselection.
 
 #### Identifying fake tracks
 
-   * provide some sketches how fake tracks can contribute to the background
+The following figure shows a (somewhat extreme) example how pattern recognition errors might occur, with hits in the tracking layers indicated as red and valid tracks marked as black. A large number of possible tracks corresponding to hits in the tracker poses a combinatorial problem and can cause fake tracks (violet) to occur:
+
+<center>
+
+![artist's impression](https://i.imgur.com/hKZdG0M.png)
+</center>center>
+
+In addition, the hits marked in red can be valid hits or hits due to detector noise, thus providing another (connected) source of fake tracks.
 
 #### ABCD method
 
-   * you will use an ABCD method to determine the fake tracks contribution
-   * need two uncorrelated variables. Check correlation for dxy, dz, chi2ndof, track isolation
-   * variables used for the region definitions must not be included in the BDT training. we provide loose BDTs.
-   * create 2D plot of two uncorrelated variables after applying TMVA preselection + BDT + PF lepton veto
-   * need to define regions -> use RGS for this. use trees with applied loosened BDT
-   * create 2D plot with region cuts, count events in each region
-   * discuss ratio formula
+Within the ABCD method, background in the signal region is determined from several control regions. The regions are defined by two uncorrelated variables:
 
+<center>
+
+![](https://i.imgur.com/aQVAzGo.png)
+</center>
+
+Let's assume that the signal region A is defined by a small value of both variable 1 and variable 2. Regions B to D are thus control regions. If both variables are uncorrelated, the ration between regions A and C is equal to that of regions B and D:
+
+A/C = B/D
+
+Therefore, contribution to the signal region A can be estimated by A = C‧B/D.
+
+Here, we relax the disappearing track tag by removing dxyVtx from the BDT training. We will then use the ABCD method to determine the fake tracks contribution. A signal and three control regions can be defined by dxyVtx and another uncorrelated variable, chi2Ndof.
+
+<b style='color:black'>Question 7. Evaluate the correlation between the two variables.</b>
+
+Create a 2D plot of the two variables for events which have at least one (loosely) tagged track which is not a PF lepton. First, change to the FakeBkg directory and copy the complete and relaxed BDT to that location:
+
+```
+$ cp -r /nfs/dust/cms/user/kutznerv/cmsdas/BDTs/* .
+```
+
+Take a look at tmvx.cxx in each directory to see which variables and preselection have been used in the BDT training. We will first test the method on a ZJetsToNuNu MC background sample. In the following script, the BDT weights have been integrated and you can determine the BDT classifier value for each track in the event. 
+
+```
+$ python fakes-analyzer.py
+```
+
+There are missing parts in the script which you need to complete to get the plot. They are marked with "TODO".
+
+Create the 2D plot for events which pass the relaxed disappearing track tag, the BDT preselection and the PF lepton veto. Once you have created the plot, you now have to define a signal region and three control regions by putting cuts on dxyVtx and chi2Ndof. To do this, we will once again use RGS.
+
+Write a RGS configuration file, in which you load the following prepared trees for signal and backgrounds:
+```
+/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short-bdt
+/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium-bdt
+```
+
+Take a look at a signal tree with TBrowser. In each tree, you can find the BDT classifier of the complete and relaxed training for each track. Think about the preselection and the correcting weighting of the samples. Run RGS and determine the best cuts.
+
+With the best cuts for dxyVtx and chi2Ndof, you can now extend fakes-analyzer.py in order to count events in each region A, B, C and D.
+
+The contribution of fake tracks  will be eventually determined from the control regions B, C and D. Extend fakes-analyzer.py to count the number of events in each region, then compare the count in region A to the result you obtain when considering the ratios.
+
+This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
+
+```
+        for iCand in xrange(number_of_tracks):
+        
+            ...
+        
+            # for current track, loop over all generator particles
+            # and determine how close the track is to the particle:
+            if tree.GetBranch("GenParticles"):
+                for k in range(len(event.GenParticles)):
+                    ...
+```
+
+How large is the difference when performing the MC truth check?
+
+What is the systematic uncertainty of this method?
+
+The ABCD method is a simple yet powerful data-driven estimation method which is in particular useful if you cannot rely on MC information. However, it is only applicable when the two variables used are not correlated, which is not trivial to determine.
+
+
+## 6) Limit 
+
+
+
+[Higgs combine](https://cms-hcomb.gitbooks.io/combine/content/)
