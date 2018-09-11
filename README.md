@@ -1,7 +1,7 @@
 # CMSDAS @ DESY 2018
 
 
-Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy!
+Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement a search for new physics at CMS. Enjoy!
 
 ## Introduction
 
@@ -331,7 +331,7 @@ Kappa factors are derived using a data-driven tag and probe method. A well-recon
 
 #### step 1. Create histograms for deriving kappa factors
 
-To compute kappa factors via both the gen-matching and tag and probe methods,  first do a test run. 
+The following command will run a script that generates histograms for the numberator (disappearing tracks) and denominator (prompt leptons) that are needed compute kappa:
 
 ```
 
@@ -339,7 +339,9 @@ python tools/TagNProbeHistMaker_BDT.py /pnfs/desy.de/cms/tier2/store/user/sbein/
 
 ```
 
-When the script has finished running, you'll be able to open up the file and see that it contains low-statistics histograms of pT and eta distributions of tags and probes. One of you (not all) should proceed to do a large submission on the condor batch system. The script SubmitJobs_condor.py will create one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
+When the script has finished running, open up the file and view a few random histograms. You'll notice that the statistics are very low for the binned pT and eta distributions. 
+
+One of you (not all) can proceed to do a larger submission on the condor batch system, which will generate a higher statistics version of these plots. The script SubmitJobs_condor.py creates one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
 ```
 mkdir Output/
 mkdir bird/
@@ -347,39 +349,51 @@ mkdir bird/
 python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL*.root"
 
 ```
-After the jobs are submitted, you can check the status of the jobs by doing 
+After the jobs are submitted, the status of the jobs can be checked by:
 ```
 condor_q | <your user name> 
 #or simply
 condor_q 
 ```
 
-Once all the jobs are finished, you can merge the files using an hadd (pronounced like "H"-add) command, and then proceed to compute the kappa factors from the histogram file: 
+When the jobs are finished, merge the files using an hadd (pronounced like "H"-add) command, After that, we'll proceed to computing the kappa factors from the merged histogram file: 
 
 ```
 python tools/ahadd.py -f TagnProbe_DYJetsToLL.root Output/BDT_TagnProbeEleHists*.root
 ```
 
+*note likely for you*: I just realized it is likely that one of your group mates did the submission, so be sure to get the full path to their Output directory, and specify that in the last argument of the above command.
+
 #### step 2. Compute the kappa factors
+
+To compute kappas from the merged histograms, and then proceed to view those kappa factors, run the following two scripts in sequence:
 ```
 python tools/ComputeKappa.py TagnProbe_DYJetsToLL.root
-#then run a script to look at a comparison between the two kappas:
 python tools/CompareKappas.py
 ```
-note: there is an input for the disappearing track response distributions have to be produced through an analysis involving track hit removal.
-
+You might find it useful to use a log scale when answering the next question.
+<b style='color:black'>Question 7. do you notice anything distinct about the shape of kappa as a function of pT? Eta? What can be said about the charge asymmetry?</b>
 
 #### step 3. peform closure test
-Step 3 : Construct a single lepton control region and weight each event by the corresponding kappa factor. The result is the prediction for the prompt electron background. The script called PromptBkgHistMaker_BDT.py creates histograms of these three populations as a function of the analysis variables. 
+Step 3 : Construct a **single lepton CR** and weight each event by the corresponding kappa factor. The result is the **background prediction in the SR** for the prompt electrons. The script called PromptBkgHistMaker_BDT.py creates histograms of these two populations, as well as the **"true" distributions**, which of course consist of events with a disappearing track in the signal region:
 
-USAGE: python python/SubmitClosure_jobs.py python/PromptBkgHistMaker.py "INPUT DATA"
+```
+python tools/PromptBkgHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_25_RA2AnalysisTree.root"
+```
 
-Step 4: Plot the closure test histograms using closurePromptBkg.py. Script overlays the control region, predicted bakground, the true background and plots the the ratio between the predicted background and true background.
-Input for the script:
-a) Root file obtained in step 3
-output: Closure Plots
+If the script runs ok, edit it and add your new signal region from the RGS optimization, and then do another test run to ensure there is no crash. Then, again please just one of you, can proceed to submit a large number of jobs:
 
-USAGE: python python/closurePromptBkg.py inputfile outputfile
+```
+python tools/SubmitJobs_condor.py tools/PromptBkgHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_*"
+```
+
+After a few jobs accrue a bit in the Output directory, an hadd of the output files is in order, as done previously. Again, I realize it is likely that one of your group mates did the submission so be sure to get the full path to their Output directory. 
+
+Step 4: The histograms generated by this script are sufficient to generate a so-called *closure test.* Closure is a consistency check between the data-driven prediction and the truth in the signal region, all performed in simulation. 
+
+```
+python tools/closurePromptBkg.py <inputFile.root> <outputFile.root>
+```
 
 ### 4.b) Fake track background
 
@@ -392,7 +406,7 @@ The following figure shows a (somewhat extreme) example how pattern recognition 
 <center>
 
 ![artist's impression](https://i.imgur.com/hKZdG0M.png)
-</center>center>
+</center>
 
 In addition, the hits marked in red can be valid hits or hits due to detector noise, thus providing another (connected) source of fake tracks.
 
@@ -421,7 +435,7 @@ Create a 2D plot of the two variables for events which have at least one (loosel
 $ cp -r /nfs/dust/cms/user/kutznerv/cmsdas/BDTs/* .
 ```
 
-Take a look at tmvx.cxx in each directory to see which variables and preselection have been used in the BDT training. We will first test the method on a ZJetsToNuNu MC background sample. In the following script, the BDT weights have been integrated and you can determine the BDT classifier value for each track in the event. 
+Take a look at tmvx.cxx in each directory to see which variables and preselection have been used in the BDT training. We will first test the method on a ZJetsToNuNu MC background sample. You can use the following script:
 
 ```
 $ python fakes-analyzer.py
@@ -429,7 +443,7 @@ $ python fakes-analyzer.py
 
 There are missing parts in the script which you need to complete to get the plot. They are marked with "TODO".
 
-Create the 2D plot for events which pass the relaxed disappearing track tag, the BDT preselection and the PF lepton veto. Once you have created the plot, you now have to define a signal region and three control regions by putting cuts on dxyVtx and chi2Ndof. To do this, we will once again use RGS.
+Create the 2D plot for events which pass the relaxed disappearing track tag, the BDT preselection and the ParticleFlow lepton veto. Once you have created the plot, you now have to define a signal region and three control regions by putting cuts on dxyVtx and chi2Ndof. To do this, we will once again use RGS.
 
 Write a RGS configuration file, in which you load the following prepared trees for signal and backgrounds:
 ```
@@ -439,11 +453,30 @@ Write a RGS configuration file, in which you load the following prepared trees f
 
 Take a look at a signal tree with TBrowser. In each tree, you can find the BDT classifier of the complete and relaxed training for each track. Think about the preselection and the correcting weighting of the samples. Run RGS and determine the best cuts.
 
-With the best cuts for dxyVtx and chi2Ndof, you can now extend fakes-analyzer.py in order to count events in each region A, B, C and D.
+Some hints: The cross sections needed for the weights can be found in tmva.cxx. You will also need to include the number of events in the weighting. If you select all tracks from the sample, you can use the "Nev" histogram to get the event count:
 
-The contribution of fake tracks  will be eventually determined from the control regions B, C and D. Extend fakes-analyzer.py to count the number of events in each region, then compare the count in region A to the result you obtain when considering the ratios.
+```
+fin = TFile(filename_of_sample)
+h_nev = fin.Get("Nev")
+nev = h_nev.GetEntries()
+```
 
-This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
+When considering pixel+strips tracks, RGS might take a long time to finish. In that case, you can limit the number of rows (= number of tracks). Now you have to get the corresponding event count, for which you can use the "event" branch. It contains the event number for each track. Here is one possibility how to determine the event count:
+
+```
+fin = TFile(filename_of_sample)
+tree = fin.Get("PreSelection")
+tree.Draw("event", "Entry$<%s" % numrows, "COLZ")
+h_event = tree.GetHistogram()
+maxbin = h_event.GetXaxis().GetLast()
+nev = h_event.GetXaxis().GetBinCenter( maxbin )
+```
+
+Run RGS for pixel-only and pixel+strips tracks and analyze the output. With the best cuts for dxyVtx and chi2Ndof, you can now extend fakes-analyzer.py in order to count events in each region A, B, C and D.
+
+The contribution of fake tracks  will be eventually determined from the control regions B, C and D. Compare the event count in region A to the result you obtain when considering the ratios.
+
+This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
 
 ```
         for iCand in xrange(number_of_tracks):
@@ -455,6 +488,7 @@ This method does not rely on MC information and is used especially on data to ob
             if tree.GetBranch("GenParticles"):
                 for k in range(len(event.GenParticles)):
                     ...
+                    # perform check if track is close to a generator particle
 ```
 
 How large is the difference when performing the MC truth check?
@@ -466,6 +500,45 @@ The ABCD method is a simple yet powerful data-driven estimation method which is 
 
 ## 6) Limit 
 
+Congratulations, you've made it! We can now put exlusion limits on the production cross section of the signal process. Since the data is still blinded for this analysis, we will calculate 95% CL expected limits.
 
+First, let's install the [Higgs combine](https://cms-hcomb.gitbooks.io/combine/content/) tool. It is recommended to run ``combine`` in a CMSSW 8.1.0 environment. Change to the parent directory of your CMSSW_10_1_0 folder, then do:
 
-[Higgs combine](https://cms-hcomb.gitbooks.io/combine/content/)
+```
+export SCRAM_ARCH=slc6_amd64_gcc530
+cmsrel CMSSW_8_1_0
+cd CMSSW_8_1_0/src 
+cmsenv
+git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit
+git fetch origin
+git checkout v7.0.10
+scramv1 b clean; scramv1 b # always make a clean build
+```
+
+Prepare an example datacard file called ``test``, which contains a single "tthhad" bin and a single nuisance parameter (an uncertainty of the luminosity measurement of 2.5%). For signal and background, the event count is entered into the datacard:
+
+```
+------------------------------------
+imax 1 number of bins
+jmax 1 number of backgrounds
+kmax 1 number of nuisance parameters
+------------------------------------
+bin          tthhad
+observation  368
+------------------------------------
+bin          tthhad          tthhad
+process      SIG             BKG
+process      0               1
+rate         0.6562          368
+------------------------------------
+lumi  lnN    1.025       1.025
+```
+
+Save this example datacard and run:
+
+```
+combine test
+```
+
+Now, let's calculate an expected limit for our analysis. Modify the datacard with the event counts you have determined and add the systematic uncertainties.
