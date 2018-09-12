@@ -3,6 +3,8 @@
 
 Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy!
 
+If you're doing teh exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
+
 ## Introduction
 
 Long-lived (LL) charged particles are featured in many models of physics beyond the standard model, e.g., hidden valley theories. In particular, R-parity conserving SUSY models with a wino-like LSP usually feature charginos with proper decay lengths between 1 nm and several meters, after which point the chargino would decay into a neutralino and a very soft pion or lepton. SUSY models with a light higgsino but with particularly heavy bino and wino parameters can also give rise to charginos with similar lifetimes. The known particles do not have similar lifetimes, so the potential signal events are quite distinct from the standard model background. 
