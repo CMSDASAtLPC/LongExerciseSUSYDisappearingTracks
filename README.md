@@ -1,7 +1,7 @@
 # CMSDAS @ DESY 2018
 
 
-Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement a search for new physics at CMS. Enjoy!
+Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy!
 
 ## Introduction
 
@@ -83,9 +83,32 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 2.b) Plot signal and background
 
-TODO: use plotting script to make plots with weighted signal+bg.
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. Use the following script to first convert the trees to histograms and then do a complete plot:
 
-<b style='color:black'>Exercise: Create plots of more variables to familiarize yourself with the tracking properties.</b>
+```
+$ ./plot_track_variables.py
+```
+
+<b style='color:black'>Exercise: Create plots of all variables to familiarize yourself with the tracking properties.</b>
+
+You only need to re-create the histograms when you change the cutstring. Open the script and set `recreate_histograms = True` to False. To add your own histogram, you'll also need to edit `treeToHist.py`.
+
+The plots will appear in the `/plots` folder.
+
+Add your own cut (e.g. a higher cut on pT): Set
+
+```
+cuts = {"loose": "",
+        "mycut": "pt>50"}
+```
+
+and
+
+```
+stages = ["loose", "mycut"]
+```
+
+After that, run the plotting script with re-creating all histograms.
 
 ### 2.c) Disappearing track tag (training a BDT)
 
@@ -476,7 +499,7 @@ Run RGS for pixel-only and pixel+strips tracks and analyze the output. With the 
 
 The contribution of fake tracks  will be eventually determined from the control regions B, C and D. Compare the event count in region A to the result you obtain when considering the ratios.
 
-This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
+This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
 
 ```
         for iCand in xrange(number_of_tracks):
