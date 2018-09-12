@@ -16,7 +16,7 @@ The exercise is organized in sections as follows: First, the recipe for setting 
 First, login to a NAF machine using the details you received via email: 
 
 ```
-ssh USERNAME@naf-schoolXX.desy.de
+ssh -y USERNAME@naf-schoolXX.desy.de
 ```
 
 Initialize the NAF software environment. This you have to do for every login: 
