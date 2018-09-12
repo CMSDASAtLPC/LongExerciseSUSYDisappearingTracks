@@ -7,7 +7,7 @@ import math
 from glob import glob
 from FWCore.ParameterSet.VarParsing import VarParsing
 from random import shuffle
-from utilsII import *
+from utils import *
 import random
 
 
@@ -74,107 +74,12 @@ for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
         histoStyler(dInvMassDTHist[newHistKey], 1)
 
 ##adapt script for BDT disappearing track
-
-import numpy as np
-_dxyVtx_ = array('f',[0])
-_dzVtx_ = array('f',[0])
-_matchedCaloEnergy_ = array('f',[0])
-_trkRelIso_ = array('f',[0])
-_nValidPixelHits_ = array('f',[0])
-_nValidTrackerHits_ = array('f',[0])
-_nMissingOuterHits_ = array('f',[0])
-_ptErrOverPt2_ = array('f',[0])
-_trkRelIsoSTARpt_ = array('f',[0])
-_neutralPtSum_ = array('f',[0])
-_chargedPtSum_ = array('f',[0])
-_pixelLayersWithMeasurement_ = array('f',[0])
-_trackerLayersWithMeasurement_ = array('f',[0])
-_pt_ = array('f',[0])
-_eta_ = array('f',[0])
-_phi_ = array('f',[0])
-_nMissingMiddleHits_ = array('f',[0])
-_deDxHarmonic2_ = array('f',[0])
-_trkMiniRelIso_ = array('f',[0])
-_passExo16044JetIso_ = array('f',[0])
-_passExo16044LepIso_ = array('f',[0])
-_passExo16044Tag_ = array('f',[0])
-_trackJetIso_ = array('f',[0])
-_trackLeptonIso_ = array('f',[0])
-_madHT_ = array('f',[0])
-_MET_ = array('f',[0])
-_HT_ = array('f',[0])
-_nCandPerEevent_ = array('f',[0])
-
-
-def prepareReader(reader, xmlfilename):
-    reader.AddVariable("dxyVtx",_dxyVtx_)
-    reader.AddVariable("dzVtx",_dzVtx_)
-    reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
-    reader.AddVariable("trkRelIso",_trkRelIso_)
-    reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
-    reader.AddVariable("nValidTrackerHits",_nValidTrackerHits_)
-    reader.AddVariable("nMissingOuterHits",_nMissingOuterHits_)
-    reader.AddVariable("ptErrOverPt2",_ptErrOverPt2_)
-    reader.AddSpectator("trkRelIso*pt",_trkRelIso_)
-    reader.AddSpectator("neutralPtSum",_neutralPtSum_)
-    reader.AddSpectator("chargedPtSum",_chargedPtSum_)
-    reader.AddSpectator("pixelLayersWithMeasurement",_pixelLayersWithMeasurement_)
-    reader.AddSpectator("trackerLayersWithMeasurement",_trackerLayersWithMeasurement_)
-    reader.AddSpectator("pt",_pt_)
-    reader.AddSpectator("eta",_eta_)
-    reader.AddSpectator("phi",_phi_)
-    reader.AddSpectator("nMissingMiddleHits",_nMissingMiddleHits_)
-    reader.AddSpectator("deDxHarmonic2",_deDxHarmonic2_)
-    reader.AddSpectator("trkMiniRelIso",_trkMiniRelIso_)
-    reader.AddSpectator("passExo16044JetIso",_passExo16044JetIso_)
-    reader.AddSpectator("passExo16044LepIso",_passExo16044LepIso_)
-    reader.AddSpectator("passExo16044Tag",_passExo16044Tag_)
-    reader.AddSpectator("trackJetIso",_trackJetIso_)
-    reader.AddSpectator("trackLeptonIso",_trackLeptonIso_)
-    reader.AddSpectator("madHT",_madHT_)
-    reader.AddSpectator("MET",_MET_)
-    reader.AddSpectator("HT",_HT_)
-    reader.AddSpectator("nCandPerEevent",_nCandPerEevent_)
-    _deDxHarmonic2_[0] = 0.0
-    _chargedPtSum_[0] = 0.0
-    _nMissingMiddleHits_[0] = 0.0
-    _trkMiniRelIso_[0] = 0.0
-    _passExo16044JetIso_[0] = 0.0
-    _passExo16044LepIso_[0] = 0.0
-    _passExo16044Tag_[0] = 0.0
-    _trackJetIso_[0] = 0.0
-    _trackLeptonIso_[0] = 0.0
-    _madHT_[0] = 0.0
-    _MET_[0] = 0.0
-    _HT_[0] = 0.0
-    _nCandPerEevent_[0] = 0.0
-    _pixelLayersWithMeasurement_[0] = 0.0
-    _trackerLayersWithMeasurement_[0] = 0.0
-    _pt_[0] = 0.0
-    _eta_[0] = 0.0
-    _phi_[0] = 0.0
-    reader.BookMVA("BDT", xmlfilename)
-
-
-def evaluateBDT(reader, trackfv):
-    _dxyVtx_[0] = trackfv[0]
-    _dzVtx_[0] = trackfv[1]
-    _matchedCaloEnergy_[0] = trackfv[2]
-    _trkRelIso_[0] = trackfv[3]
-    _nValidPixelHits_[0] = trackfv[4]
-    _nValidTrackerHits_[0] = trackfv[5]
-    _nMissingOuterHits_[0] = trackfv[6]
-    _ptErrOverPt2_[0] = trackfv[7]
-    return  reader.EvaluateMVA("BDT")
-
 readerPixelOnly = TMVA.Reader()
-pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/CMSSW_10_1_7/src/shorttrack/cutoptimization/tmva/newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
+pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelOnly, pixelXml)
 readerPixelStrips = TMVA.Reader()
-trackerXml = '/nfs/dust/cms/user/kutznerv/shorttrack/CMSSW_10_1_7/src/shorttrack/cutoptimization/tmva/newpresel2-200-4-medium/weights/TMVAClassification_BDT.weights.xml'
+trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelStrips, trackerXml)
-
-
 
 def main():
     
@@ -328,15 +233,13 @@ def main():
             if not abs(c.GenParticles_ParentId[igp]) == 23: continue # 24 for Wpm 23 for DY
             if not (abs(c.GenParticles_PdgId[igp])==11 and c.GenParticles_Status[igp] == 1) : continue
             genels.append([gp,igp])
-#        if not len(genels)==1: continue  #uncomment for Gen WJ kappa
-#        if not len(genels) <3: continue  #uncomment for Gen DY kappa
 
         basicTracks = []
         for itrack, track in enumerate(c.tracks):
             if not track.Pt() > 15 : continue
             if not abs(track.Eta()) < 2.4: continue
             if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-            if not isBaselineTrk(track, itrack): continue
+            if not isBaselineTrack(track, itrack, c): continue
             basicTracks.append([track,itrack])
         disappearingTracks = []
         mva, dedx, trkpt, trketa, trkp = -999, -999, -999, -999, -999
@@ -346,11 +249,9 @@ def main():
 
         for itrack, track in enumerate(c.tracks):
             if not track.Pt() > 15 : continue
-        #    if verbose: print ientry, itrack,'track with Pt' ,track.Pt()
             if not abs(track.Eta()) < 2.4: continue
             if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-            if not isDisappearingTrack_(track, itrack): continue
-        #    if verbose: print ientry, itrack,'Passed disp track with Pt' ,track.Pt()
+            if not isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips): continue
             disappearingTracks.append([track,itrack])
 
         RecoElectrons = []
@@ -665,59 +566,7 @@ def determileLength(sp_track, sp_track_id):
     if c.tracks_trackerLayersWithMeasurement[sp_track_id] < 7 and c.tracks_pixelLayersWithMeasurement[sp_track_id] < c.tracks_trackerLayersWithMeasurement[sp_track_id]: M = 2
     if c.tracks_trackerLayersWithMeasurement[sp_track_id] > 6 and c.tracks_pixelLayersWithMeasurement[sp_track_id] < c.tracks_trackerLayersWithMeasurement[sp_track_id]: L = 3
     return S+M+L
-        
-def isBaselineTrk(track, track_id):
-    etaMax = 2.4
-    flag = 1
-    if not abs(track.Eta())< etaMax: return 0
-    if (abs(track.Eta()) > 1.4442 and abs(track.Eta()) < 1.566): return 0
-#        if not (track.Pt() > 15 and abs(track.Eta())< etaMax): return 0
-    if not bool(c.tracks_trackQualityHighPurity[track_id]) : return 0
-    if not (c.tracks_ptError[track_id]/(track.Pt()*track.Pt()) < 0.2): return 0
-    if not c.tracks_dxyVtx[track_id] < 0.02: return 0
-    if not c.tracks_dzVtx[track_id] < 0.05 : return 0        
-    if not c.tracks_trkRelIso[track_id] < 0.2: return 0    
-    if not c.tracks_trkRelIso[track_id]*track.Pt() < 10: return 0
-    if not (c.tracks_trackerLayersWithMeasurement[track_id] >= 2 and c.tracks_nValidTrackerHits[track_id] >= 2): return 0
-    if not c.tracks_nMissingInnerHits[track_id]==0: return 0
-    return flag
-        
-def isDisappearingTrack_(track, itrack):
 
-    moh_ = c.tracks_nMissingOuterHits[itrack]
-    phits = c.tracks_nValidPixelHits[itrack]
-    thits = c.tracks_nValidTrackerHits[itrack]
-    tlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-    pixelOnly = phits>0 and thits==phits
-    medium = tlayers< 7 and (thits-phits)>0
-    long   = tlayers>=7 and (thits-phits)>0
-    pixelStrips = medium or long
-    if pixelStrips:
-        if not moh_>=2: return 0
-    if not (c.tracks_nMissingInnerHits[itrack]==0): return 0
-    if not (pixelOnly or pixelStrips): return 0
-    #preselection
-    if not c.tracks_passPFCandVeto[itrack]: return 0
-    if not (c.tracks_trkRelIso[itrack]<0.2 and c.tracks_dxyVtx[itrack]<0.1 and c.tracks_dzVtx[itrack]<0.1 and c.tracks_ptError[itrack]/c.tracks[itrack].Pt()<10 and c.tracks_nMissingMiddleHits[itrack]==0): return 0
-    if not (c.tracks_trackQualityHighPurity[itrack]): return 0
-    nhits = c.tracks_nValidTrackerHits[itrack]
-    nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-    if not (nlayers>=2 and nhits>=2): return 0
-    pterr = c.tracks_ptError[itrack]/(track.Pt()*track.Pt())
-    dxyVtx = abs(c.tracks_dxyVtx[itrack])
-    dzVtx = abs(c.tracks_dzVtx[itrack])
-    matchedCalo = c.tracks_matchedCaloEnergy[itrack]
-    trackfv = [dxyVtx, dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
-    if pixelOnly:
-        mva_ = evaluateBDT(readerPixelOnly, trackfv)
-        if not mva_ > 0.117:return 0
-        else: return 1
-    elif pixelStrips:
-        mva_ = evaluateBDT(readerPixelStrips, trackfv)
-        if not mva_ > 0.179:return 0
-        else: return 1
-    else:
-        return 0
 
 def nJets_adj(muon):
     

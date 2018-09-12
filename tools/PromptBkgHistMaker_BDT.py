@@ -3,7 +3,7 @@ import time
 import numpy as np
 from ROOT import *
 from utils import *
-from utilsII import *
+#from utilsII import *
 from glob import glob
 from random import shuffle
 import random
@@ -72,6 +72,7 @@ for f in range(0,x):
 	print 'file number:', f, ':',inputFiles[f]
 	c.Add(inputFiles[f])
 nentries = c.GetEntries()
+c.Show(0)
 
 verbosity = 1000
 identifier = inputFiles[0][inputFiles[0].rfind('/')+1:].replace('.root','').replace('Summer16.','').replace('RA2AnalysisTree','')
@@ -88,21 +89,12 @@ print 'Will write results to', newfname
 hHt = TH1F('hHt','hHt',100,0,3000)
 hHtWeighted = TH1F('hHtWeighted','hHtWeighted',100,0,3000)
 
+
 inf = 999999999
+varlist_ = ['Ht','Mht','NJets','TrkPt','TrkEta','BTags', 'MinDeltaPhiMhtJets']
 regionCuts = {}
-regionCuts['NoCuts']              = [(0,inf),(0,inf),(0,inf),(0,inf),(0,2.4),(0,inf)]
-regionCuts['LowMhtBaseline']      = [(200,inf),(150,inf),(1,inf),(15,inf),(0,2.4),(0,inf)]
-
-
-dKappaBinList = {}
-for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
-        for iEtaBin, EtaBin in enumerate(EtaBinEdges[:-1]):
-                newHistKey = ((EtaBin,EtaBinEdges[iEtaBin + 1]),(PtBin,PtBinEdges[iPtBin + 1]))
-                dKappaBinList[newHistKey] = [iPtBin+1,iEtaBin+1]
-
-
-
-varlist_ = ['Ht','Mht','NJets','TrkPt','TrkEta','BTags']
+regionCuts['NoCuts']              = [(0,inf),(0,inf),(0,inf),(0,inf),(0,2.4),(0,inf),(0,inf)]
+regionCuts['LowMhtBaseline']      = [(200,inf),(150,inf),(1,inf),(15,inf),(0,2.4),(0,inf),(0,inf)]
 indexVar = {}
 for ivar, var in enumerate(varlist_): indexVar[var] = ivar
 histoStructDict = {}
@@ -111,6 +103,12 @@ for region in regionCuts:
         histname = region+'_'+var
         histoStructDict[histname] = mkHistoStruct(histname)
 
+dKappaBinList = {}
+for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
+        for iEtaBin, EtaBin in enumerate(EtaBinEdges[:-1]):
+                newHistKey = ((EtaBin,EtaBinEdges[iEtaBin + 1]),(PtBin,PtBinEdges[iPtBin + 1]))
+                dKappaBinList[newHistKey] = [iPtBin+1,iEtaBin+1]
+                
 def selectionFeatureVector(fvector, regionkey='', omitcuts=''):
     iomits = []
     for cut in omitcuts.split('Vs'): iomits.append(indexVar[cut])
@@ -121,32 +119,6 @@ def selectionFeatureVector(fvector, regionkey='', omitcuts=''):
     return True
 
 
-#sfname = 'ScaleFactors/EleDtSfMC.root'
-#if doGenVersion: sfname = sfname.replace('.root','Truth.root')
-'''
-fSF = TFile(sfname)
-fSF.ls()
-hDtElRatioDict = {}
-
-ptbins = []
-print binning['TrkPt']
-for ibin, bin in enumerate(binning['TrkPt'][:-1]):
-	ptbins.append((binning['TrkPt'][ibin],binning['TrkPt'][ibin+1]))
-print 'ptbins', ptbins
-
-etabins = []
-print binning['TrkEta']
-for ibin, bin in enumerate(binning['TrkEta'][:-1]):
-	etabins.append((binning['TrkEta'][ibin],binning['TrkEta'][ibin+1]))
-print etabins
-
-
-for etabin_ in etabins:
-	for ptbin in ptbins:
-		name = 'hInvMassDtElRatio_eta%dto%d_pt%dto%d' % (10*etabin_[0],10*etabin_[1],ptbin[0],ptbin[1])
-		name = name.replace('9999','Inf')
-		hDtElRatioDict[(etabin_,ptbin)] = fSF.Get(name)
-'''
 for histkey in dKappaBinList:
 	print histkey, 'Ptbin', dKappaBinList[histkey][0],'EtaBin', dKappaBinList[histkey][1]
 #pause()
@@ -161,165 +133,18 @@ for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
                 dResponseHist[newHistKey] = fSmear.Get("htrkresp"+str(newHistKey))
 
 
-
 ##pause()
 #c.Show(0)
 nEvents = c.GetEntries()
 verbosity = round(100000)
 
-import numpy as np
-_dxyVtx_ = array('f',[0])
-_dzVtx_ = array('f',[0])
-_matchedCaloEnergy_ = array('f',[0])
-_trkRelIso_ = array('f',[0])
-_nValidPixelHits_ = array('f',[0])
-_nValidTrackerHits_ = array('f',[0])
-_nMissingOuterHits_ = array('f',[0])
-_ptErrOverPt2_ = array('f',[0])
-_trkRelIsoSTARpt_ = array('f',[0])
-_neutralPtSum_ = array('f',[0])
-_chargedPtSum_ = array('f',[0])
-_pixelLayersWithMeasurement_ = array('f',[0])
-_trackerLayersWithMeasurement_ = array('f',[0])
-_pt_ = array('f',[0])
-_eta_ = array('f',[0])
-_phi_ = array('f',[0])
-_nMissingMiddleHits_ = array('f',[0])
-_deDxHarmonic2_ = array('f',[0])
-_trkMiniRelIso_ = array('f',[0])
-_passExo16044JetIso_ = array('f',[0])
-_passExo16044LepIso_ = array('f',[0])
-_passExo16044Tag_ = array('f',[0])
-_trackJetIso_ = array('f',[0])
-_trackLeptonIso_ = array('f',[0])
-_madHT_ = array('f',[0])
-_MET_ = array('f',[0])
-_HT_ = array('f',[0])
-_nCandPerEevent_ = array('f',[0])
-
-
-def prepareReader(reader, xmlfilename):
-        reader.AddVariable("dxyVtx",_dxyVtx_)
-        reader.AddVariable("dzVtx",_dzVtx_)
-        reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
-        reader.AddVariable("trkRelIso",_trkRelIso_)
-        reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
-        reader.AddVariable("nValidTrackerHits",_nValidTrackerHits_)
-        reader.AddVariable("nMissingOuterHits",_nMissingOuterHits_)
-        reader.AddVariable("ptErrOverPt2",_ptErrOverPt2_)
-        reader.AddSpectator("trkRelIso*pt",_trkRelIso_)
-        reader.AddSpectator("neutralPtSum",_neutralPtSum_)
-        reader.AddSpectator("chargedPtSum",_chargedPtSum_)
-        reader.AddSpectator("pixelLayersWithMeasurement",_pixelLayersWithMeasurement_)
-        reader.AddSpectator("trackerLayersWithMeasurement",_trackerLayersWithMeasurement_)
-        reader.AddSpectator("pt",_pt_)
-        reader.AddSpectator("eta",_eta_)
-        reader.AddSpectator("phi",_phi_)
-        reader.AddSpectator("nMissingMiddleHits",_nMissingMiddleHits_)
-        reader.AddSpectator("deDxHarmonic2",_deDxHarmonic2_)
-        reader.AddSpectator("trkMiniRelIso",_trkMiniRelIso_)
-        reader.AddSpectator("passExo16044JetIso",_passExo16044JetIso_)
-        reader.AddSpectator("passExo16044LepIso",_passExo16044LepIso_)
-        reader.AddSpectator("passExo16044Tag",_passExo16044Tag_)
-        reader.AddSpectator("trackJetIso",_trackJetIso_)
-        reader.AddSpectator("trackLeptonIso",_trackLeptonIso_)
-        reader.AddSpectator("madHT",_madHT_)
-        reader.AddSpectator("MET",_MET_)
-        reader.AddSpectator("HT",_HT_)
-        reader.AddSpectator("nCandPerEevent",_nCandPerEevent_)
-        _deDxHarmonic2_[0] = 0.0
-        _chargedPtSum_[0] = 0.0
-        _nMissingMiddleHits_[0] = 0.0
-        _trkMiniRelIso_[0] = 0.0
-        _passExo16044JetIso_[0] = 0.0
-        _passExo16044LepIso_[0] = 0.0
-        _passExo16044Tag_[0] = 0.0
-        _trackJetIso_[0] = 0.0
-        _trackLeptonIso_[0] = 0.0
-        _madHT_[0] = 0.0
-        _MET_[0] = 0.0
-        _HT_[0] = 0.0
-        _nCandPerEevent_[0] = 0.0
-        _pixelLayersWithMeasurement_[0] = 0.0
-        _trackerLayersWithMeasurement_[0] = 0.0
-        _pt_[0] = 0.0
-        _eta_[0] = 0.0
-        _phi_[0] = 0.0
-        reader.BookMVA("BDT", xmlfilename)
-
-def evaluateBDT(reader, trackfv):
-        _dxyVtx_[0] = trackfv[0]
-        _dzVtx_[0] = trackfv[1]
-        _matchedCaloEnergy_[0] = trackfv[2]
-        _trkRelIso_[0] = trackfv[3]
-        _nValidPixelHits_[0] = trackfv[4]
-        _nValidTrackerHits_[0] = trackfv[5]
-        _nMissingOuterHits_[0] = trackfv[6]
-        _ptErrOverPt2_[0] = trackfv[7]
-        return  reader.EvaluateMVA("BDT")
 
 readerPixelOnly = TMVA.Reader()
-pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/CMSSW_10_1_7/src/shorttrack/cutoptimization/tmva/newpresel3-200-4-short/wei\
-ghts/TMVAClassification_BDT.weights.xml'
+pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelOnly, pixelXml)
 readerPixelStrips = TMVA.Reader()
-trackerXml = '/nfs/dust/cms/user/kutznerv/shorttrack/CMSSW_10_1_7/src/shorttrack/cutoptimization/tmva/newpresel2-200-4-medium/\
-weights/TMVAClassification_BDT.weights.xml'
+trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelStrips, trackerXml)
-
-
-def isBaselineTrack(track, track_id):
-	etaMax = 2.4
-	flag = 1
-#                if not (track.Pt() > 15 and abs(track.Eta())< etaMax): return 0
-	if not abs(track.Eta())< etaMax : return 0
-	if (abs(track.Eta()) > 1.4442 and abs(track.Eta()) < 1.566): return 0
-	if (abs(track.Eta()) > 1.4442 and abs(track.Eta()) < 1.566): print abs(track.Eta()), 'eta in gap'
-	if not bool(c.tracks_trackQualityHighPurity[track_id]) : return 0
-	if not (c.tracks_ptError[track_id]/(track.Pt()*track.Pt()) < 0.2): return 0
-	if not c.tracks_dxyVtx[track_id] < 0.02: return 0
-	if not c.tracks_dzVtx[track_id] < 0.05 : return 0
-	if not c.tracks_trkRelIso[track_id] < 0.2: return 0
-	if not c.tracks_trkRelIso[track_id]*track.Pt() < 10: return 0
-	if not (c.tracks_trackerLayersWithMeasurement[track_id] >= 2 and c.tracks_nValidTrackerHits[track_id] >= 2): return 0
-	if not c.tracks_nMissingInnerHits[track_id]==0: return 0
-	return flag
-
-def isDisappearingTrack_(track, itrack):
-        moh_ = c.tracks_nMissingOuterHits[itrack]
-        phits = c.tracks_nValidPixelHits[itrack]
-        thits = c.tracks_nValidTrackerHits[itrack]
-        tlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-        pixelOnly = phits>0 and thits==phits
-        medium = tlayers< 7 and (thits-phits)>0
-        long   = tlayers>=7 and (thits-phits)>0
-        pixelStrips = medium or long
-        if pixelStrips:
-                if not moh_>=2: return 0
-        if not (c.tracks_nMissingInnerHits[itrack]==0): return 0
-        if not (pixelOnly or pixelStrips): return 0
-        #preselection                                                                                                          
-        if not c.tracks_passPFCandVeto[itrack]: return 0
-	if not (c.tracks_trkRelIso[itrack]<0.2 and c.tracks_dxyVtx[itrack]<0.1 and c.tracks_dzVtx[itrack]<0.1 and c.tracks_ptError[itrack]/c.tracks[itrack].Pt()<10 and c.tracks_nMissingMiddleHits[itrack]==0): return 0
-        if not (c.tracks_trackQualityHighPurity[itrack]): return 0
-        nhits = c.tracks_nValidTrackerHits[itrack]
-        nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-        if not (nlayers>=2 and nhits>=2): return 0
-        pterr = c.tracks_ptError[itrack]/(track.Pt()*track.Pt())
-        dxyVtx = abs(c.tracks_dxyVtx[itrack])
-        dzVtx = abs(c.tracks_dzVtx[itrack])
-        matchedCalo = c.tracks_matchedCaloEnergy[itrack]
-        trackfv = [dxyVtx, dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
-        if pixelOnly:
-                mva_ = evaluateBDT(readerPixelOnly, trackfv)
-                if not mva_ > 0.117:return 0
-                else: return 1
-        elif pixelStrips:
-                mva_ = evaluateBDT(readerPixelStrips, trackfv)
-                if not mva_ > 0.179:return 0
-                else: return 1
-        else:
-                return 0
 
 
 
@@ -333,8 +158,7 @@ def getSF(Eta, Pt, Draw = False):
 def getKappa_(Eta, Pt, charge = 0):
         for histkey in dKappaBinList:
                 if abs(Eta) > histkey[0][0] and abs(Eta) < histkey[0][1] and Pt > histkey[1][0] and Pt < histkey[1][1]:
-			if charge == 0:kappa = KappaMap.GetBinContent(dKappaBinList[histkey][0],dKappaBinList[histkey][1])  #10**(dResponseHist[histkey].GetRandom())
-			#kappa = KappaMapPt.GetBinContent(dKappaBinList[histkey][0])
+			if charge == 0:kappa = KappaMap.GetBinContent(dKappaBinList[histkey][0],dKappaBinList[histkey][1])  
 			if charge == 1  : kappa = KappaMapPlus.GetBinContent(dKappaBinList[histkey][0],dKappaBinList[histkey][1])
 			if charge == -1 : kappa = KappaMapMinus.GetBinContent(dKappaBinList[histkey][0],dKappaBinList[histkey][1])
 			#print kappa
@@ -373,7 +197,7 @@ for ientry in range(nentries):
 		if not track.Pt() > 15 : continue
 		if not abs(track.Eta()) < 2.4: continue
 		if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-		if not isBaselineTrack(track, itrack): continue
+		if not isBaselineTrack(track, itrack, c): continue
 		basicTracks.append(track)
 	disappearingTracks = []
 	mva, dedx, trkpt, trketa, trkp = -999, -999, -999, -999, -999
@@ -383,12 +207,10 @@ for ientry in range(nentries):
 
 	for itrack, track in enumerate(c.tracks):
 		if not track.Pt() > 15 : continue
-	#	if verbose: print ientry, itrack,'track with Pt' ,track.Pt()
 		if not abs(track.Eta()) < 2.4: continue
 		if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-		if not isDisappearingTrack_(track, itrack): continue
-	#	if verbose: print ientry, itrack,'Passed disp track with Pt' ,track.Pt()
-                disappearingTracks.append(track)
+		if not isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips): continue
+		disappearingTracks.append(track)
 
 	RecoElectrons = []
 	SmearedElectrons = []
@@ -424,51 +246,40 @@ for ientry in range(nentries):
 	if not len(muons)==0: continue	
 
 	singleEleEvent_ = bool(len(SmearedElectrons)==1)
-#	print len(SmearedElectrons), "SmearedElectrons"
-	#print ientry, 'SmearedElectrons', SmearedElectrons, 'disappearingTracks', disappearingTracks
 	singleDisTrkEvent = bool(len(disappearingTracks)==1)
-#	print len(disappearingTracks), "disappearing tracks"
-	#pause()
 	if not (singleEleEvent_ or singleDisTrkEvent): continue
-	#print 'D'
-#	if (len(SmearedElectrons)>0 and len(disappearingTracks)>0): continue	
-	#print 'passed event cuts'
 	
 	metvec = TLorentzVector()
 	metvec.SetPtEtaPhiE(c.MET, 0, c.METPhi, c.MET)
 
 	if singleEleEvent_:
 		if doGenVersion: yo =1
-			#if not SmearedElectrons[0][0].DeltaR(genels[0])<0.02: continue
-		#adjustedMet = metvec.Pt()-RecoElectrons[0]
 		adjustedMht = TLorentzVector()
 		adjustedMht.SetPxPyPzE(0,0,0,0)
-		adjustedNJets = 0
+		adjustedJets = []
 		for jet in c.Jets:
 			if not jet.Pt()>30: continue
 			if not abs(jet.Eta())<5.0: continue
 			if not jet.DeltaR(RecoElectrons[0])>0.5: continue
 			adjustedMht-=jet
-			adjustedNJets+=1
-		#if not adjustedNJets>0: continue
+			adjustedJets.append(jet)
+		adjustedNJets = len(adjustedJets)
+		mindphi = 4
+		for jet in adjustedJets: mindphi = min(mindphi, abs(jet.DeltaPhi(adjustedMht)))
+		
 		if doGenVersion:
-                        if RelaxGenKin:
-				pt = SmearedElectrons[0][0].Pt()
-				eta = abs(SmearedElectrons[0][0].Eta())
-                        else:
-				pt = genels[0].Pt()
-                                eta = abs(genels[0].Eta())
+		        if RelaxGenKin:
+		                pt = SmearedElectrons[0][0].Pt()
+		                eta = abs(SmearedElectrons[0][0].Eta())
+		        else:
+		                pt = genels[0].Pt()
+		                eta = abs(genels[0].Eta())
 		else:
-			pt = SmearedElectrons[0][0].Pt()
-			eta = abs(SmearedElectrons[0][0].Eta())		
-	#	ptbin = findbin(ptbins,pt)
-	#	etabin = findbin(etabins,abs(eta))
-	#	if abs(eta) > 1.4442 and abs(eta) < 1.566 : print abs(eta), 'eta of electron'
-		fv = [c.HT,adjustedMht.Pt(),adjustedNJets,pt,abs(SmearedElectrons[0][0].Eta()),c.BTags]		
+		        pt = SmearedElectrons[0][0].Pt()
+		        eta = abs(SmearedElectrons[0][0].Eta())		
+		        
+		fv = [c.HT,adjustedMht.Pt(),adjustedNJets,pt,abs(SmearedElectrons[0][0].Eta()),c.BTags, mindphi]
 		k = getKappa_(abs(eta),min(pt,309.99),SmearedElectrons[0][1])
-		#print 'Kappa is', k
-#		fillth1(hPtControl,fv[3],1*weight)
-#		fillth1(hPtMethod,fv[3],k*weight)
 		for regionkey in regionCuts:
 			for ivar, varname in enumerate(varlist_):
 				hname = regionkey+'_'+varname
@@ -486,15 +297,19 @@ for ientry in range(nentries):
 		if not disappearingTracks[0].DeltaR(genels[0])<0.02: continue
 		#if doGenVersion:
 		#	if not disappearingTracks[0].DeltaR(genels[0])<0.02: continue
-		adjustedNJets = 0
+		adjustedJets = []
 		adjustedMht = TLorentzVector()
-		adjustedMht.SetPxPyPzE(0,0,0,0)		
+		adjustedMht.SetPxPyPzE(0,0,0,0)
+		mindphi_ = 4		
 		for jet in c.Jets:
 			if not jet.Pt()>30: continue
 			if not abs(jet.Eta())<5.0: continue
 			if not jet.DeltaR(disappearingTracks[0])>0.5: continue	
 			adjustedMht-=jet			
-			adjustedNJets+=1	
+			adjustedJets.append(jet)
+		adjustedNJets = len(adjustedJets)
+		mindphi = 4
+		for jet in adjustedJets: mindphi = min(mindphi, abs(jet.DeltaPhi(adjustedMht)))			
 	#	if not adjustedNJets>0: continue				
 		if doGenVersion:
 			if RelaxGenKin: 
@@ -506,14 +321,11 @@ for ientry in range(nentries):
 		else: 
 			pt = disappearingTracks[0].Pt()
 			eta = abs(disappearingTracks[0].Eta())			
-		fv = [c.HT,adjustedMht.Pt(),adjustedNJets,pt,abs(disappearingTracks[0].Eta()),c.BTags]					
-#		fillth1(hPtTruth,fv[3], weight)
+		fv = [c.HT,adjustedMht.Pt(),adjustedNJets,pt,abs(disappearingTracks[0].Eta()),c.BTags, mindphi_]
 		for regionkey in regionCuts:
 			for ivar, varname in enumerate(varlist_):
 				hname = regionkey+'_'+varname
 				if selectionFeatureVector(fv,regionkey,varname):
-#					if 'NoCuts' in regionkey and 'TrkPt' in varname:
-#						print ientry,'found disappearing track, pT=', fv[3]
 					fillth1(histoStructDict[hname].Truth,fv[ivar], weight)
 	
 fnew_.cd()
@@ -522,11 +334,3 @@ hHtWeighted.Write()
 writeHistoStruct(histoStructDict)
 print 'just created', fnew_.GetName()
 fnew_.Close()
-
-#TestFile = TFile('BkgEstTestwithPtKappa.root','recreate')
-#TestFile.cd()
-#hPtTruth.Write()
-#hPtMethod.Write()
-#hPtControl.Write()
-#print 'just created', TestFile.GetName()
-#TestFile.Close()
