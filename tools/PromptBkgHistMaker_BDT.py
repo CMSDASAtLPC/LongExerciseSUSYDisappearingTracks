@@ -140,10 +140,10 @@ verbosity = round(100000)
 
 
 readerPixelOnly = TMVA.Reader()
-pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
+pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas-res/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelOnly, pixelXml)
 readerPixelStrips = TMVA.Reader()
-trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
+trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas-res/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelStrips, trackerXml)
 
 

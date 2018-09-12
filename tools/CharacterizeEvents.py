@@ -10,7 +10,7 @@ execfile('tools/EventCategories.py')
 
 UseOptimizedCuts = True
 dolog = True
-lumi = 1#
+lumi = 35900#
 
 fnew = TFile('canvases.root','recreate')
 
@@ -21,6 +21,7 @@ fnew = TFile('canvases.root','recreate')
 
 cutsets = {}
 cutsets['NoCuts'] = 'Mht>100'
+cutsets['hmmm'] = 'Mht > 327.216 && NJets>=6 && NLeptons == 0 && BTags == 0 && MinDeltaPhiMetJets > 0.369945'
  
 #can add 
 
