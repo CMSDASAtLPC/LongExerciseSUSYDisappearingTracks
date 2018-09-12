@@ -92,10 +92,10 @@ if isDasAndSignal: tEvent.Branch('weight', var_weight,'weight/D')
 ###########################
 
 readerPixelOnly = TMVA.Reader()
-pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
+pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas-rel/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelOnly, pixelXml)
 readerPixelStrips = TMVA.Reader()
-trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
+trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas-rel/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 prepareReader(readerPixelStrips, trackerXml)
 
 c = TChain('TreeMaker2/PreSelection')
