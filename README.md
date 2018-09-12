@@ -7,6 +7,8 @@ If you're doing teh exercise at the school, please send an email to me so I can 
 
 https://mattermost.web.cern.ch/cern-market/
 
+Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/shorttracksusy/treemaker
+
 ## Introduction
 
 Long-lived (LL) charged particles are featured in many models of physics beyond the standard model, e.g., hidden valley theories. In particular, R-parity conserving SUSY models with a wino-like LSP usually feature charginos with proper decay lengths between 1 nm and several meters, after which point the chargino would decay into a neutralino and a very soft pion or lepton. SUSY models with a light higgsino but with particularly heavy bino and wino parameters can also give rise to charginos with similar lifetimes. The known particles do not have similar lifetimes, so the potential signal events are quite distinct from the standard model background. 
