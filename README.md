@@ -130,7 +130,7 @@ The Boosted decision tree is a rather popular type of multivariate classifier. A
 
 In the exercise repository, change into track-selection and prepare a CMSSW 8.0.28 environment in order to use the correct TMVA version for the exercise:
 ```
-$ cd track-selection
+$ cd track-tag
 $ cmsrel CMSSW_8_0_28
 $ cd CMSSW_8_0_28/src
 $ cmsenv
