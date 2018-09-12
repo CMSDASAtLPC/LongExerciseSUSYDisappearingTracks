@@ -1,7 +1,7 @@
 int tmva() {
 
-    std::string path = "/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short";
-    //std::string path = "/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium";
+    std::string path = "/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short-bdt";
+    //std::string path = "/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium-bdt";
 
     const char* treename = "PreSelection";
 
