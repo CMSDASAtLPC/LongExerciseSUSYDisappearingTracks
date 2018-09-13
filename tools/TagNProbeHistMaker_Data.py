@@ -181,8 +181,9 @@ def main():
         c.GetEntry(ientry)
 #        print 'getting entry', ientry
 #        if not (c.HT > 100): continue
-        #for itrig in range(len(c.TriggerNames)):
-        #   print itrig, c.TriggerNames[itrig], c.TriggerPass[itrig]
+        if ientry==0:
+           for itrig in range(len(c.TriggerNames)):
+                  print itrig, c.TriggerNames[itrig], c.TriggerPass[itrig]
         if not c.TriggerPass[19]: continue
         full = 2.4 
         weight = 1 #(c.CrossSection*35.9)/(1*.001)
