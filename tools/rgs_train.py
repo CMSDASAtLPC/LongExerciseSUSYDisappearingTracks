@@ -67,7 +67,7 @@ def main():
 	maxcuts    = -1 #30000   # maximum number of cut-points to consider
 	treename   = "tEvent"  # name of Root tree 
 	weightname = "weight"    # name of event weight variable
-	lumi = 1 # in 1/pb
+	lumi = 35900 # in 1/pb
 	# One can add an optional selection, which, if true, keeps the event.
 	selection  = "(Mht >= 150 && NTags==1)"
 

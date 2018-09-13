@@ -10,7 +10,7 @@ import os, sys
 from glob import glob
 csv_b = 0.8484
 
-isDasAndSignal = False
+isDasAndSignal = True
 #cross sections can be looked up on the SUSY xsec working group page:
 #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections#Cross_sections_for_various_S_AN2
 if isDasAndSignal: xsecInPb = 0.00276133
