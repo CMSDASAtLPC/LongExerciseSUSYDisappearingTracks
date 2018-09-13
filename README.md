@@ -522,8 +522,6 @@ This method does not rely on MC information and is used especially on data to ob
 
 How large is the difference when performing the MC truth check?
 
-What is the systematic uncertainty of this method?
-
 The ABCD method is a simple yet powerful data-driven estimation method which is in particular useful if you cannot rely on MC information. However, it is only applicable when the two variables used are not correlated, which is not trivial to determine.
 
 
