@@ -186,7 +186,6 @@ def treeToHist(tfile, treename, path, cutstrings):
         if tree.GetBranch("trackLeptonIso"): trackLeptonIso = getHistFromTree(tree, "trackLeptonIso", cutstring=cutstring, nBins=200, xmin=0, xmax=10); trackLeptonIso.Write()
         if tree.GetBranch("nCandPerEevent"): nCandPerEevent = getHistFromTree(tree, "nCandPerEevent", cutstring=cutstring, nBins=40, xmin=0, xmax=40); nCandPerEevent.Write()
 
-        if tree.GetBranch("madHT"): madHT = getHistFromTree(tree, "madHT", cutstring=cutstring, nBins=200, xmin=0, xmax=3000); madHT.Write()
         if tree.GetBranch("MET"): MET = getHistFromTree(tree, "MET", cutstring=cutstring, nBins=200, xmin=0, xmax=3000); MET.Write()
         if tree.GetBranch("HT"): HT = getHistFromTree(tree, "HT", cutstring=cutstring, nBins=200, xmin=0, xmax=3000); HT.Write()
 

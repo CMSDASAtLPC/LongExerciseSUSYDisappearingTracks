@@ -7,6 +7,8 @@ If you're doing teh exercise at the school, please send an email to me so I can 
 
 https://mattermost.web.cern.ch/cern-market/
 
+Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/shorttracksusy/treemaker
+
 ## Introduction
 
 Long-lived (LL) charged particles are featured in many models of physics beyond the standard model, e.g., hidden valley theories. In particular, R-parity conserving SUSY models with a wino-like LSP usually feature charginos with proper decay lengths between 1 nm and several meters, after which point the chargino would decay into a neutralino and a very soft pion or lepton. SUSY models with a light higgsino but with particularly heavy bino and wino parameters can also give rise to charginos with similar lifetimes. The known particles do not have similar lifetimes, so the potential signal events are quite distinct from the standard model background. 
@@ -130,7 +132,7 @@ The Boosted decision tree is a rather popular type of multivariate classifier. A
 
 In the exercise repository, change into track-selection and prepare a CMSSW 8.0.28 environment in order to use the correct TMVA version for the exercise:
 ```
-$ cd track-selection
+$ cd track-tag
 $ cmsrel CMSSW_8_0_28
 $ cd CMSSW_8_0_28/src
 $ cmsenv
@@ -519,8 +521,6 @@ This method does not rely on MC information and is used especially on data to ob
 ```
 
 How large is the difference when performing the MC truth check?
-
-What is the systematic uncertainty of this method?
 
 The ABCD method is a simple yet powerful data-driven estimation method which is in particular useful if you cannot rely on MC information. However, it is only applicable when the two variables used are not correlated, which is not trivial to determine.
 

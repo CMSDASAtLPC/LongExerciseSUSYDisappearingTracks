@@ -62,7 +62,6 @@ for folder in ["histos-short", "histos-medium"]:
         plotter.stackedPlot(folder, "samples.cfg", "%s/nValidTrackerHits" % stage, "%s/trackerLayersWithMeasurement" % stage, "plots/%s/trackerLayersWithMeasurement-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
         plotter.stackedPlot(folder, "samples.cfg", "%s/chargedPtSum" % stage, "%s;charged PFCand #sum p_{T} (GeV);number of tracks" % stage, "plots/%s/chargedPtSum-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=0, xmax=100, logx=False)
         plotter.stackedPlot(folder, "samples.cfg", "%s/neutralPtSum" % stage, "%s;neutral PFCand #sum p_{T} (GeV);number of tracks" % stage, "plots/%s/neutralPtSum-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=0, xmax=100, logx=False)   
-        plotter.stackedPlot(folder, "samples.cfg", "%s/madHT" % stage, "%s;generator HT (GeV);number of tracks" % stage, "plots/%s/madHT-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=50, xmax=3000, logx=False)
         plotter.stackedPlot(folder, "samples.cfg", "%s/HT" % stage, "%s;HT (GeV);number of tracks" % stage, "plots/%s/HT-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=50, xmax=3000, logx=False)
 
 
