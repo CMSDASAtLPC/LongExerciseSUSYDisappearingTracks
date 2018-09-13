@@ -225,7 +225,7 @@ def loop(args):
             if event.tracks_trackerLayersWithMeasurement[iCand] > event.tracks_pixelLayersWithMeasurement[iCand]:
                 is_tracker_track = True
 
-            if choose_bdt == "complete":
+            elif choose_bdt == "nodxyVtx":
                 # TODO:
                 # check if event passes the TMVA preselection
 
@@ -233,10 +233,6 @@ def loop(args):
                 # store all event variables in the tmva_variables dictionary
                 # to evaluate the BDT classifier for each event, you need to get all variables which were used in the training
                 tmva_variables["dxyVtx"][0] = event.tracks_dxyVtx[iCand]
-
-            elif choose_bdt == "nodxyVtx":
-                # TODO:
-                # same for the relaxed BDT.
 
             # TODO:
             # check if real fake (no genparticle around track)
