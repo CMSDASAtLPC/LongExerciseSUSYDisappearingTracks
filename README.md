@@ -403,6 +403,22 @@ python tools/CompareKappas.py
 You might find it useful to use a log scale when answering the next question.
 <b style='color:black'>Question 7. do you notice anything distinct about the shape of kappa as a function of pT? Eta? What can be said about the charge asymmetry?</b>
 
+##### optional look at kappa in real data
+
+The tag and probe script can also be run over real data. A subsample of 2016 data has been prepared to do this, as well as a slightly modified version of the tag and probe script. The modified tag and probe script implements the requirement that the trigger be fired, where the trigger path to be fired is:
+
+```
+python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_Data.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Run2016C-03Feb2017-v1.SingleElectron_*.root"
+```
+
+when the jobs finish you can do, as usual:
+
+```
+python tools/ahadd.py -f TagnProbe_SingleEleData.root Output/TagnProbeEleHists_Run2016C-03Feb2017-v1.SingleElectron_*.root
+python tools/Compute
+```
+
+
 #### step 3. peform closure test
 Step 3 : Construct a **single lepton CR** and weight each event by the corresponding kappa factor. The result is the **background prediction in the SR** for the prompt electrons. The script called PromptBkgHistMaker_BDT.py creates histograms of these two populations, as well as the **"true" distributions**, which of course consist of events with a disappearing track in the signal region:
 
