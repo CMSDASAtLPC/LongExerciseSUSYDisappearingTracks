@@ -314,7 +314,7 @@ One interesting tool that seeks to overcome this curse of dimensionality is call
 
 
 ```
-git clone https://github.com/sbein/RGS.git
+git clone https://github.com/hbprosper/RGS.git
 cd RGS/
 make
 source setup.sh #whenever intending to use RGS
