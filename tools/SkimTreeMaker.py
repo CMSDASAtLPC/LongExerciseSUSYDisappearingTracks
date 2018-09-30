@@ -54,6 +54,8 @@ var_NPrompt = np.zeros(1,dtype=int)
 var_DPhiMetSumTags = np.zeros(1,dtype=float)
 var_TrackBdtScore = np.zeros(1,dtype=float)
 var_TrackDeDx = np.zeros(1,dtype=float)
+var_TrackDxy = np.zeros(1,dtype=float)
+var_TrackChisquare = np.zeros(1,dtype=float)
 var_SumTagPtOverMht = np.zeros(1,dtype=float)
 var_TrackPt = np.zeros(1,dtype=float)
 var_TrackP = np.zeros(1,dtype=float)
@@ -83,6 +85,8 @@ tEvent.Branch('TrackP', var_TrackP,'TrackP/D')
 tEvent.Branch('TrackEta', var_TrackEta,'TrackEta/D')
 tEvent.Branch('SumTagPtOverMht', var_SumTagPtOverMht,'SumTagPtOverMht/D')
 tEvent.Branch('TrackBdtScore', var_TrackBdtScore,'TrackBdtScore/D')
+tEvent.Branch('TrackChisquare', var_TrackChisquare,'TrackChisquare/D')
+tEvent.Branch('TrackDxy', var_TrackDxy,'TrackDxy/D')
 tEvent.Branch('TrackDeDx', var_TrackDeDx,'TrackDeDx/D')
 tEvent.Branch('CrossSection', var_CrossSection,'CrossSection/D')
 if isDasAndSignal: tEvent.Branch('weight', var_weight,'weight/D')
@@ -107,7 +111,7 @@ for filename in filenamelist:
     c.Add(fname)
 
 c.Show(0)
-nentries = min(10000,c.GetEntries())
+nentries = min(9999999,c.GetEntries())
 print 'will analyze', nentries
 
 if isDasAndSignal: var_weight[0] = 1.0*xsecInPb/nentries
@@ -124,13 +128,18 @@ for ientry in range(nentries):
     hHtWeighted.Fill(c.HT, weight)
 
 
-    if not (c.MHT>100): continue
+    if not (c.MHT>120): continue
     if not (c.NJets>0): continue
-
+    
+    
     if 'TTJets_TuneCUET' in infilenames:
-        if not c.madHT<600: continue
-    elif 'TTJets_HT' in infilenames:
-        if not c.madHT>600: continue        
+	 if not c.madHT<600: continue
+    if 'TTJets_HT' in infilenames:
+    	if not c.madHT>600: continue  
+    if 'WJetsToLNu_TuneCUET' in infilenames:
+    	if not c.madHT<100: continue
+    elif 'WJetsToLNu_HT' in infilenames:
+	 if not c.madHT>100: continue  	      
 
 
     var_Met[0] = c.MET
@@ -162,6 +171,7 @@ for ientry in range(nentries):
     nPixelStrips = 0
 
     mva, dedx, trkpt, trketa, trkp = -999, -999, -999, -999, -999
+    trkdxy, trkchisq = -888,-888
     nprompt = 0
     pt = -1
     
@@ -170,12 +180,16 @@ for ientry in range(nentries):
         if not track.Pt() > 15 : continue
         if not abs(track.Eta()) < 2.4: continue
         if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-        mva = isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips)
-        if not mva: continue            
-        dedx = c.tracks_deDxHarmonic2[itrack]
-        trkpt = c.tracks[itrack].Pt()
-        trkp = c.tracks[itrack].P()
-        trketa = c.tracks[itrack].Eta()        
+        mva_ = isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips)
+        if not mva_: continue            
+        if mva_>mva: 
+        	mva = mva_
+        	dedx = c.tracks_deDxHarmonic2[itrack]
+        	trkpt = c.tracks[itrack].Pt()
+        	trkp = c.tracks[itrack].P()
+        	trketa = c.tracks[itrack].Eta()  
+        	trkdxy = abs(c.tracks_dxyVtx[itrack])
+        	trkchisq = abs(c.tracks_chi2perNdof[itrack])        
         #if moh==0: print 'RunNum=%d, LumiBlockNum=%d, EvtNum=%d' % (c.RunNum, c.LumiBlockNum, c.EvtNum)
         sumtagvec+=track
         phits = c.tracks_nValidPixelHits[itrack]
@@ -196,6 +210,8 @@ for ientry in range(nentries):
         if isMatched_([track, 0], genParticles, 0.01): nprompt+=1
 
 
+    var_TrackDxy[0] = trkdxy
+    var_TrackChisquare[0] = trkchisq 
     var_NPixelTags[0] = nPixelOnly
     var_NPixelStripsTags[0] = nPixelStrips
     var_NTags[0] = nPixelOnly+nPixelStrips

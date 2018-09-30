@@ -669,16 +669,16 @@ def isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips):#
         nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
         if not (nlayers>=2 and nhits>=2): return False
         matchedCalo = c.tracks_matchedCaloEnergy[itrack]
-        if not c.tracks_chi2perNdof[itrack]<3.0: return False
-        if not dxyVtx<0.005: return False            
+        if not c.tracks_chi2perNdof[itrack]<3.0: return False#
+        if not dxyVtx<0.05: return False#  
         trackfv = [dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
         if pixelOnly:
                 mva_ = evaluateBDT(readerPixelOnly, trackfv)
-                if not mva_ > 0.19: return False
+                if not mva_ > 0.0: return False###
                 else: return mva_
         elif pixelStrips:
                 mva_ = evaluateBDT(readerPixelStrips, trackfv)
-                if not mva_ > 0.19:return False
+                if not mva_ > 0.0:return False###
                 else: return mva_
         else:
                 return False
@@ -688,8 +688,8 @@ def isBaselineTrack(track, track_id, c):
 	if (abs(track.Eta()) > 1.4442 and abs(track.Eta()) < 1.566): return False
 	if not bool(c.tracks_trackQualityHighPurity[track_id]) : return False
 	if not (c.tracks_ptError[track_id]/(track.Pt()*track.Pt()) < 10): return False
-	if not c.tracks_dxyVtx[track_id] < 0.02: return False
-	if not c.tracks_dzVtx[track_id] < 0.01 : return False
+	if not abs(c.tracks_dxyVtx[track_id]) < 0.02: return False
+	if not abs(c.tracks_dzVtx[track_id]) < 0.01 : return False
 	if not c.tracks_trkRelIso[track_id] < 0.2: return False
 	if not (c.tracks_trackerLayersWithMeasurement[track_id] >= 2 and c.tracks_nValidTrackerHits[track_id] >= 2): return False
 	if not c.tracks_nMissingInnerHits[track_id]==0: return False
