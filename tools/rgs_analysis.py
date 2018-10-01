@@ -71,7 +71,7 @@ def main():
 		if not t.NJets<7: continue
 		if b<.1: continue
 		if not s>0.01: continue
-		z = s/TMath.Sqrt(b+pow(sys*b,2))
+		z = s/TMath.Sqrt(s+b+pow(sys*b,2))
 		if z>zmax: 
 			zmax = z
 			izmax = ientry
