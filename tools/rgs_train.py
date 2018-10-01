@@ -46,7 +46,7 @@ def main():
 		error("unable to open variables file %s" % varfilename)
 
 	# Name of signal file
-	sigfilename = "<path to your signal file>"
+	sigfilename = "Signal/skim_g1800_chi1400_27_200970_step4_30.root"
 	if not os.path.exists(sigfilename):
 		error("unable to open signal file %s" % sigfilename)
 

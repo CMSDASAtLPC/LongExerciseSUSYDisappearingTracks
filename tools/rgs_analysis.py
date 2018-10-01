@@ -46,12 +46,12 @@ def main():
 	x, y = array( 'd' ), array( 'd' )
 	zmax = 0
 	izmax = -1
-	sys = 0.05 #fractional uncertainty on b
+	sys = 0.30 #fractional uncertainty on b
 
 	msize = 0.30  # marker size for points in ROC plot
 	xbins =  25   # number of bins in x (background)
 	xmin  =  0.0    # lower bound of x
-	xmax  =  0.03    # upper bound of y
+	xmax  =  0.01    # upper bound of y
 	ybins =  25
 	ymin  =  0.0
 	ymax  =  0.6
