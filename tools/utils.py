@@ -40,11 +40,12 @@ binning['Mht']=binning['Met']
 #binning['TrkPt']=[15,30,50,100,300]
 #binning['TrkPt']=[15,30,50,70,90,120,200,300,400,410]#good for gen check, and two eta bins
 #binning['TrkPt']=[15,30,50,70,90,120,200,300,310]
-binning['TrkPt']=[15, 30, 60, 120, 130]#just seemed to work very well
-binning['TrkEta']=[0,1.4442,1.566,2.4]
-binning['TrkPt']=[15, 30, 60,100,110]
+binning['TrkPt']=PtBinEdges#[15, 30, 60, 120, 130]#just seemed to work very well
+#binning['TrkEta']=[0,1.4442,1.566,2.4]
+binning['TrkEta']=EtaBinEdges
 binning['TrkLen']=[2, 1, 3]
 binning['NJets']=[10,0,10]
+binning['NLeptons']=[5,0,5]
 binning['BTags']=[0,1,2,3,4,5,6,7]
 binning['Ht']=[10,0,2000]
 binning['MinDeltaPhiMhtJets'] = [8,0,3.2]
@@ -576,7 +577,8 @@ _nCandPerEevent_ = array('f',[0])
 
 
 def prepareReader(reader, xmlfilename):
-        reader.AddVariable("dzVtx",_dzVtx_)
+        reader.AddVariable("dxyVtx",_dxyVtx_)
+        reader.AddVariable("dzVtx",_dzVtx_)        
         reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
         reader.AddVariable("trkRelIso",_trkRelIso_)
         reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
@@ -624,13 +626,14 @@ def prepareReader(reader, xmlfilename):
         reader.BookMVA("BDT", xmlfilename)
 
 def evaluateBDT(reader, trackfv):
-        _dzVtx_[0] = trackfv[0]
-        _matchedCaloEnergy_[0] = trackfv[1]
-        _trkRelIso_[0] = trackfv[2]
-        _nValidPixelHits_[0] = trackfv[3]
-        _nValidTrackerHits_[0] = trackfv[4]
-        _nMissingOuterHits_[0] = trackfv[5]
-        _ptErrOverPt2_[0] = trackfv[6]
+        _dxyVtx_[0] = trackfv[0]
+        _dzVtx_[0] = trackfv[1]
+        _matchedCaloEnergy_[0] = trackfv[2]
+        _trkRelIso_[0] = trackfv[3]
+        _nValidPixelHits_[0] = trackfv[4]
+        _nValidTrackerHits_[0] = trackfv[5]
+        _nMissingOuterHits_[0] = trackfv[6]
+        _ptErrOverPt2_[0] = trackfv[7]
         return  reader.EvaluateMVA("BDT")
     
     
@@ -669,16 +672,16 @@ def isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips):#
         nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
         if not (nlayers>=2 and nhits>=2): return False
         matchedCalo = c.tracks_matchedCaloEnergy[itrack]
-        if not c.tracks_chi2perNdof[itrack]<3.0: return False#
-        if not dxyVtx<0.05: return False#  
-        trackfv = [dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
+        if not c.tracks_chi2perNdof[itrack]<2.88: return False#
+        if not dxyVtx < 0.1: return False#  
+        trackfv = [dxyVtx, dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
         if pixelOnly:
                 mva_ = evaluateBDT(readerPixelOnly, trackfv)
-                if not mva_ > 0.0: return False###
+                if not mva_ > 0.4: return False###.4
                 else: return mva_
         elif pixelStrips:
                 mva_ = evaluateBDT(readerPixelStrips, trackfv)
-                if not mva_ > 0.0:return False###
+                if not mva_ > 0.25:return False###.2
                 else: return mva_
         else:
                 return False
