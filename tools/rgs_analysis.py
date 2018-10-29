@@ -87,7 +87,7 @@ def main():
 	t.Show(izmax)
 	s = t.count_s
 	b = t.count_b
-	z = s/TMath.Sqrt(b+pow(sys*b,2))
+	z = s/TMath.Sqrt(s+b+pow(sys*b,2))
 	print 's=%.2f, b=%.2f, z=%.2f' % (s, b, z)
 	groc = TGraph( n, x, y )
 	groc.SetLineColor( 1 )
