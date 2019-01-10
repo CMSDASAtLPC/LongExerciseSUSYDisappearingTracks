@@ -282,7 +282,7 @@ length is 30 cm. Have a look  in the pre-made pyroot script to skim signal event
 tools/SkimTreeMaker.py, and after a quick glance, run the script:
 
 ```
-python tools/SkimTreeMaker.py root://cmsxrootd.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/Ntuples/g1800_chi1400_27_200970_step4_30.root
+python tools/SkimTreeMaker.py /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/Ntuples/g1800_chi1400_27_200970_step4_30.root
 ```
 
 
