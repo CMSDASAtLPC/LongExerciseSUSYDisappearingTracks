@@ -52,8 +52,8 @@ cmsenv
 Now you need to clone the git repository which contains the analysis-specific code: 
 
 ```
-git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2018
-cd cmsdas2018
+git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2019
+cd cmsdas2019
 ```
 
 ## 2.) Track-level analysis
