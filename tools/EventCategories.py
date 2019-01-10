@@ -2,7 +2,7 @@ from ROOT import *
 from random import shuffle
 from glob import glob
 
-skimDirectory = '/nfs/dust/cms/user/beinsam/CMSDAS2018b/Skims/'
+skimDirectory = '/eos/uscms///store/user/cmsdas/2019/long_exercises/DisappearingTracks/Skims/'
 sigfilelist = glob('Signal/*.root')
 print 'sigfilelist', sigfilelist
 
