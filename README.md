@@ -1,11 +1,11 @@
 # CMSDAS @ FNAL 2019
 
 
-Welcome to the 2018 DESY CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy!
+Welcome to the 2019 FNAL CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy :)
 
 If you're doing teh exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
 
-https://mattermost.web.cern.ch/cern-market/
+https://mattermost.web.cern.ch/cmsdaslpc2019/channels/shorttrackteam
 
 Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker
 
@@ -19,16 +19,16 @@ The exercise is organized in sections as follows: First, the recipe for setting 
 
 ## 1.) Set up a working area
 
-First, login to a NAF machine using the details you received via email: 
+First, login to a cmslpc 
 
 ```
-ssh -y USERNAME@naf-schoolXX.desy.de
+ssh -y <username>@cmslpc-sl6.fnal.gov
 ```
 
 Initialize the NAF software environment. This you have to do for every login: 
 
 ```
-source /etc/profile.d/modules.sh
+source /cvmfs/cms.cern.ch/cmsset_default.csh
 module use -a /afs/desy.de/group/cms/modulefiles/
 module load cmssw
 ```
@@ -52,7 +52,7 @@ cmsenv
 Now you need to clone the git repository which contains the analysis-specific code: 
 
 ```
-git clone https://github.com/DisappearingTrack/cmsdas.git cmsdas2018
+git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2018
 cd cmsdas2018
 ```
 
