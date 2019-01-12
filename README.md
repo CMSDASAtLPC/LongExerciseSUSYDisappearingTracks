@@ -50,23 +50,54 @@ cd cmsdas2019
 
 ## 2.) Introduction to tracking and vertexing
 
-We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). This introduction will already use real data and will familiarize you with the following techniques:
+We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is based on the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the following techniques:
 
 * Extracting basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 * Cleaning sets of tracks for analysis. We will use filters to eliminate bad tracks and discuss sources of tracking uncertainties. These filters are provided by the tracking POG (Physics Object Group)
-* Extracting basic parameters of primary vertices. In this high-luminosity era, it is not uncommon for a single event to contain as many as ten to twenty independent collisions. For most analyses, only one is relevant, and it can usually be identified by its tracks. 
+* Extracting basic parameters of primary vertices. In this high-luminosity era, it is not uncommon for a single event to contain as many as ten to twenty independent collisions. For most analyses, only one is relevant, and it can usually be identified by its tracks.
+
+#### Accessing the data
+
+We will be using 10.569 events from 2017 data. This dataset is small enough to be easily accessible as a file. You should have plenty of space, copy it to your working directory with the copy command below:
+
+```
+cp /nfs/dust/cms/user/kutznerv/tracking-short-exercise/tracks_and_vertices.root ${HOME}/TrackingShortEx/
+```
+
+####  Adding the vertexing package in CMSSW 
+
+```
+# copy the RecoVertex/V0producer package 
+cd ${CMSSW_BASE}/src/
+cp -r /nfs/dust/cms/user/penaka/CMSDAS2018/RecoVertex/ .
+
+# compile CMSSW
+scram build
+```
+
+### 2.a) The five basic track variables
+
+![](https://imgur.com/a/5gkyqTq) 
+
+One of the oldest tricks in particle physics is to put a track-measuring device in a strong, roughly uniform magnetic field so that the tracks curve with a radius proportional to their momenta (see [derivation](http://en.wikipedia.org/wiki/Gyroradius#Relativistic_case)). Apart from energy loss and magnetic field inhomogeneities, the particles' trajectories are helices. This allows us to measure a dynamic property (momentum) from a geometric property (radius of curvature).
+
+A helical trajectory can be expressed by five parameters, but the parameterization is not unique. Given one parameterization, we can always re-express the same trajectory in another parameterization. Many of the data fields in a CMSSW reco::Track are alternate ways of expressing the same thing, and there are functions for changing the reference point from which the parameters are expressed. (For a much more detailed description, see [this page](http://www-jlc.kek.jp/subg/offl/lib/docs/helix_manip/node3.html#SECTION00210000000000000000).)
+
+In general terms, the five parameters are:
+
+    signed radius of curvature (units of cm), which is proportional to particle charge divided by the transverse momentum (units of GeV);
+    angle of the trajectory at a given point on the helix, in the plane transverse to the beamline (usually called φ);
+    angle of the trajectory at a given point on the helix with respect to the beamline (θ, or equivalently λ = π/2 - θ), which is usually expressed in terms of [pseudorapidity](http://en.wikipedia.org/wiki/Pseudorapidity) (η = −ln(tan(θ/2)));
+    offset or "impact parameter" relative to some reference point (usually the beamspot), in the plane transverse to the beamline (usually called dxy);
+    impact parameter relative to a reference point (beamspot or a selected primary vertex), along the beamline (usually called dz). 
+
+The exact definitions are given in the reco::TrackBase [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/TrackBase.h). This is also where most tracking variables and functions are defined. The rest are in the reco::Track [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/Track.h), but most data fields in the latter are accessible only in [RECO](https://twiki.cern.ch/twiki/bin/view/CMS/RECO) (full data record), not [AOD](https://twiki.cern.ch/twiki/bin/view/CMS/AOD) (the subset that is available to most physics analyses). 
 
 ## 3.) Track-level analysis
 
 In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
 
-### 3.a) Short introduction to tracking variables
-
-For an introduction to CMS tracking, see the [tracking short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise).
-
-Generally, CMS analyses operate on AOD datasets, of which smaller datasets (miniAOD, nanoAOD) exist as well. Datasets contain several collections of track objects which contain the trajectories produced by the tracking algorithm. A collection of detector-level information is retained for each trajectory. A reference of accessible track properties is [here](http://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_7_5_2/doc/html/d8/df2/classreco_1_1TrackBase.html).
-
-The detector-level information for each track is stored in the hitpattern. It contains the number of hits per track, the number of tracker layers with or without measurement, the missing hit information, and much much more. A reference can be found [here](http://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_7_5_2/doc/html/d3/dcb/classreco_1_1HitPattern.html).
+### 3.a) Tracking variables
 
 In this exercise, we will be working with ntuples created from AOD and minAOD datasets, which contain a selection of useful tracking variables. For this section in particular, ntuples which only contain tracks are used. From each event in the considered datasets, tracks with pT>10 GeV were stored in the ntuple.
 
