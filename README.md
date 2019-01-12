@@ -48,11 +48,19 @@ git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2019
 cd cmsdas2019
 ```
 
-## 2.) Track-level analysis
+## 2.) Introduction to tracking and vertexing
+
+We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). This introduction will already use real data and will familiarize you with the following techniques:
+
+* Extracting basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
+* Cleaning sets of tracks for analysis. We will use filters to eliminate bad tracks and discuss sources of tracking uncertainties. These filters are provided by the tracking POG (Physics Object Group)
+* Extracting basic parameters of primary vertices. In this high-luminosity era, it is not uncommon for a single event to contain as many as ten to twenty independent collisions. For most analyses, only one is relevant, and it can usually be identified by its tracks. 
+
+## 3.) Track-level analysis
 
 In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
 
-### 2.a) Short introduction to tracking variables
+### 3.a) Short introduction to tracking variables
 
 For an introduction to CMS tracking, see the [tracking short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise).
 
@@ -79,7 +87,7 @@ root [0] PreSelection->Draw("nMissingOuterHits:dxyVtx", "dxyVtx<0.01", "COLZ")
 ```
 You are looking at a couple of observables that are key to selecting signal disappearing tracks.
 
-### 2.b) Plot signal and background
+### 3.b) Plot signal and background
 
 We will now plot the signal alongside with the stacked main MC backgrounds on track level. Use the following script to first convert the trees to histograms and then do a complete plot:
 
@@ -108,7 +116,7 @@ stages = ["loose", "mycut"]
 
 After that, run the plotting script with re-creating all histograms.
 
-### 2.c) Disappearing track tag (training a BDT)
+### 3.c) Disappearing track tag (training a BDT)
 
 After having looked at some of the tracking variables, you now have to develop a set of criteria for selecting disappearing tracks that  discriminates between such tracks and the Standard Model (SM) background. One approach is to choose a set of thresholds (cuts) to apply to the relevant track properties by hand/eye. By applying these cuts to simulated signal and background samples, one can evaluate performance of the cuts. With the large number of tracking variables available, however, it is worthwhile to consider other approaches, such as a random grid search (RGS) or a boosted decision tree (BDT). In the following, we will train a BDT for the track selection.
 
@@ -234,12 +242,12 @@ We will provide two BDTs for pixel-only and pixel+strips tracks which you can co
 
 You have now learned how to train a BDT with signal and background samples and to come up with a first track tag for disppearing tracks. A similar track tag is used in the skims provided in the following sections.
 
-## 3.) Event-based analysis
+## 4.) Event-based analysis
 
 Background skim files have been Let's make some distributions of various event-level quantities, 
 comparing signal and background events. 
 
-### 3.a) Background events
+### 4.a) Background events
 
 ```
 python tools/CharacterizeEvents.py
@@ -263,7 +271,7 @@ main backgrounds?
 <b style='color:black'>Question 2: What is the main background in 
   events with at least 2 b-tagged jets?</b>
 
-### 3.b) Skimming signal events 
+### 4.b) Skimming signal events 
 
 We'd like to overlay some signal distributions onto these plots, 
 but there are currently no skims for the signal. We are interested in a wide range of 
@@ -298,7 +306,7 @@ You just performed a so-called eyeball optimization. Can you count the total wei
 
 <b style='color:black'>Question 4: How many weighted signal and background events were there passing your selection? What was the expected significance, in terms of s/sqrt(s+b)</b>
 
-## 3.c) Cut-based optimization (RGS)
+## 4.c) Cut-based optimization (RGS)
 
 Let's get systematic with the optimization. Many tools exist that help to select events with a good sensitivity. The main challenge is that an exaustive scan over all possible cut values on all observables in an n-dimensional space of observables becomes computationally intensive or prohibitive for n>3. 
 
@@ -334,13 +342,13 @@ Open up tools/rgs_analyze.py and have a look. You'll notice the significance mea
 
 <b style='color:black'>Question 6. What value of the systematic uncertainty would correspond to a significance of 2 sigma? This is the worst case uncertainty that would allow us to exclude this signal model. </b>
 
-## 4.) Background estimation
+## 5.) Background estimation
 
 There are two main sources of backgrounds contributing to the search, *prompt* and *fake* background. The prompt background is due to charged leptons which failed the lepton reconstruction, but leave a track in the tracker and are thus not included in the ParticleFlow candidates. Fake tracks originate from pattern recogniction errors, which produce tracks not originating from real particles.
 
 A precise determination for these types of backgrounds requires a data-diven method. A general introduction to data-diven methods is given [here](http://www.desy.de/~csander/Talks/120223_SFB_DataDrivenBackgrounds.pdf).
  
-### 4.a) Prompt background
+### 5.a) Prompt background
 
 The prompt background is the name given to SM events with a disappearing track that arises because of the presence of a true electron. The method for estimating this background is based on a single-lepton control region. Transfer factors (kappa factors) are derived that relate the count in the single lepton control region to the count in the signal region. 
 
@@ -432,7 +440,7 @@ Step 4: The histograms generated by this script are sufficient to generate a so-
 python tools/closurePromptBkg.py <inputFile.root> <outputFile.root>
 ```
 
-### 4.b) Fake track background
+### 5.b) Fake track background
 
 Another source of background are fake tracks, which are not from real particles but originate from pattern recognition errors in the tracking algorithm. Such tracks are also expected to have higher impact parameters (dxy, dz) as they do not necessarily seem to originate from the primary vertex. A general strategy to estimate this background is to relax the disappearing track tag by removing the impact parameter from the training and preselection.
 
@@ -533,7 +541,7 @@ How large is the difference when performing the MC truth check?
 The ABCD method is a simple yet powerful data-driven estimation method which is in particular useful if you cannot rely on MC information. However, it is only applicable when the two variables used are not correlated, which is not trivial to determine.
 
 
-## 6) Limit 
+## 7) Limit 
 
 Congratulations, you've made it! We can now put exlusion limits on the production cross section of the signal process. Since the data is still blinded for this analysis, we will calculate 95% CL expected limits.
 
