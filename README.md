@@ -50,7 +50,7 @@ cd cmsdas2019
 
 ## 2.) Introduction to tracking and vertexing
 
-We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is based on the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the following techniques:
+We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the following techniques:
 
 * Extracting basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 * Cleaning sets of tracks for analysis. We will use filters to eliminate bad tracks and discuss sources of tracking uncertainties. These filters are provided by the tracking POG (Physics Object Group)
@@ -96,6 +96,35 @@ In general terms, the five parameters are:
 
 The exact definitions are given in the reco::TrackBase [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/TrackBase.h). This is also where most tracking variables and functions are defined. The rest are in the reco::Track [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/Track.h), but most data fields in the latter are accessible only in [RECO](https://twiki.cern.ch/twiki/bin/view/CMS/RECO) (full data record), not [AOD](https://twiki.cern.ch/twiki/bin/view/CMS/AOD) (the subset that is available to most physics analyses). 
 
+####  Accessing track variables
+
+ Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ````${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). Please note, if your ```tracks_and_vertices.root``` is not in the directory you're working from, be sure to use the appropriate path in line 2. 
+
+```
+import DataFormats.FWLite as fwlite
+events = fwlite.Events("tracks_and_vertices.root")
+tracks = fwlite.Handle("std::vector<reco::Track>")
+
+for i, event in enumerate(events):
+    if i >= 5: break            # only the first 5 events
+    print "Event", i
+    event.getByLabel("generalTracks", tracks)
+    for j, track in enumerate(tracks.product()):
+        print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
+```
+
+The first three lines load the FWLite framework, the data file, and prepare a handle for the track collection using its full C++ name (```std::vector```). In each event, we load the tracks labeled "generalTracks" and loop over them, printing out the five basic track variables for each.
+
+####  Track quality variables
+
+The first thing you should notice is that each event has hundreds of tracks. That is because hadronic collisions produce large numbers of particles and "generalTracks" is the broadest collection of tracks identified by CMSSW reconstruction. Some of these tracks are not real (ghosts, duplicates, noise...) and a good analysis should define quality cuts to select tracks requiring a certain quality.
+
+Some analyses remove spurious tracks by requiring them to come from the beamspot (small dxy, dz). Some require high-momentum (usually high transverse momentum, pT), but that would be a bad idea in a search for decays with a small mass difference such as ψ' → J/ψ π+π−. In general, each analysis group should review their own needs and ask the Tracking POG about standard selections.
+
+Some of these standard selections have been encoded into a quality flag with three categories: "loose", "tight", and "highPurity". All tracks delivered to the analyzers are at least "loose", "tight" is a subset of these that are more likely to be real, and "highPurity" is a subset of "tight" with even stricter requirements. There is a trade-off: "loose" tracks have high efficiency but also high backgrounds, "highPurity" has slightly lower efficiency but much lower backgrounds, and "tight" is in between (see also the plots below). As of CMSSW 7.4, these are all calculated using MVAs (MultiVariate Analysis techniques) for the various iterations. In addition to the status bits, it's also possible to access the MVA values directly.
+
+![efficiency vs eta](https://twiki.cern.ch/twiki/pub/CMS/SWGuideCMSDataAnalysisSchool2013TrackingExercise/efficiencyVsEta.png)
+ 
 ## 3.) Track-level analysis
 
 In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
