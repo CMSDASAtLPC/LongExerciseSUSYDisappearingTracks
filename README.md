@@ -689,7 +689,7 @@ python tools/closurePromptBkg.py <inputFile.root> <outputFile.root>
 
 ### 5.b) Fake track background
 
-Another source of background are fake tracks, which are not from real particles but originate from pattern recognition errors in the tracking algorithm. Such tracks are also expected to have higher impact parameters (dxy, dz) as they do not necessarily seem to originate from the primary vertex. A general strategy to estimate this background is to relax the disappearing track tag by removing the impact parameter from the training and preselection.
+Another source of background are fake tracks, which are not from real particles but originate from pattern recognition errors in the tracking algorithm. Such tracks are also expected to have higher impact parameters (dxy, dz) as they do not necessarily seem to originate from the primary vertex.
 
 #### Identifying fake tracks
 
@@ -714,11 +714,11 @@ N(SR, fakes) = fake rate * N(CR)
 
 #### Drell-Yan event cleaning
 
-There are different approaches to measure the fake rate. One approach is to use clean Drell-Yan events with low MET. Any track of such events which passes the disappearing track tag can be considered as a fake track. Our signal region has zero leptons, thus we imitate Z→νν events by removing the leptons (referred to as `event cleaning`). We will ignore the tracks from the leptons and recalculate the HT, missing HT and number of jets in the event. Any jet connected to one of the two leptons is then ignored as well.
+There are different approaches to measure the fake rate. One approach is to use clean Drell-Yan events with low MET. Any track of such events which passes the disappearing track tag can be considered as a fake track. Our signal region has zero leptons, thus we imitate Z→νν events by removing the leptons (referred to as `event cleaning`). We will recalculate HT, missing HT and the number of jets per event without the leptons. Any jet connected to one of the two leptons is then ignored as well.
 
-<b>Exercise: Write a script which loops over the nutples and selects exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
+<b>Exercise: Loops over the nutples and select events with exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
 
-You should obtain a Z mass peak with little QCD contribution.
+You should obtain a Z mass peak with only little QCD contribution.
 
 Now, add the event cleaning in the main event loop:
 
@@ -763,9 +763,9 @@ Now, add the event cleaning in the main event loop:
 
 There is likely a prompt background contamination in the selected events, which you can measure in the following.
 
-<b>Exercise: Check the generator information (MC truth) to verify that a disappearing track is not due to a charged genParticle.</b> For each track, loop over the generator particles and do a ΔR matching with a small cone (ΔR<0.01). Save the number of disappearing tracks per event in a new branch.
+<b>Exercise: Check the generator information (MC truth) to verify that a disappearing track is not due to a charged genParticle.</b> For each track, loop over the generator particles and do a ΔR matching with a small cone (ΔR<0.01). Save the number of disappearing tracks per event which are not due to a genParticle in a new branch.
 
-Now you can determine the fake rate in your signal region with and without the MC truth information. The difference between the two rates is then the prompt background contribution, which you can express as a factor.  
+Now you can determine the fake rate in your signal region with and without the MC truth information. The difference between the two rates is then the prompt background contribution, which you can express as a factor. Note that   
 
 ## 7) Limit 
 
