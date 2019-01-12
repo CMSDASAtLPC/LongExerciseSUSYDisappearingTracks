@@ -78,7 +78,7 @@ scram build
 ### 2.a) The five basic track variables
 
 <center>
-    
+
 ![](https://i.imgur.com/n4aRsoY.png)
 </center>
 
@@ -88,11 +88,11 @@ A helical trajectory can be expressed by five parameters, but the parameterizati
 
 In general terms, the five parameters are:
 
-    signed radius of curvature (units of cm), which is proportional to particle charge divided by the transverse momentum (units of GeV);
-    angle of the trajectory at a given point on the helix, in the plane transverse to the beamline (usually called φ);
-    angle of the trajectory at a given point on the helix with respect to the beamline (θ, or equivalently λ = π/2 - θ), which is usually expressed in terms of [pseudorapidity](http://en.wikipedia.org/wiki/Pseudorapidity) (η = −ln(tan(θ/2)));
-    offset or "impact parameter" relative to some reference point (usually the beamspot), in the plane transverse to the beamline (usually called dxy);
-    impact parameter relative to a reference point (beamspot or a selected primary vertex), along the beamline (usually called dz). 
+* signed radius of curvature (units of cm), which is proportional to particle charge divided by the transverse momentum (units of GeV);
+* angle of the trajectory at a given point on the helix, in the plane transverse to the beamline (usually called φ);
+* angle of the trajectory at a given point on the helix with respect to the beamline (θ, or equivalently λ = π/2 - θ), which is usually expressed in terms of [pseudorapidity](http://en.wikipedia.org/wiki/Pseudorapidity) (η = −ln(tan(θ/2)));
+* offset or "impact parameter" relative to some reference point (usually the beamspot), in the plane transverse to the beamline (usually called dxy);
+* impact parameter relative to a reference point (beamspot or a selected primary vertex), along the beamline (usually called dz). 
 
 The exact definitions are given in the reco::TrackBase [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/TrackBase.h). This is also where most tracking variables and functions are defined. The rest are in the reco::Track [header file](https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_10_patch2/DataFormats/TrackReco/interface/Track.h), but most data fields in the latter are accessible only in [RECO](https://twiki.cern.ch/twiki/bin/view/CMS/RECO) (full data record), not [AOD](https://twiki.cern.ch/twiki/bin/view/CMS/AOD) (the subset that is available to most physics analyses). 
 
