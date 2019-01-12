@@ -25,7 +25,7 @@ First, login to a cmslpc
 ssh -y <username>@cmslpc-sl6.fnal.gov
 ```
 
-Then create a CMSSW working environment in your home folder: 
+Refer to [this guide](https://uscms.org/uscms_at_work/physics/computing/getstarted/uaf.shtml#prerequisites) on how to connect to the LPC CAF. Then create a CMSSW working environment in your home folder: 
 
 ```
 mkdir longlivedLE
@@ -311,7 +311,7 @@ Once you've implemented this, you can take a look at the solution ![here](/track
 
 ## 3.) Track-level analysis
 
-Now that you've got your feet wet with the basics of tracking, we can start with the disappearing track search. In this section, you will take a closer look at the properies of disappearing tracks and develop a method to identify them in events.
+Now that you got your feet wet with tracking, we can start with the disappearing track search. In this section, you will take a closer look at the properies of disappearing tracks and develop a method to identify them in events.
 
 ### 3.a) Tracking variables
 
