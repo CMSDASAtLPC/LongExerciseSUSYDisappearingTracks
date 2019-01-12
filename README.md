@@ -3,7 +3,7 @@
 
 Welcome to the 2019 FNAL CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy :)
 
-If you're doing teh exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
+If you're doing the exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
 
 https://mattermost.web.cern.ch/cmsdaslpc2019/channels/shorttrackteam
 
@@ -25,15 +25,7 @@ First, login to a cmslpc
 ssh -y <username>@cmslpc-sl6.fnal.gov
 ```
 
-Initialize the NAF software environment. This you have to do for every login: 
-
-```
-source /cvmfs/cms.cern.ch/cmsset_default.csh
-module use -a /afs/desy.de/group/cms/modulefiles/
-module load cmssw
-```
-
-Create a CMSSW working environment: 
+Then create a CMSSW working environment in your home folder: 
 
 ```
 mkdir longlivedLE
@@ -42,7 +34,7 @@ cmsrel CMSSW_10_1_0
 ```
 
 Change to your newly created working environment and initialize the 
-CMSSW software environment: 
+CMSSW software environment (you will need to do this step every time you login): 
 
 ```
 cd CMSSW_10_1_0/src
