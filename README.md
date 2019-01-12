@@ -702,91 +702,64 @@ The following figure shows a (somewhat extreme) example how pattern recognition 
 
 In addition, the hits marked in red can be valid hits or hits due to detector noise, thus providing another (connected) source of fake tracks.
 
-#### ABCD method
+#### Fake rate
 
-Within the ABCD method, background in the signal region is determined from several control regions. The regions are defined by two uncorrelated variables:
+We need to determine the expected number of disappearing tracks in a given kinematic region due to fakes. For each signal region (SR), we construct one control region (CR), which has the exact same selection as usual but with zero disappearing tracks. We can then apply a fake rate as weights to the control region events, where the fake rate is the probability for an event to contain a fake disappearing track:
 
-<center>
+fake rate = # events with n(DT)≥1 / # events with n(DT)≥0 ≈  # events with n(DT)≥1 / # events with n(DT)=0
 
-![](https://i.imgur.com/aQVAzGo.png)
-</center>
+The number of events due to fake disappearing tracks is then
 
-Let's assume that the signal region A is defined by a small value of both variable 1 and variable 2. Regions B to D are thus control regions. If both variables are uncorrelated, the ration between regions A and C is equal to that of regions B and D:
+N(SR, fakes) = fake rate * N(CR)
 
-A/C = B/D
+#### Drell-Yan event cleaning
 
-Therefore, contribution to the signal region A can be estimated by A = C‧B/D.
+There are different approaches to measure the fake rate. One approach is to use clean Drell-Yan events with low MET. Any track of such events which passes the disappearing track tag can be considered as a fake track. Our signal region has zero leptons, thus we imitate Z→νν events by removing the leptons (referred to as `event cleaning`). We will ignore the tracks from the leptons and recalculate the HT, missing HT and number of jets in the event. Any jet connected to one of the two leptons is then ignored as well.
 
-Here, we relax the disappearing track tag by removing dxyVtx from the BDT training. We will then use the ABCD method to determine the fake tracks contribution. A signal and three control regions can be defined by dxyVtx and another uncorrelated variable, chi2Ndof.
+<b>Exercise: Write a script which loops over the nutples and selects exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
 
-<b style='color:black'>Question 7. Evaluate the correlation between the two variables.</b>
+You should obtain a Z mass peak with little QCD contribution.
 
-Create a 2D plot of the two variables for events which have at least one (loosely) tagged track which is not a PF lepton. First, change to the FakeBkg directory and copy the complete and relaxed BDT to that location:
-
-```
-$ cp -r /nfs/dust/cms/user/kutznerv/cmsdas/BDTs/* .
-```
-
-Take a look at tmvx.cxx in each directory to see which variables and preselection have been used in the BDT training. We will first test the method on a ZJetsToNuNu MC background sample. You can use the following script:
+Now, add the event cleaning in the main event loop:
 
 ```
-$ python fakes-analyzer.py
-```
-
-There are missing parts in the script which you need to complete to get the plot. They are marked with "TODO".
-
-Create the 2D plot for events which pass the relaxed disappearing track tag, the BDT preselection and the ParticleFlow lepton veto. Once you have created the plot, you now have to define a signal region and three control regions by putting cuts on dxyVtx and chi2Ndof. To do this, we will once again use RGS.
-
-Write a RGS configuration file, in which you load the following prepared trees for signal and backgrounds:
-```
-/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short-bdt
-/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium-bdt
-```
-
-Take a look at a signal tree with TBrowser. In each tree, you can find the BDT classifier of the complete and relaxed training for each track. Think about the preselection and the correcting weighting of the samples. Run RGS and determine the best cuts.
-
-Some hints: The cross sections needed for the weights can be found in tmva.cxx. You will also need to include the number of events in the weighting. If you select all tracks from the sample, you can use the "Nev" histogram to get the event count:
-
-```
-fin = TFile(filename_of_sample)
-h_nev = fin.Get("Nev")
-nev = h_nev.GetEntries()
-```
-
-When considering pixel+strips tracks, RGS might take a long time to finish. In that case, you can limit the number of rows (= number of tracks). Now you have to get the corresponding event count, for which you can use the "event" branch. It contains the event number for each track. Here is one possibility how to determine the event count:
-
-```
-fin = TFile(filename_of_sample)
-tree = fin.Get("PreSelection")
-tree.Draw("event", "Entry$<%s" % numrows, "COLZ")
-h_event = tree.GetHistogram()
-maxbin = h_event.GetXaxis().GetLast()
-nev = h_event.GetXaxis().GetBinCenter( maxbin )
-```
-
-Run RGS for pixel-only and pixel+strips tracks and analyze the output. With the best cuts for dxyVtx and chi2Ndof, you can now extend fakes-analyzer.py in order to count events in each region A, B, C and D.
-
-The contribution of fake tracks  will be eventually determined from the control regions B, C and D. Compare the event count in region A to the result you obtain when considering the ratios.
-
-This method does not rely on MC information and is used especially on data to obtain data-driven background estimations. Since we considered a sample with MC truth information first, you can additionally perform a check whether the tagged track is in close distance of a generator particle. If so, we would not classify that track as a fake track:
-
-```
-        for iCand in xrange(number_of_tracks):
+        # clean event (recalculate HT, MHT, n_Jets without the two reconstructed leptons):
+        csv_b = 0.8838
+        metvec = TLorentzVector()
+        metvec.SetPtEtaPhiE(event.MET, 0, event.METPhi, event.MET)
+        mhtvec = TLorentzVector()
+        mhtvec.SetPtEtaPhiE(0, 0, 0, 0)
+        jets = []
+        n_btags_cleaned = 0
+        HT_cleaned = 0
         
-            ...
-        
-            # for current track, loop over all generator particles
-            # and determine how close the track is to the particle:
-            if tree.GetBranch("GenParticles"):
-                for k in range(len(event.GenParticles)):
-                    ...
-                    # perform check if track is close to a generator particle
+        for ijet, jet in enumerate(event.Jets):
+            
+            if not (abs(jet.Eta()) < 5 and jet.Pt() > 30): continue
+            
+            # check if lepton is in jet, and veto jet if that is the case
+            lepton_is_in_jet = False
+            for leptons in [event.Electrons, event.Muons]:
+                for lepton in leptons:
+                    if jet.DeltaR(lepton) < 0.05:
+                        lepton_is_in_jet = True
+            if lepton_is_in_jet: continue
+            
+            mhtvec-=jet
+            jets.append(jet)
+            HT_cleaned+=jet.Pt()        
+            if event.Jets_bDiscriminatorCSV[ijet] > csv_b: n_btags_cleaned+=1
+            
+        n_jets_cleaned = len(jets)
+        MHT_cleaned = mhtvec.Pt()
+
+        MinDeltaPhiMhtJets_cleaned = 9999   
+        for jet in jets: 
+            if abs(jet.DeltaPhi(mhtvec)) < MinDeltaPhiMhtJets_cleaned:
+                MinDeltaPhiMhtJets_cleaned = abs(jet.DeltaPhi(mhtvec))
 ```
 
-How large is the difference when performing the MC truth check?
-
-The ABCD method is a simple yet powerful data-driven estimation method which is in particular useful if you cannot rely on MC information. However, it is only applicable when the two variables used are not correlated, which is not trivial to determine.
-
+<b>Exercise: Incldue the disappearing track tag in the script and add a branch which contains a boolean whether event contains one or more disappearing track(s).</b> Apply your signal region cuts, too. You can then plot this branch variable and calculate the fake rate.
 
 ## 7) Limit 
 
