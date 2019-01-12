@@ -31,6 +31,6 @@ c.SaveAs("mass.png")
 
 The histogram should look like this:
 
-![](/mass.png&raw=true)
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tracking/mass.png)
 
 If so, congratulations! You've discovered the J/ψ! 
