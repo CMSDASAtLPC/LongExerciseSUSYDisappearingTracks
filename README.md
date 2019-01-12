@@ -78,6 +78,7 @@ scram build
 ### 2.a) The five basic track variables
 
 <center>
+    
 ![](https://i.imgur.com/n4aRsoY.png)
 </center>
 
