@@ -79,7 +79,7 @@ scram build
 
 <center>
 
-![](https://i.imgur.com/n4aRsoY.png)
+![](/tracking/track.png?raw=true)
 </center>
 
 One of the oldest tricks in particle physics is to put a track-measuring device in a strong, roughly uniform magnetic field so that the tracks curve with a radius proportional to their momenta (see [derivation](http://en.wikipedia.org/wiki/Gyroradius#Relativistic_case)). Apart from energy loss and magnetic field inhomogeneities, the particles' trajectories are helices. This allows us to measure a dynamic property (momentum) from a geometric property (radius of curvature).
@@ -123,8 +123,104 @@ Some analyses remove spurious tracks by requiring them to come from the beamspot
 
 Some of these standard selections have been encoded into a quality flag with three categories: "loose", "tight", and "highPurity". All tracks delivered to the analyzers are at least "loose", "tight" is a subset of these that are more likely to be real, and "highPurity" is a subset of "tight" with even stricter requirements. There is a trade-off: "loose" tracks have high efficiency but also high backgrounds, "highPurity" has slightly lower efficiency but much lower backgrounds, and "tight" is in between (see also the plots below). As of CMSSW 7.4, these are all calculated using MVAs (MultiVariate Analysis techniques) for the various iterations. In addition to the status bits, it's also possible to access the MVA values directly.
 
-![efficiency vs eta](/tracking/efficiencyVsEta.png?raw=true "efficiency vs eta")
-  
+![](/tracking/efficiencyVsEta.png?raw=true)
+![](/tracking/efficiencyVsPt.png?raw=true)
+![](/tracking/fakerateVsEta.png?raw=true)
+![](/tracking/fakerateVsPt.png?raw=true)
+
+Update the file ```print.py``` with the following lines:
+
+Add a handle to the MVA values:
+
+```
+MVAs   = fwlite.Handle("std::vector<float>")
+```
+
+The event loop should be updated to this: 
+ 
+```
+for i, event in enumerate(events):
+    if i >= 5: break            # only the first 5 events
+    print "Event", i
+    event.getByLabel("generalTracks", tracks)
+    event.getByLabel("generalTracks", "MVAValues", MVAs)
+
+    numTotal = tracks.product().size()
+    numLoose = 0
+    numTight = 0
+    numHighPurity = 0
+
+    for j, (track, mva) in enumerate(zip(tracks.product(), MVAs.product())):
+        if track.quality(track.qualityByName("loose")):      numLoose      += 1
+        if track.quality(track.qualityByName("tight")):      numTight      += 1
+        if track.quality(track.qualityByName("highPurity")): numHighPurity += 1
+
+        print "    Track", j,
+        print track.charge()/track.pt(),
+        print track.phi(),
+        print track.eta(),
+        print track.dxy(),
+        print track.dz(),
+        print track.numberOfValidHits(),
+        print track.algoName(),
+        print mva
+
+    print "Event", i,
+    print "numTotal:", numTotal,
+    print "numLoose:", numLoose,
+    print "numTight:", numTight,
+    print "numHighPurity:", numHighPurity
+```
+
+To plot some track variables, use ROOT and make a python loop like in the example below (name this file ```plot_track_quantities.py``` and put it in ```${HOME}/TrackingShortEx/```).
+
+```
+import DataFormats.FWLite as fwlite
+import ROOT
+
+events = fwlite.Events("tracks_and_vertices.root")
+tracks = fwlite.Handle("std::vector<reco::Track>")
+
+hist_pt   = ROOT.TH1F("pt", "pt", 100, 0.0, 100.0)
+hist_eta  = ROOT.TH1F("eta", "eta", 100, -3.0, 3.0)
+hist_phi  = ROOT.TH1F("phi", "phi", 100, -3.2, 3.2)
+hist_normChi2 = ROOT.TH1F("normChi2", "normChi2", 100, 0.0, 10.0)
+
+for i, event in enumerate(events):
+    event.getByLabel("generalTracks", tracks)
+    for track in tracks.product():
+        hist_pt.Fill(track.pt())
+        hist_eta.Fill(track.eta())
+        hist_phi.Fill(track.phi())
+        hist_normChi2.Fill(track.normalizedChi2())
+    if i > 1000: break
+
+c = ROOT.TCanvas( "c", "c", 800, 800)
+
+hist_pt.Draw()
+c.SetLogy()
+c.SaveAs("track_pt.png")
+c.SetLogy(False)
+
+hist_eta.Draw()
+c.SaveAs("track_eta.png")
+
+hist_phi.Draw()
+c.SaveAs("track_phi.png")
+
+hist_normChi2.Draw()
+c.SaveAs("track_normChi2.png")
+```
+
+Run this plotting script with
+
+```
+python plot_track_quantities.py
+``` 
+
+
+
+
 ## 3.) Track-level analysis
 
 In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
