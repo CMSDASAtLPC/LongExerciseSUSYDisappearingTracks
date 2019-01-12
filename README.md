@@ -79,7 +79,7 @@ scram build
 
 <center>
 
-![](/tracking/track.png?raw=true)
+![](https://i.imgur.com/n4aRsoY.png)
 </center>
 
 One of the oldest tricks in particle physics is to put a track-measuring device in a strong, roughly uniform magnetic field so that the tracks curve with a radius proportional to their momenta (see [derivation](http://en.wikipedia.org/wiki/Gyroradius#Relativistic_case)). Apart from energy loss and magnetic field inhomogeneities, the particles' trajectories are helices. This allows us to measure a dynamic property (momentum) from a geometric property (radius of curvature).
