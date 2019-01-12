@@ -50,11 +50,7 @@ cd cmsdas2019
 
 ## 2.) Introduction to tracking and vertexing
 
-We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the following techniques:
-
-* Extracting basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
-* Cleaning sets of tracks for analysis. We will use filters to eliminate bad tracks and discuss sources of tracking uncertainties. These filters are provided by the tracking POG (Physics Object Group)
-* Extracting basic parameters of primary vertices. In this high-luminosity era, it is not uncommon for a single event to contain as many as ten to twenty independent collisions. For most analyses, only one is relevant, and it can usually be identified by its tracks.
+We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 
 #### Accessing the data
 
@@ -64,23 +60,9 @@ We will be using 10.569 events from 2017 data. This dataset is small enough to b
 cp /nfs/dust/cms/user/kutznerv/tracking-short-exercise/tracks_and_vertices.root ${HOME}/TrackingShortEx/
 ```
 
-####  Adding the vertexing package in CMSSW 
-
-```
-# copy the RecoVertex/V0producer package 
-cd ${CMSSW_BASE}/src/
-cp -r /nfs/dust/cms/user/penaka/CMSDAS2018/RecoVertex/ .
-
-# compile CMSSW
-scram build
-```
-
 ### 2.a) The five basic track variables
 
-<center>
-
-![](https://i.imgur.com/n4aRsoY.png)
-</center>
+![](/tracking/track.png&raw=true)
 
 One of the oldest tricks in particle physics is to put a track-measuring device in a strong, roughly uniform magnetic field so that the tracks curve with a radius proportional to their momenta (see [derivation](http://en.wikipedia.org/wiki/Gyroradius#Relativistic_case)). Apart from energy loss and magnetic field inhomogeneities, the particles' trajectories are helices. This allows us to measure a dynamic property (momentum) from a geometric property (radius of curvature).
 
@@ -253,6 +235,80 @@ Now add all this to kinematics.py.
 
 Once you've tried to implement this, you can take a look at the solution ![here](/tracking/solution1.md).
 
+As a second exercise, let's compute the vector-sum momentum for all charged particles in each event. Although this neglects the momentum carried away by neutral particles, it roughly approximates the total momentum of the pp collision. Add the following to ```kinematics.py```.
+
+```
+px_histogram = ROOT.TH1F("px", "px", 100, -1000.0, 1000.0)
+py_histogram = ROOT.TH1F("py", "py", 100, -1000.0, 1000.0)
+pz_histogram = ROOT.TH1F("pz", "pz", 100, -1000.0, 1000.0)
+
+events.toBegin()                # start event loop from the beginning
+for event in events:
+    event.getByLabel("generalTracks", tracks)
+    total_px = 0.0
+    total_py = 0.0
+    total_pz = 0.0
+    for track in tracks.product():
+        total_px += track.px()
+        total_py += track.py()
+        total_pz += track.pz()
+    px_histogram.Fill(total_px)
+    py_histogram.Fill(total_py)
+    pz_histogram.Fill(total_pz)
+    # no break statement; we're looping over all events
+
+c = ROOT.TCanvas ("c" , "c", 800, 800)
+px_histogram.Draw()
+c.SaveAs("track_px.png")
+py_histogram.Draw()
+c.SaveAs("track_py.png")
+pz_histogram.Draw()
+c.SaveAs("track_pz.png")
+```
+
+While this is running, ask yourself what you expect the total_px, total_py, total_pz distributions should look like. (It can take a few minutes; Python is slow when used on large numbers of events.) Can you explain the relative variances of the distributions? 
+ 
+Finally, let's look for resonances. Given two tracks,   
+
+```
+one = tracks.product()[0]
+two = tracks.product()[1]
+```
+
+the invariant mass may be calculated as 
+
+```
+total_energy = math.sqrt(0.140**2 + one.p()**2) + math.sqrt(0.140**2 + two.p()**2)
+total_px = one.px() + two.px()
+total_py = one.py() + two.py()
+total_pz = one.pz() + two.pz()
+mass = math.sqrt(total_energy**2 - total_px**2 - total_py**2 - total_pz**2)
+```
+
+However, this quantity has no meaning unless the two particles are actually descendants of the same decay. Two randomly chosen tracks (out of hundreds per event) typically are not.
+
+To increase the chances that pairs of randomly chosen tracks are descendants of the same decay, consider a smaller set of tracks: muons. Muons are identified by the fact that they can pass through meters of iron (the CMS magnet return yoke), so muon tracks extend from the silicon tracker to the muon chambers (see CMS quarter-view below), as much as 12 meters long! Muons are rare in hadron collisions. If an event contains two muons, they often (though not always) come from the same decay. 
+
+![](/tracking/cms_quarterview.png&raw=true) 
+
+Normally, one would access muons through the reco::Muon object since this contains additional information about the quality of the muon hypothesis. For simplicity, we will access their track collection in the same way that we have been accessing the main track collection. We only need to replace "generalTracks" with "globalMuons". Add the following loop to ```kinematics.py```. 
+ 
+```
+events.toBegin()
+for i, event in enumerate(events):
+    if i >= 5: break            # only the first 5 events
+    print "Event", i
+    event.getByLabel("globalMuons", tracks)
+    for j, track in enumerate(tracks.product()):
+        print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
+```
+
+Notice how few muon tracks there are compared to the same code executed for "generalTracks". In fact, you only see as many muons as you do because this data sample was collected with a muon trigger. (The muon definition in the trigger is looser than the "globalMuons" algorithm, which is why there are some events with fewer than two "globalMuons".)
+
+*As an exercise, make a histogram of all dimuon masses from 0 to 5 GeV.* Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` in ```${HOME}/TrackingShortEx/``` for this purpose.
+
+Once you've implemented this, you can take a look at the solution ![here](/tracking/solution2.md).
+ 
 
 ## 3.) Track-level analysis
 
