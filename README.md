@@ -765,7 +765,7 @@ There is likely a prompt background contamination in the selected events, which 
 
 <b>Exercise: Check the generator information (MC truth) to verify that a disappearing track is not due to a charged genParticle.</b> For each track, loop over the generator particles and do a ΔR matching with a small cone (ΔR<0.01). Save the number of disappearing tracks per event which are not due to a genParticle in a new branch.
 
-Now you can determine the fake rate in your signal region with and without the MC truth information. The difference between the two rates is then the prompt background contribution, which you can express as a factor. Note that   
+Now you can determine the fake rate in your signal region with and without the MC truth information. The difference between the two rates is then the prompt background contribution, which you can express as a factor.
 
 ## 7) Limit 
 
