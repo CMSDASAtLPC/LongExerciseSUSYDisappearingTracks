@@ -308,15 +308,14 @@ Notice how few muon tracks there are compared to the same code executed for "gen
 *As an exercise, make a histogram of all dimuon masses from 0 to 5 GeV.* Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` in ```${HOME}/TrackingShortEx/``` for this purpose.
 
 Once you've implemented this, you can take a look at the solution ![here](/tracking/solution2.md).
- 
 
 ## 3.) Track-level analysis
 
-In this section, you will take a closer look at the tracking properies and develop a method to identify disappearing tracks in events.
+Now that you've got your feet wet with the basics of tracking, we can start with the disappearing track search. In this section, you will take a closer look at the properies of disappearing tracks and develop a method to identify them in events.
 
 ### 3.a) Tracking variables
 
-In this exercise, we will be working with ntuples created from AOD and minAOD datasets, which contain a selection of useful tracking variables. For this section in particular, ntuples which only contain tracks are used. From each event in the considered datasets, tracks with pT>10 GeV were stored in the ntuple.
+In the following, we will be working with ntuples which contain a selection of useful tracking variables. They have been created from AOD and minAOD datasets which you've used in the previous section. For this section in particular, ntuples which only contain tracks are used. From each event in the considered datasets, tracks with pT>10 GeV were stored in the ntuple.
 
 Let's start by having a look at some of the tracking variables of signal tracks:
 ```
