@@ -218,7 +218,40 @@ Run this plotting script with
 python plot_track_quantities.py
 ``` 
 
+#### 2.b) Tracks as particles
 
+Unlike calorimeter showers, tracks can usually be interpreted as particle 4-vectors without any additional corrections. Detector alignment, non-helical trajectories from energy loss, Lorentz angle corrections, and (to a much smaller extent) magnetic field inhomogeneities are important, but they are all corrections that must be applied during or before the track-reconstruction process. From an analyzer's point of view, most tracks are individual particles (depending on quality cuts) and the origin and momentum of the particle are derived from the track's geometry, with some resolution (random error). Biases (systematic offsets from the true values) are not normal: they're an indication that something went wrong in this process.
+
+The analyzer does not even need to calculate the particle's momentum from the track parameters: there are member functions for that. Particle's transverse momentum, momentum magnitude, and all of its components can be read through the following lines (let's name this new file ```kinematics.py``` and create it in ```${HOME}/TrackingShortEx/```):
+
+```
+import DataFormats.FWLite as fwlite
+import ROOT
+
+events = fwlite.Events("tracks_and_vertices.root")
+tracks = fwlite.Handle("std::vector<reco::Track>")
+
+for i, event in enumerate(events):
+    event.getByLabel("generalTracks", tracks)
+    for track in tracks.product():
+        print track.pt(), track.p(), track.px(), track.py(), track.pz()
+    if i > 100: break
+```
+
+Now we can use this to do some kinematics. Assuming that the particle is a pion, calculate its kinetic energy.
+Note: Identifying the particle that made the track is difficult: the mass of some low-momentum tracks can be identified by their energy loss, called dE/dx, and electrons and muons can be identified by signatures in other subdetectors. Without any other information, the safest assumption is that a randomly chosen track is a pion, since hadron collisions produce a lot of pions.
+
+The pion mass is 0.140 GeV (all masses in CMSSW are in GeV). You can get a square root function by typing 
+```
+import math
+print math.sqrt(4.0)
+```
+
+To square numbers you can use **2 (Fortran syntax).
+
+Now add all this to kinematics.py.
+
+Once you've tried to implement this, you can take a look at the solution ![here](/tracking/solution1.md).
 
 
 ## 3.) Track-level analysis
