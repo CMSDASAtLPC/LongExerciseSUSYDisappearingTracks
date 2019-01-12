@@ -48,7 +48,7 @@ git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2019
 cd cmsdas2019
 ```
 
-## 2.) Introduction to tracking and vertexing
+## 2.) Introduction to tracking
 
 We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 
@@ -62,7 +62,7 @@ cp /nfs/dust/cms/user/kutznerv/tracking-short-exercise/tracks_and_vertices.root 
 
 ### 2.a) The five basic track variables
 
-![](https://i.imgur.com/n4aRsoY.png)
+![](/tracking/track.jpg&raw=true)
 
 One of the oldest tricks in particle physics is to put a track-measuring device in a strong, roughly uniform magnetic field so that the tracks curve with a radius proportional to their momenta (see [derivation](http://en.wikipedia.org/wiki/Gyroradius#Relativistic_case)). Apart from energy loss and magnetic field inhomogeneities, the particles' trajectories are helices. This allows us to measure a dynamic property (momentum) from a geometric property (radius of curvature).
 
@@ -289,7 +289,7 @@ However, this quantity has no meaning unless the two particles are actually desc
 
 To increase the chances that pairs of randomly chosen tracks are descendants of the same decay, consider a smaller set of tracks: muons. Muons are identified by the fact that they can pass through meters of iron (the CMS magnet return yoke), so muon tracks extend from the silicon tracker to the muon chambers (see CMS quarter-view below), as much as 12 meters long! Muons are rare in hadron collisions. If an event contains two muons, they often (though not always) come from the same decay. 
 
-![](/tracking/cms_quarterview.png&raw=true) 
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tracking/cms_quarterview.png) 
 
 Normally, one would access muons through the reco::Muon object since this contains additional information about the quality of the muon hypothesis. For simplicity, we will access their track collection in the same way that we have been accessing the main track collection. We only need to replace "generalTracks" with "globalMuons". Add the following loop to ```kinematics.py```. 
  
