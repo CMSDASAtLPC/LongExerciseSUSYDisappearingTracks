@@ -98,7 +98,7 @@ The exact definitions are given in the reco::TrackBase [header file](https://git
 
 ####  Accessing track variables
 
- Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ````${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). Please note, if your ```tracks_and_vertices.root``` is not in the directory you're working from, be sure to use the appropriate path in line 2. 
+ Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ```${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). Please note, if your ```tracks_and_vertices.root``` is not in the directory you're working from, be sure to use the appropriate path in line 2. 
 
 ```
 import DataFormats.FWLite as fwlite
