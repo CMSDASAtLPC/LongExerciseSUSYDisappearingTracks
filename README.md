@@ -52,14 +52,6 @@ cd cmsdas2019
 
 We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 
-#### Accessing the data
-
-We will be using 10.569 events from 2017 data. This dataset is small enough to be easily accessible as a file. You should have plenty of space, copy it to your working directory with the copy command below:
-
-```
-cp /nfs/dust/cms/user/kutznerv/tracking-short-exercise/tracks_and_vertices.root ${HOME}/TrackingShortEx/
-```
-
 ### 2.a) The five basic track variables
 
 ![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tracking/track.jpg)
@@ -80,11 +72,17 @@ The exact definitions are given in the reco::TrackBase [header file](https://git
 
 ####  Accessing track variables
 
- Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ```${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). Please note, if your ```tracks_and_vertices.root``` is not in the directory you're working from, be sure to use the appropriate path in line 2. 
+We will be using 10.569 events from 2017 data. This subset of the data is small enough to be easily accessible as a file and is located here:
+
+```
+/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root
+```
+
+Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ```${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). The ```tracks_and_vertices.root``` is already included with the full path:
 
 ```
 import DataFormats.FWLite as fwlite
-events = fwlite.Events("tracks_and_vertices.root")
+events = fwlite.Events("/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root")
 tracks = fwlite.Handle("std::vector<reco::Track>")
 
 for i, event in enumerate(events):
