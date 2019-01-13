@@ -317,7 +317,7 @@ In the following, we will be working with ntuples which contain a selection of u
 
 Let's start by having a look at some of the tracking variables of signal tracks:
 ```
-root -l /nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium/signal.root 
+root -l /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-*/signal.root 
 root [0] new TBrowser
 ```
 With TBrowser, open the "PreSelection" tree and take a look at the variables. The tree contains variables from the track objets such as pT, eta and phi as well as variables from the hitpattern, such as nValidPixelHits or nMissingOuterHits. Also, for each track a selection of corresponding event-level properties as MET and HT are also stored.
