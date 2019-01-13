@@ -19,14 +19,14 @@ The exercise is organized in sections as follows: First, the recipe for setting 
 
 ## 1.) Set up a working area
 
-First, login to a cmslpc 
+First, [login](https://uscms.org/uscms_at_work/physics/computing/getstarted/uaf.shtml#prerequisites) to a cmslpc node
 
 ```
 ssh -y <username>@cmslpc-sl6.fnal.gov
 source /cvmfs/cms.cern.ch/cmsset_default.csh
 ```
 
-Refer to [this guide](https://uscms.org/uscms_at_work/physics/computing/getstarted/uaf.shtml#prerequisites) on how to connect to the LPC CAF. Then create a CMSSW working environment in your home folder: 
+Then create a CMSSW working environment in your home folder: 
 
 ```
 mkdir longlivedLE
@@ -234,7 +234,7 @@ print math.sqrt(4.0)
 
 To square numbers you can use **2 (Fortran syntax).
 
-Now add all this to kinematics.py.
+<b>Exercise: Now add all this to ```kinematics.py``` and run the script.</b>
 
 Once you've tried to implement this, you can take a look at the solution ![here](/tracking/solution1.md).
 
@@ -308,7 +308,7 @@ for i, event in enumerate(events):
 
 Notice how few muon tracks there are compared to the same code executed for "generalTracks". In fact, you only see as many muons as you do because this data sample was collected with a muon trigger. (The muon definition in the trigger is looser than the "globalMuons" algorithm, which is why there are some events with fewer than two "globalMuons".)
 
-*As an exercise, make a histogram of all dimuon masses from 0 to 5 GeV.* Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` in ```${HOME}/TrackingShortEx/``` for this purpose.
+<b>Exercise: Make a histogram of all dimuon masses from 0 to 5 GeV.</b> Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` in ```${HOME}/TrackingShortEx/``` for this purpose.
 
 Once you've implemented this, you can take a look at the solution ![here](/tracking/solution2.md).
 
