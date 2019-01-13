@@ -318,7 +318,7 @@ Now that you got your feet wet with tracking, we can start with the disappearing
 
 ### 3.a) Tracking variables
 
-In the following, we will be working with ntuples which contain a selection of useful tracking variables. They have been created from AOD and minAOD datasets which you've used in the previous section. For this section in particular, ntuples which only contain tracks are used. From each event in the considered datasets, tracks with pT>10 GeV were stored in the ntuple.
+In the following, we will be working with ntuples which contain a selection of useful tracking variables. They have been created from AOD and miniAOD datasets which you've used in the previous section. For this section in particular, ntuples which only contain tracks are used. From each event in the considered datasets, tracks with pT>10 GeV were stored in the ntuple.
 
 Let's start by having a look at some of the tracking variables of signal tracks:
 ```
@@ -339,7 +339,7 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. Use the following script to first convert the trees to histograms and then do a complete plot:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots for ```treeplotter.sh```:
 
 ```
 $ ./plot_track_variables.py
@@ -347,28 +347,17 @@ $ ./plot_track_variables.py
 
 <b style='color:black'>Exercise: Create plots of all variables to familiarize yourself with the tracking properties.</b>
 
-You only need to re-create the histograms when you change the cutstring. Open the script and set `recreate_histograms = True` to False. To add your own histogram, you'll also need to edit `treeToHist.py`.
-
 The plots will appear in the `/plots` folder.
 
 Add your own cut (e.g. a higher cut on pT): Set
 
 ```
-cuts = {"loose": "",
-        "mycut": "pt>50"}
+my_cuts = "pt>50"
 ```
-
-and
-
-```
-stages = ["loose", "mycut"]
-```
-
-After that, run the plotting script with re-creating all histograms.
 
 ### 3.c) Disappearing track tag (training a BDT)
 
-After having looked at some of the tracking variables, you now have to develop a set of criteria for selecting disappearing tracks that  discriminates between such tracks and the Standard Model (SM) background. One approach is to choose a set of thresholds (cuts) to apply to the relevant track properties by hand/eye. By applying these cuts to simulated signal and background samples, one can evaluate performance of the cuts. With the large number of tracking variables available, however, it is worthwhile to consider other approaches, such as a random grid search (RGS) or a boosted decision tree (BDT). In the following, we will train a BDT for the track selection.
+After having looked at some of the tracking variables, you now have to develop a set of criteria for selecting disappearing tracks that discriminates between such tracks and the Standard Model (SM) background. One approach is to choose a set of thresholds (cuts) to apply to the relevant track properties by hand/eye. By applying these cuts to simulated signal and background samples, one can evaluate performance of the cuts. With the large number of tracking variables available, however, it is worthwhile to consider other approaches, such as a random grid search (RGS) or a boosted decision tree (BDT). In the following, we will train a BDT for the track selection.
 
 #### Track categorization
 
