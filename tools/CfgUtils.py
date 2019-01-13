@@ -1,4 +1,4 @@
-# original author: Viktor Kutzner
+import glob
 
 def readSamplesConfig(configFileName):
     
@@ -20,6 +20,7 @@ def readSamplesConfig(configFileName):
     shortname = ""
     xsec = 0.0
     lumi = 0.0
+    signalscalingfactor = 0.0
     filtereff = -1
     plot = False
     color = -1
@@ -41,6 +42,9 @@ def readSamplesConfig(configFileName):
             if "lumi" in line:
                 lumi = line.split("=")[-1].strip()
                 samples[shortname]["lumi"] = float(lumi)
+            if "signalscalingfactor" in line:
+                signalscalingfactor = line.split("=")[-1].strip()
+                samples[shortname]["signalscalingfactor"] = float(signalscalingfactor)
             if "filtereff" in line:
                 filtereff = line.split("=")[-1].strip()
                 samples[shortname]["filtereff"] = float(filtereff)
@@ -62,3 +66,27 @@ def readSamplesConfig(configFileName):
 
     return samples
 
+
+def update_samples_with_filenames(tree_folder, configuration_file):
+
+    samples = readSamplesConfig(configuration_file)
+
+    for file_name in glob.glob(tree_folder + "/*.root"):
+
+        for sample in samples:
+
+            sample_name = sample.replace("_RA2AnalysisTree", "")
+
+            if "filenames" not in samples[sample]:
+                samples[sample]["filenames"] = []
+            if sample_name in file_name:
+                samples[sample]["filenames"].append(file_name)
+                break
+
+    for sample in samples.keys():
+        if sample != "global":
+            if "filenames" not in samples[sample]:
+                del samples[sample]
+            elif len(samples[sample]["filenames"]) == 0:
+                del samples[sample]
+    return samples

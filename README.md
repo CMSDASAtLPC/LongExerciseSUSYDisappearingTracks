@@ -157,7 +157,7 @@ for i, event in enumerate(events):
     print "numHighPurity:", numHighPurity
 ```
 
-To plot some track variables, use ROOT and make a python loop like in the example below (name this file ```plot_track_quantities.py``` and put it in ```${HOME}/TrackingShortEx/```).
+To plot some track variables, use ROOT and make a python loop like in the example below (name this file ```plot_track_quantities.py```).
 
 ```
 import DataFormats.FWLite as fwlite
@@ -207,7 +207,7 @@ python plot_track_quantities.py
 
 Unlike calorimeter showers, tracks can usually be interpreted as particle 4-vectors without any additional corrections. Detector alignment, non-helical trajectories from energy loss, Lorentz angle corrections, and (to a much smaller extent) magnetic field inhomogeneities are important, but they are all corrections that must be applied during or before the track-reconstruction process. From an analyzer's point of view, most tracks are individual particles (depending on quality cuts) and the origin and momentum of the particle are derived from the track's geometry, with some resolution (random error). Biases (systematic offsets from the true values) are not normal: they're an indication that something went wrong in this process.
 
-The analyzer does not even need to calculate the particle's momentum from the track parameters: there are member functions for that. Particle's transverse momentum, momentum magnitude, and all of its components can be read through the following lines (let's name this new file ```kinematics.py``` and create it in ```${HOME}/TrackingShortEx/```):
+The analyzer does not even need to calculate the particle's momentum from the track parameters: there are member functions for that. Particle's transverse momentum, momentum magnitude, and all of its components can be read through the following lines (let's name this new file ```kinematics.py```):
 
 ```
 import DataFormats.FWLite as fwlite
@@ -308,7 +308,7 @@ for i, event in enumerate(events):
 
 Notice how few muon tracks there are compared to the same code executed for "generalTracks". In fact, you only see as many muons as you do because this data sample was collected with a muon trigger. (The muon definition in the trigger is looser than the "globalMuons" algorithm, which is why there are some events with fewer than two "globalMuons".)
 
-<b>Exercise: Make a histogram of all dimuon masses from 0 to 5 GeV.</b> Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` in ```${HOME}/TrackingShortEx/``` for this purpose.
+<b>Exercise: Make a histogram of all dimuon masses from 0 to 5 GeV.</b> Exclude events that do not have exactly two muon tracks, and note that the muon mass is 0.106 GeV. Create a file ```dimuon_mass.py``` for this purpose.
 
 Once you've implemented this, you can take a look at the solution ![here](/tracking/solution2.md).
 

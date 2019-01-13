@@ -1,67 +1,33 @@
-#! /usr/bin/env python
+#!/bin/env python
+from __future__ import division
+import glob
 from ROOT import *
-import os, sys, glob
-from GridEngineTools import runParallel
-import plotter
+from CfgUtils import readSamplesConfig
+import treeplotter
+import numpy as np
+import multiprocessing
 
-# STEP 1: create flat histograms from trees:
+plot_config = {
+    "pt": {"binw": 25, "xmin": 0, "xmax": 1000, "xlabel": "p_{T} (GeV)", "ylabel": "number of tracks / 25 GeV", "logx": False, "logy": True},
+    "dxyVtx": {"binw": 0.001, "xmin": 0, "xmax": 0.03, "xlabel": "dxy (cm)", "ylabel": "number of tracks / 0.001", "logx": False, "logy": True},
+    "dzVtx": {"binw": 0.005, "xmin": 0, "xmax": 0.1, "xlabel": "dz (cm)", "ylabel": "number of tracks / 0.005", "logx": False, "logy": True},
+    "nValidPixelHits": {"binw": 1, "xmin": 0, "xmax": 12, "xlabel": "valid pixel hits", "ylabel": "number of tracks", "logx": False, "logy": True},
+    "nValidTrackerHits": {"binw": 1, "xmin": 0, "xmax": 12, "xlabel": "valid tracker hits", "ylabel": "number of tracks", "logx": False, "logy": True},
+    "nMissingOuterHits": {"binw": 1, "xmin": 0, "xmax": 15, "xlabel": "missing outer hits", "ylabel": "number of tracks", "logx": False, "logy": True},
+    "matchedCaloEnergy": {"binw": 2, "xmin": 0, "xmax": 50, "xlabel": "E_{dep} (GeV)", "ylabel": "number of tracks / 2", "logx": False, "logy": True},
+    "trkRelIso": {"binw": 0.01, "xmin": 0, "xmax": 0.2, "xlabel": "relative isolation", "ylabel": "number of tracks / 0.01", "logx": False, "logy": True},
+    "ptErrOverPt2": {"binw": 0.01, "xmin": 0, "xmax": 0.5, "xlabel": "#Delta p_{T} / p_{T}^{2}", "ylabel": "number of tracks / 0.01", "logx": False, "logy": True},
+              }
 
-# set to True if you're running for the first time
-recreate_histograms = True
-if recreate_histograms:
+my_cuts = ""
 
-    parameters = []
+treeplotter.loop_over_files("/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-short", "samples.cfg", plot_config, tree_folder_name="PreSelection", cutstring = my_cuts, suffix="_short", ignore_samples="g1800_chi1400")
 
-    os.system("mkdir -p histos-short")
-    os.system("mkdir -p histos-medium")
+plot_config["ptErrOverPt2"]["binw"] = 0.002
+plot_config["ptErrOverPt2"]["xmax"] = 0.1
+plot_config["ptErrOverPt2"]["ylabel"] = "number of tracks / 0.002"
 
-    cuts = {"loose": ""}
-    for iFile in glob.glob("/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short/*.root"):
-        parameters.append([iFile, "PreSelection", "histos-short", cuts])
-    for iFile in glob.glob("/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-medium/*.root"):
-        parameters.append([iFile, "PreSelection", "histos-medium", cuts])
+treeplotter.loop_over_files("/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-long", "samples.cfg", plot_config, tree_folder_name="PreSelection", cutstring = my_cuts, suffix="_long", ignore_samples="g1800_chi1400")
 
-    commands = []
-    for parameter in parameters:
-        command = ("./treeToHist.py " + parameter[0] + " " + parameter[1] + " " + parameter[2] + ' \"' + str(parameter[3]).replace(" ", "").replace("'", "\'") + '\"')
-        commands.append( command.replace("\\", "") )
-
-    runParallel(commands, "multi")
-
-
-# STEP 2: create stacked histograms from previously created individual histograms:
-
-for folder in ["histos-short", "histos-medium"]:
-
-    os.system("mkdir -p plots/%s" % folder)
-
-    histoPath = "."
-    stages = ["loose"]
-
-    for stage in stages:
-
-        print "stage:", stage, folder
-
-        plotter.stackedPlot(folder, "samples.cfg", "%s/pt" % stage, "%s;p_{T} (GeV);number of tracks" % stage, "plots/%s/pt-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/eta" % stage, "%s;#eta;number of tracks" % stage, "plots/%s/eta-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-
-        plotter.stackedPlot(folder, "samples.cfg", "%s/dxyVtx" % stage, "%s;dxy (cm);number of tracks" % stage, "plots/%s/dxyVtx-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/dzVtx" % stage, "%s;dz (cm);number of tracks" % stage, "plots/%s/dzVtx-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/matchedCaloEnergy" % stage, "%s;E_{calo} (GeV);number of tracks" % stage, "plots/%s/matchedCaloEnergy-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/trkRelIso" % stage, "%s;trkRelIso;number of tracks" % stage, "plots/%s/trkRelIso-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nValidPixelHits" % stage, "%s;valid pixel hits;number of tracks" % stage, "plots/%s/nValidPixelHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=0, xmax=15)
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nValidTrackerHits" % stage, "%s;valid tracker hits;number of tracks" % stage, "plots/%s/nValidTrackerHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nMissingOuterHits" % stage, "%s;nMissingOuterHits;number of tracks" % stage, "plots/%s/nMissingOuterHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/ptErrOverPt2" % stage, "%s;#Delta p_{T} / p_{T}^{2};number of tracks" % stage, "plots/%s/ptErrOverPt2-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nMissingInnerHits" % stage, "%s;#Delta p_{T} / p_{T}^{2};number of tracks" % stage, "plots/%s/nMissingInnerHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nMissingMiddleHits" % stage, "%s;#Delta p_{T} / p_{T}^{2};number of tracks" % stage, "plots/%s/nMissingMiddleHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nMissingOuterHits" % stage, "%s;#Delta p_{T} / p_{T}^{2};number of tracks" % stage, "plots/%s/nMissingOuterHits-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nValidPixelHits" % stage, "%s/pixelLayersWithMeasurement" % stage, "plots/%s/pixelLayersWithMeasurement-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/nValidTrackerHits" % stage, "%s/trackerLayersWithMeasurement" % stage, "plots/%s/trackerLayersWithMeasurement-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")))
-        plotter.stackedPlot(folder, "samples.cfg", "%s/chargedPtSum" % stage, "%s;charged PFCand #sum p_{T} (GeV);number of tracks" % stage, "plots/%s/chargedPtSum-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=0, xmax=100, logx=False)
-        plotter.stackedPlot(folder, "samples.cfg", "%s/neutralPtSum" % stage, "%s;neutral PFCand #sum p_{T} (GeV);number of tracks" % stage, "plots/%s/neutralPtSum-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=0, xmax=100, logx=False)   
-        plotter.stackedPlot(folder, "samples.cfg", "%s/HT" % stage, "%s;HT (GeV);number of tracks" % stage, "plots/%s/HT-%s.pdf" % (folder, stage.replace(">","more").replace("<","less")), xmin=50, xmax=3000, logx=False)
 
 
