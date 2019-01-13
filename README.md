@@ -1,4 +1,4 @@
-# CMSDAS @ FNAL 2019
+# CMSDAS @ FNAL 2019: Disappearing tracks
 
 
 Welcome to the 2019 FNAL CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy :)
@@ -23,6 +23,7 @@ First, login to a cmslpc
 
 ```
 ssh -y <username>@cmslpc-sl6.fnal.gov
+source /cvmfs/cms.cern.ch/cmsset_default.csh
 ```
 
 Refer to [this guide](https://uscms.org/uscms_at_work/physics/computing/getstarted/uaf.shtml#prerequisites) on how to connect to the LPC CAF. Then create a CMSSW working environment in your home folder: 
@@ -52,6 +53,16 @@ cd cmsdas2019
 
 We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
 
+####  Accessing the data
+
+We will be using 10.569 events from 2017 data (Run2017F_SingleMuon_AOD_17Nov2017-v1). This subset of the data is small enough to be easily accessible as a file. Set up a working area and create a symbolic link to the file in your home directory: 
+
+```
+mkdir tracking-intro
+cd tracking-intro
+ln -s /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root tracks_and_vertices.root
+```
+
 ### 2.a) The five basic track variables
 
 ![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tracking/track.jpg)
@@ -72,13 +83,7 @@ The exact definitions are given in the reco::TrackBase [header file](https://git
 
 ####  Accessing track variables
 
-We will be using 10.569 events from 2017 data. This subset of the data is small enough to be easily accessible as a file and is located here:
-
-```
-/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root
-```
-
-Create ```print.py``` (for example ```emacs -nw print.py```, or use your favorite text editor) in ```${HOME}/TrackingShortEx/```, then copy-paste the following code and run it (```python print.py```). The ```tracks_and_vertices.root``` is already included with the full path:
+Create ```print.py``` (for example ```vim print.py```, or use your favorite text editor), then copy-paste the following code and run it (```python print.py```). The ```tracks_and_vertices.root``` is already included with the full path:
 
 ```
 import DataFormats.FWLite as fwlite
