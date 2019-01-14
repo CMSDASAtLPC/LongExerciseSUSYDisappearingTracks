@@ -34,10 +34,10 @@ histframes['NLeptons'] = TH1F('NLeptons','',4,0,4)
 histframes['NTags'] = TH1F('NTags','',4,0,4)
 histframes['MinDeltaPhiMetJets'] = TH1F('DPhiMetSumTags','',5,0,3.2)
 
-for selectionkey in cutsets:
+for iselkey, selectionkey in enumerate(cutsets):
  hists = {}
  histsStack = {}
- for histkey in histframes:
+ for ikey, histkey in enumerate(histframes):
 	cwaste = TCanvas('cwaste')
 	growinghist = histframes[histkey].Clone(histkey)
 	histframes[histkey].GetXaxis().SetTitle(namewizard(histframes[histkey].GetName()))
@@ -49,7 +49,7 @@ for selectionkey in cutsets:
 	drawarg = 'max(%f+0.001,min(%f-0.001,%s))>>hadc(%d,%f,%f)'%(xlow,xhigh,histkey,nbins,xlow,xhigh)
 	weightstring = '('+cutsets[selectionkey]+')*weight*'+str(lumi)	
 	if UseOptimizedCuts: weightstring+='*('+'1'+')'		
-	for category in CategoryKeysSmallToBig:
+	for icat, category in enumerate(CategoryKeysSmallToBig):
 		hCategory = histframes[histkey].Clone(histkey+'_cat')
 		histoStyler(hCategory,ColorsByCategory[category])
 		hCategory.SetFillColor(ColorsByCategory[category])
@@ -57,7 +57,8 @@ for selectionkey in cutsets:
 		histoStyler(growinghist,ColorsByCategory[category])
 		growinghist.SetFillColor(ColorsByCategory[category])
 		growinghist.SetFillStyle(1001)			
-		for subcategory in SubcategoryChainDictsByCategoryDict[category]:
+		for isub, subcategory in enumerate(SubcategoryChainDictsByCategoryDict[category]):
+			if isub==0 and icat==0 and ikey == 0 and iselkey==0: SubcategoryChainDictsByCategoryDict[category][subcategory].Show(0)
 			SubcategoryChainDictsByCategoryDict[category][subcategory].Draw(drawarg,weightstring)
 			h = SubcategoryChainDictsByCategoryDict[category][subcategory].GetHistogram()
 			#if histkey==histframes.keys()[0]: print 'drawing', subcategory, 'with integral', h.Integral()			

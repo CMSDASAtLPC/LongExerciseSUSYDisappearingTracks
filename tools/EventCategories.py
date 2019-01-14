@@ -2,7 +2,7 @@ from ROOT import *
 from random import shuffle
 from glob import glob
 
-skimDirectory = '/eos/uscms///store/user/cmsdas/2019/long_exercises/DisappearingTracks/Skims/'
+skimDirectory = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/Skims/'
 sigfilelist = glob('Signal/*.root')
 print 'sigfilelist', sigfilelist
 
@@ -64,10 +64,11 @@ CategoryKeysBigToSmall = ['WJetsToLNu','TTJets','QCD','ZJetsToNuNu','Diboson','D
 CategoryKeysSmallToBig = list(CategoryKeysBigToSmall)
 CategoryKeysSmallToBig.reverse()
 for category in CategoryKeysSmallToBig:
-		for subcategory in SubcategoryChainDictsByCategoryDict[category]:
-			fname = skimDirectory+'/Background/skim_'+subcategory+'.root'
-			print 'processing', fname
-			SubcategoryChainDictsByCategoryDict[category][subcategory].Add(fname)
+        for subcategory in SubcategoryChainDictsByCategoryDict[category]:
+            fname = skimDirectory+'/Background/skim_'+subcategory+'.root'
+            print 'processing', fname
+            fnameWithRedirector = fname.replace('/eos/uscms', 'root://cmsxrootd.fnal.gov/')
+            SubcategoryChainDictsByCategoryDict[category][subcategory].Add(fnameWithRedirector)
 
 #sigfilelist = glob(skimDirectory+'/Signal/*.root')
 smallsigfilelist = list(sigfilelist)
@@ -76,7 +77,7 @@ shuffle(colors)
 ColorsBySignal = {}
 SignalChainDict = {}
 for isig, sigfile in enumerate(smallsigfilelist):
-	stem = sigfile.split('/')[-1].replace('.root','')
-	SignalChainDict[stem] = TChain('tEvent')
-	SignalChainDict[stem].Add(sigfile)
-	ColorsBySignal[stem] = colors[isig]
+    stem = sigfile.split('/')[-1].replace('.root','')
+    SignalChainDict[stem] = TChain('tEvent')
+    SignalChainDict[stem].Add(sigfile)
+    ColorsBySignal[stem] = colors[isig]

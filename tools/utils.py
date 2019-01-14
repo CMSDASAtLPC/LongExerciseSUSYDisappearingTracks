@@ -576,54 +576,37 @@ _HT_ = array('f',[0])
 _nCandPerEevent_ = array('f',[0])
 
 
-def prepareReader(reader, xmlfilename):
-        reader.AddVariable("dxyVtx",_dxyVtx_)
-        reader.AddVariable("dzVtx",_dzVtx_)        
+def prepareReaderLong(reader, xmlfilename):
+        reader.AddVariable("dxyVtx",_dxyVtx_)      
+        reader.AddVariable("dzVtx",_dzVtx_)          
         reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
         reader.AddVariable("trkRelIso",_trkRelIso_)
         reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
         reader.AddVariable("nValidTrackerHits",_nValidTrackerHits_)
         reader.AddVariable("nMissingOuterHits",_nMissingOuterHits_)
         reader.AddVariable("ptErrOverPt2",_ptErrOverPt2_)
-        reader.AddSpectator("trkRelIso*pt",_trkRelIso_)
-        reader.AddSpectator("neutralPtSum",_neutralPtSum_)
-        reader.AddSpectator("chargedPtSum",_chargedPtSum_)
-        reader.AddSpectator("pixelLayersWithMeasurement",_pixelLayersWithMeasurement_)
-        reader.AddSpectator("trackerLayersWithMeasurement",_trackerLayersWithMeasurement_)
-        reader.AddSpectator("pt",_pt_)
-        reader.AddSpectator("eta",_eta_)
-        reader.AddSpectator("phi",_phi_)
-        reader.AddSpectator("nMissingMiddleHits",_nMissingMiddleHits_)
-        reader.AddSpectator("deDxHarmonic2",_deDxHarmonic2_)
-        reader.AddSpectator("trkMiniRelIso",_trkMiniRelIso_)
-        reader.AddSpectator("passExo16044JetIso",_passExo16044JetIso_)
-        reader.AddSpectator("passExo16044LepIso",_passExo16044LepIso_)
-        reader.AddSpectator("passExo16044Tag",_passExo16044Tag_)
-        reader.AddSpectator("trackJetIso",_trackJetIso_)
-        reader.AddSpectator("trackLeptonIso",_trackLeptonIso_)
-        reader.AddSpectator("madHT",_madHT_)
-        reader.AddSpectator("MET",_MET_)
-        reader.AddSpectator("HT",_HT_)
-        reader.AddSpectator("nCandPerEevent",_nCandPerEevent_)
-        _deDxHarmonic2_[0] = 0.0
-        _chargedPtSum_[0] = 0.0
-        _nMissingMiddleHits_[0] = 0.0
-        _trkMiniRelIso_[0] = 0.0
-        _passExo16044JetIso_[0] = 0.0
-        _passExo16044LepIso_[0] = 0.0
-        _passExo16044Tag_[0] = 0.0
-        _trackJetIso_[0] = 0.0
-        _trackLeptonIso_[0] = 0.0
-        _madHT_[0] = 0.0
-        _MET_[0] = 0.0
-        _HT_[0] = 0.0
-        _nCandPerEevent_[0] = 0.0
-        _pixelLayersWithMeasurement_[0] = 0.0
-        _trackerLayersWithMeasurement_[0] = 0.0
-        _pt_[0] = 0.0
-        _eta_[0] = 0.0
-        _phi_[0] = 0.0
         reader.BookMVA("BDT", xmlfilename)
+        
+def prepareReaderShort(reader, xmlfilename):
+        reader.AddVariable("dxyVtx",_dxyVtx_)     
+        reader.AddVariable("dzVtx",_dzVtx_)           
+        reader.AddVariable("matchedCaloEnergy",_matchedCaloEnergy_)
+        reader.AddVariable("trkRelIso",_trkRelIso_)
+        reader.AddVariable("nValidPixelHits",_nValidPixelHits_)
+        reader.AddVariable("nValidTrackerHits",_nValidTrackerHits_)
+        reader.AddVariable("ptErrOverPt2",_ptErrOverPt2_)
+        reader.BookMVA("BDT", xmlfilename)        
+
+def evaluateBDT(reader, trackfv):
+        _dxyVtx_[0] = trackfv[0]
+        _dzVtx_[0] = trackfv[1]
+        _matchedCaloEnergy_[0] = trackfv[2]
+        _trkRelIso_[0] = trackfv[3]
+        _nValidPixelHits_[0] = trackfv[4]
+        _nValidTrackerHits_[0] = trackfv[5]
+        _nMissingOuterHits_[0] = trackfv[6]
+        _ptErrOverPt2_[0] = trackfv[7]
+        return  reader.EvaluateMVA("BDT")
 
 def evaluateBDT(reader, trackfv):
         _dxyVtx_[0] = trackfv[0]
