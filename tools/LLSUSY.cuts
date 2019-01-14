@@ -4,6 +4,3 @@ NJets               >=
 NLeptons            ==
 BTags               ==
 MinDeltaPhiMetJets  >
-TrackChisquare      <
-TrackBdtScore       >
-TrackDxy            <

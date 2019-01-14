@@ -553,13 +553,15 @@ One interesting tool that seeks to overcome this curse of dimensionality is call
 
 
 ```
-git clone https://github.com/hbprosper/RGS.git
+#git clone https://github.com/hbprosper/RGS.git
+git clone https://github.com/sbein/RGS.git
 cd RGS/
 make
 source setup.sh #whenever intending to use RGS
 cd ../
 pwd
 ```
+Note: Harrison Prosper's repo is the master and has a nice readme; but for some reason does not work with the exercise at the moment. 
 
 The first script to run is tools/rgs_train.py. Open this script up, edit the lumi appropriately (to 35900/pb), give the path to the signal event file you just created, and tweak anything else as you see fit. When finished, save and open tools/LLSUSY.cuts. This file specifies the observables you want RGS to scan over and cut on, as well as the type of cut to apply (greater than, less than, equal to, etc.). Run the (first) training RGS script:
 
