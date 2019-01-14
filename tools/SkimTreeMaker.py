@@ -10,7 +10,7 @@ import os, sys
 from glob import glob
 csv_b = 0.8484
 
-isDasAndSignal = False
+isDasAndSignal = True
 #cross sections can be looked up on the SUSY xsec working group page:
 #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections#Cross_sections_for_various_S_AN2
 if isDasAndSignal: xsecInPb = 0.00276133
@@ -22,7 +22,7 @@ print 'isDasAndSignal?', isDasAndSignal
 # files specified with optional wildcards @ command line #
 ##########################################################
 try: infilenames = sys.argv[1]
-except: infilenames = '/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_20_RA2AnalysisTree.root'
+except: infilenames = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/Ntuples/g1800_chi1400_27_200970_step4_30.root'
 
 
 #############################################
@@ -41,7 +41,7 @@ import numpy as np
 var_Met = np.zeros(1,dtype=float)
 var_Mht = np.zeros(1,dtype=float)
 var_Ht = np.zeros(1,dtype=float)
-var_MinDeltaPhiMhtJets = np.zeros(1,dtype=float)
+var_MinDeltaPhiMetJets = np.zeros(1,dtype=float)
 var_NJets = np.zeros(1,dtype=int)
 var_BTags = np.zeros(1,dtype=int)
 var_NLeptons = np.zeros(1,dtype=int)
@@ -83,7 +83,7 @@ tEvent = TTree('tEvent','tEvent')
 tEvent.Branch('Met', var_Met,'Met/D')
 tEvent.Branch('Mht', var_Mht,'Mht/D')
 tEvent.Branch('Ht', var_Ht,'Ht/D')
-tEvent.Branch('MinDeltaPhiMhtJets', var_MinDeltaPhiMhtJets,'MinDeltaPhiMhtJets/D')
+tEvent.Branch('MinDeltaPhiMetJets', var_MinDeltaPhiMetJets,'MinDeltaPhiMetJets/D')
 tEvent.Branch('NJets', var_NJets,'NJets/I')
 tEvent.Branch('BTags', var_BTags,'BTags/I')
 tEvent.Branch('NLeptons', var_NLeptons,'NLeptons/I')
@@ -123,12 +123,14 @@ if isDasAndSignal: tEvent.Branch('weight', var_weight,'weight/D')
 
 readerPixelOnly = TMVA.Reader()
 #pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
-pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
-prepareReader(readerPixelOnly, pixelXml)
+###pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
+pixelXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderShort(readerPixelOnly, pixelXml)
 readerPixelStrips = TMVA.Reader()
 #trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
-trackerXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel2-200-4-medium/weights/TMVAClassification_BDT.weights.xml'
-prepareReader(readerPixelStrips, trackerXml)
+###trackerXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel2-200-4-medium/weights/TMVAClassification_BDT.weights.xml'
+trackerXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderLong(readerPixelStrips, trackerXml)
 
 c = TChain('TreeMaker2/PreSelection')
 filenamelist = glob(infilenames)
@@ -136,7 +138,8 @@ print 'adding', filenamelist
 filelist = []
 for filename in filenamelist:
     fname = filename.strip()
-    c.Add(fname)
+    fname_ = fname.replace('/eos/uscms/','root://cmsxrootd.fnal.gov//')
+    c.Add(fname_)
 
 c.Show(0)
 nentries = min(9999999,c.GetEntries())
@@ -193,7 +196,7 @@ for ientry in range(nentries):
         	mindphi = abs(jet.DeltaPhi(mhtvec))
             
     var_Ht[0] = ht
-    var_MinDeltaPhiMhtJets[0] = mindphi
+    var_MinDeltaPhiMetJets[0] = mindphi
     var_BTags[0] = nb
     var_NLeptons[0] = c.NElectrons+c.NMuons
 

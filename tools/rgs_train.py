@@ -20,6 +20,9 @@ def nameonly(s):
 	import posixpath
 	return posixpath.splitext(posixpath.split(s)[1])[0]    
 # -----------------------------------------------------------------------------
+
+skimDirectory = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/Skims/'
+
 def main():
 	NAME = 'LLSUSY'
 	print "="*80
@@ -51,7 +54,7 @@ def main():
 		error("unable to open signal file %s" % sigfilename)
 
 	# Name of background file        
-	bkgfilename = "/nfs/dust/cms/user/beinsam/CMSDAS2018b/Skims/Background/skim_allBackgrounds.root"
+	bkgfilename = skimDirectory+"/Background/skim_allBackgrounds.root"
 	if not os.path.exists(bkgfilename):
 		error("unable to open background file %s" % bkgfilename)
 
