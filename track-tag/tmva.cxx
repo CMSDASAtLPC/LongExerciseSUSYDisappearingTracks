@@ -1,7 +1,10 @@
 int tmva() {
 
-    std::string path = "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-pixelonly";
-    //std::string path = "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-pixelstrips";
+    // short tracks:
+    std::string path = "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly";
+
+    // long tracks (uncomment to use path):
+    // std::string path = "root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelstrips";
 
     const char* treename = "PreSelection";
 
@@ -12,7 +15,7 @@ int tmva() {
     TMVA::Factory *factory = new TMVA::Factory("TMVAClassification",outputFile,"V:!Silent:Color:Transformations=I:DrawProgressBar:AnalysisType=Classification"); 
 
     Double_t weight;
-    Double_t lumi = 35900;       // 1/pb
+    Double_t lumi = 150000;       // 1/pb
     TH1D* Nev;
 
     TFile* fsignal = new TFile((path + "/signal.root").c_str());
@@ -123,7 +126,7 @@ int tmva() {
     weight = 0.004385 * lumi / Nev->GetBinContent(1);
     factory->AddBackgroundTree(bgTree_dyjets_2500ToInf, weight);
 
-    // track-related variables:
+    // training variables:
     factory->AddVariable("dzVtx",'F');
     factory->AddVariable("nValidTrackerHits",'I');
    

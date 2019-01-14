@@ -30,7 +30,7 @@ def ShellExec(command):
     os.system(command)
 
 
-def runParallel(commands, runmode, dryrun=False, cmsbase=False, qsubOptions=False, ncores_percentage=0.70, dontCheckOnJobs=False):
+def runParallel(commands, runmode, dryrun=False, cmsbase=False, qsubOptions=False, ncores_percentage=0.70, dontCheckOnJobs=True, use_more_mem=False, use_more_time=False, burst_mode=False):
 
     if runmode == "multi":
 
@@ -51,10 +51,10 @@ def runParallel(commands, runmode, dryrun=False, cmsbase=False, qsubOptions=Fals
 
         print "Using CMSSW base", cmsbase
 
-        return runCommands(commands, dryrun=dryrun, cmsbase=cmsbase, qsubOptions=qsubOptions, dontCheckOnJobs=dontCheckOnJobs)
+        return runCommands(commands, dryrun=dryrun, cmsbase=cmsbase, qsubOptions=qsubOptions, dontCheckOnJobs=dontCheckOnJobs, use_more_mem=use_more_mem, use_more_time=use_more_time, burst_mode=burst_mode)
 
 
-def runCommands(commands, dryrun=False, birdDir="bird", cmsbase=False, qsubOptions=False, dontCheckOnJobs=False, useGUI=False):
+def runCommands(commands, dryrun=False, birdDir="bird", cmsbase=False, qsubOptions=False, dontCheckOnJobs=False, useGUI=False, use_more_mem=False, use_more_time=False, burst_mode=False):
 
     print "Starting submission..."
 
@@ -87,7 +87,16 @@ def runCommands(commands, dryrun=False, birdDir="bird", cmsbase=False, qsubOptio
 
         # actual job submission depending on host:
         if os.path.isfile("/usr/bin/condor_qsub"):
-            #cmd = 'condor_qsub -v +RequestRuntime=172800,RequestMemory=2048,RequestDisk=100000000 -l %s -cwd ' % qsubOptions + jobname + '.sh > /dev/null 2>&1 &'
+
+            additional_parameters = ""
+            if use_more_mem:
+                if use_more_mem == 1:
+                    use_more_mem = 4096
+                additional_parameters += "RequestMemory = %s\n" % use_more_mem
+            if use_more_time:
+                if use_more_time == 1:
+                    use_more_time = 86400
+                additional_parameters += "+RequestRuntime = %s\n" % use_more_time
 
             submission_file_content = """
                 universe = vanilla
@@ -99,17 +108,17 @@ def runCommands(commands, dryrun=False, birdDir="bird", cmsbase=False, qsubOptio
                 error = %s.sh.e$(Cluster)
                 output = %s.sh.o$(Cluster)
                 notification = Never
-                +RequestRuntime = 86400
+                %s
                 priority = 0
                 Queue
-            """ % (jobname, jobname, cwd + "/" + birdDir, jobname, jobname)
-
-            # RequestMemory = 4096
+            """ % (jobname, jobname, cwd + "/" + birdDir, jobname, jobname, additional_parameters)
 
             with open(jobname + ".submit", 'w') as outfile:
                 outfile.write(submission_file_content)
 
             cmd = "condor_submit %s.submit" % jobname
+            if burst_mode:
+                cmd = cmd + " &"
 
             print cmd
         elif os.path.isfile("/usr/sge/bin/lx-amd64/qsub"):
