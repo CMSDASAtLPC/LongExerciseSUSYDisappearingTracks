@@ -706,7 +706,7 @@ N(SR, fakes) = fake rate * N(CR)
 
 #### Drell-Yan event cleaning
 
-There are different approaches to measure the fake rate. One approach is to use clean Drell-Yan events with low MET. Any track of such events which passes the disappearing track tag can be considered as a fake track. Our signal region has zero leptons, thus we imitate Z→νν events by removing the leptons (referred to as `event cleaning`). We will recalculate HT, missing HT and the number of jets per event without the leptons. Any jet connected to one of the two leptons is then ignored as well.
+There are different approaches to measure the fake rate. One approach is to use clean Drell-Yan events with low MET. Any track of such events which passes the disappearing track tag can be considered as a fake track. Our signal region has zero leptons, thus we imitate Z→νν events by removing the leptons (referred to as *event cleaning*). We will recalculate HT, missing HT and the number of jets per event without the leptons. Any jet connected to one of the two leptons is then ignored as well.
 
 <b>Exercise: Loops over the nutples and select events with exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
 
