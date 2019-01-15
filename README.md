@@ -388,8 +388,7 @@ The configuration and training of the BDT is set up in a ROOT macro, tmva.cxx. I
 
 <center>
 
-![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/etc/tmva-gui.png)
-
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tools/EstimateBackground/FakeBkg/tmva-gui.png)
 </center>
 
 You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmva/TMVAUsersGuide.pdf). The most imporant functions accessible here are:
@@ -456,7 +455,7 @@ Note that by changing the number of events, you need to adjust the "Nev" variabl
 
 ##### Comparing TMVA results
 
-TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use roc_comparison.py to overlay different ROC curves, which you can specify in the last line: 
+TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use tmva_comparison.py to overlay different ROC curves, which you can specify in the last line: 
 
 ```
 plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
@@ -465,7 +464,7 @@ plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
 Run it with
 
 ```
-$ python roc_comparison.py
+$ python tmva_comparison.py
 ```
 
 ##### Selecting a lower cut on the BDT classifier
@@ -692,7 +691,7 @@ The following figure shows a (somewhat extreme) example how pattern recognition 
 
 <center>
 
-![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/etc/fakes.png)
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tools/EstimateBackground/FakeBkg/fakes.png)
 </center>
 
 In addition, the hits marked in red can be valid hits or hits due to detector noise, thus providing another (connected) source of fake tracks.
