@@ -1,6 +1,5 @@
 # CMSDAS @ FNAL 2019: Disappearing tracks
 
-
 Welcome to the 2019 FNAL CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy :)
 
 If you're doing the exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
@@ -713,7 +712,19 @@ There are different approaches to measure the fake rate. One approach is to use 
 
 <b>Exercise: Loops over the nutples and select events with exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
 
-You should obtain a Z mass peak with only little QCD contribution.
+Some tips: You can use ```fakerate_loop.py``` to loop over the events of the ntuples. In the event loop, you can add the dilepton selection. Test the script with
+
+```
+./fakerate_loop.py root://path/to/input/file test.root
+```
+
+Once you are ready to run over the complete set of ntuples using condor submission, you can use
+
+```
+./fakerate_submit.py
+```
+
+Afterwards, use ```fakerate_analyze.py``` to plot the dilepton invariant mass distribution. You should obtain a Z mass peak with only little QCD contribution.
 
 Now, add the event cleaning in the main event loop:
 
