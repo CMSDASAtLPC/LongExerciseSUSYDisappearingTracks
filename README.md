@@ -765,7 +765,7 @@ Now, add the event cleaning in the main event loop:
             MinDeltaPhiMhtJets_cleaned = abs(jet.DeltaPhi(mhtvec))
 ```
 
-<b>Exercise: Include the disappearing track tag in the script and add a branch which contains the number of disappearing tracks per event.</b> Apply your signal region cuts as well. You can then plot this new variable and calculate the fake rate.
+<b>Exercise: Add branches which contain the number of disappearing tracks per event and the number of disappearing tracks per event due to fake tracks. Apply your signal region cuts as well. Then, plot these new branches and calculate the fake rate.</b>
 
 There is likely a prompt background contamination in the selected events, which you can measure in the following.
 
