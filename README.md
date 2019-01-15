@@ -388,7 +388,8 @@ The configuration and training of the BDT is set up in a ROOT macro, tmva.cxx. I
 
 <center>
 
-![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tools/EstimateBackground/FakeBkg/tmva-gui.png)
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/etc/tmva-gui.png)
+
 </center>
 
 You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmva/TMVAUsersGuide.pdf). The most imporant functions accessible here are:
@@ -691,7 +692,7 @@ The following figure shows a (somewhat extreme) example how pattern recognition 
 
 <center>
 
-![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tools/EstimateBackground/FakeBkg/fakes.png)
+![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/etc/fakes.png)
 </center>
 
 In addition, the hits marked in red can be valid hits or hits due to detector noise, thus providing another (connected) source of fake tracks.
