@@ -55,12 +55,12 @@ We'll start with an introduction to using tracks for analyses in the era of larg
 
 ####  Accessing the data
 
-We will be using 10.569 events from 2017 data (Run2017F_SingleMuon_AOD_17Nov2017-v1). This subset of the data is small enough to be easily accessible as a file. Set up a working area and create a symbolic link to the file in your home directory: 
+We will be using 10.569 events from 2017 data (Run2017F_SingleMuon_AOD_17Nov2017-v1). This subset of the data is small enough to be easily accessible as a file. Set up a working area and copy the data file to your home directory: 
 
 ```
 mkdir tracking-intro
 cd tracking-intro
-ln -s /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root tracks_and_vertices.root
+xrdcp root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root ./tracks_and_vertices.root
 ```
 
 ### 2.a) The five basic track variables
@@ -87,7 +87,7 @@ Create ```print.py``` (for example ```vim print.py```, or use your favorite text
 
 ```
 import DataFormats.FWLite as fwlite
-events = fwlite.Events("/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/tracks_and_vertices.root")
+events = fwlite.Events("tracks_and_vertices.root")
 tracks = fwlite.Handle("std::vector<reco::Track>")
 
 for i, event in enumerate(events):
@@ -322,7 +322,8 @@ In the following, we will be working with ntuples which contain a selection of u
 
 Let's start by having a look at some of the tracking variables of signal tracks:
 ```
-root -l /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/tracking/track-tag/tracks-*/signal.root 
+root -l root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/signal.root 
+root -l root://cmseos.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelstrips/signal.root 
 root [0] new TBrowser
 ```
 With TBrowser, open the "PreSelection" tree and take a look at the variables. The tree contains variables from the track objets such as pT, eta and phi as well as variables from the hitpattern, such as nValidPixelHits or nMissingOuterHits. Also, for each track a selection of corresponding event-level properties as MET and HT are also stored.
