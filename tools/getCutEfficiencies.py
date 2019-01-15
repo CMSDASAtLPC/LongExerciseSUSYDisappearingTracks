@@ -102,7 +102,7 @@ def get_efficiency_for_cut(tree_files, cutstring_nominator, configuration_file =
 if __name__ == "__main__":
     
     cutstring = ""
-    print "Testing:", get_efficiency_for_cut("/nfs/dust/cms/user/kutznerv/cmsdas/tracks-mini-short-bdt/*.root", cutstring)
+    print "Testing:", get_efficiency_for_cut("/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/*.root", cutstring)
 
 
 
