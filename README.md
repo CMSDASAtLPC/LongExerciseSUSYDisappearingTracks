@@ -587,11 +587,11 @@ Open up tools/rgs_analyze.py and have a look. You'll notice the significance mea
 
 There are two main sources of backgrounds contributing to the search, *prompt* and *fake* background. The prompt background is due to charged leptons which failed the lepton reconstruction, but leave a track in the tracker and are thus not included in the ParticleFlow candidates. Fake tracks originate from pattern recogniction errors, which produce tracks not originating from real particles.
 
-A precise determination for these types of backgrounds requires a data-diven method. A general introduction to data-diven methods is given [here](http://www.desy.de/~csander/Talks/120223_SFB_DataDrivenBackgrounds.pdf).
+A trustworthy determination for these types of backgrounds requires a data-diven method. A general introduction to data-diven methods is given [here](http://www.desy.de/~csander/Talks/120223_SFB_DataDrivenBackgrounds.pdf).
  
 ### 5.a) Prompt background
 
-The prompt background is the name given to SM events with a disappearing track that arises because of the presence of a true electron. The method for estimating this background is based on a single-lepton control region. Transfer factors (kappa factors) are derived that relate the count in the single lepton control region to the count in the signal region. 
+The prompt background is the name given to SM events with a disappearing track that arises because of the presence of a true electron. The method for estimating this background is based on there being a relationship between the single-lepton control region and the single-disappearing track region. Transfer factors (kappa factors) are derived that relate the count in the single lepton control region to the count in the signal region. 
 
 The single-lepton control region is defined as being analogous to the signal region, but where the requirement of there being 1 disappearing track is replaced by the requirement of there being one well-reconstructed lepton:
 
@@ -605,7 +605,7 @@ The following command will run a script that generates histograms for the number
 
 ```
 
-python tools/TagNProbeHistMaker_BDT.py /pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_391_RA2AnalysisTree.root
+python tools/TagNProbeHistMaker_BDT.py root://cmsxrootd.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root
 
 ```
 
