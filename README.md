@@ -50,7 +50,7 @@ cd cmsdas2019
 
 ## 2.) Introduction to tracking
 
-We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the four-vectors of particles: the momentum of a track is nearly the momentum of the charged particle itself.
+We'll start with an introduction to using tracks for analyses in the era of large pile-up (many primary vertices). It is adapted from the [2018 tracking and vertexing short exercise](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolHamburg2018TrackingAndVertexingExercise) and it will already use real data and will familiarize you with the basic track parameters and reconstructing invariant masses from tracks in CMSSW. Tracks are the detector entities that are closest to the three-vectors of particles: the curvature of the track translates directly to the transverse momentum of the charged particle itself; since we also measure |eta|, this specifies a single possible 3-momentum.
 
 ####  Accessing the data
 
