@@ -341,9 +341,10 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.py```:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.py```. It is located in the tools directory:
 
 ```
+$ cd ../tools
 $ ./plot_track_variables.py
 ```
 
@@ -397,7 +398,7 @@ You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmv
   * 1a) View input variables
   * 4a) View BDT response of the test sample
   * 4b) View BDT response of both test & training sample
-  * 5a) View ROC curve
+  * 5b) View ROC curve
 
 You can use button (1a) to take a look at the normalized signal and background plots of the input variables. In the minimal example, only the impact parameter dz with respect to the primary vertex and the number of tracker layers with measurement are used.
 For each event, the BDT gives a BDT classifier ranging from -1 to 1 and indicates whether the event is background- or signal-like. A plot showing this classifier is accessible with button (4a). In this plot, we want to aim for a good separation between signal and background, which would allow us to put a cut on the BDT classifier to select disappearing tracks (signal).
