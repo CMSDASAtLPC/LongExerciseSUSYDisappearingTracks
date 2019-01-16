@@ -18,51 +18,70 @@ try:foname =sys.argv[2]
 except:
     foname = 'Kappa.root'
     print 'Output file not specified, will create output as: Kappa.root'
-f  = TFile(fname)
-keys = f.GetListOfKeys()
+file  = TFile(fname)
+file.ls()
+
+funcs = {}
+
+keys = file.GetListOfKeys()
 
 c1 = mkcanvas('c1')
-
 fnew = TFile(foname,'recreate')
 fnew.cd()
+
 for key in keys:
     name = key.GetName()
-#    print name
-#    print 10*'*'
-    if not ('EtaDT_num' in name or 'PtDT_num' in name or 'ChargeDT_num' in name or 'PlusDT_num' in name or 'MinusDT_num' in name):continue
-    hnum   = f.Get(name)
+    if not 'ProbePtDT_eta' in name: continue
+    hnum   = file.Get(name)
+    if 'Gen' in name: hnum.SetLineColor(kAzure)
+    else: hnum.SetLineColor(kViolet)
+    if 'Run' in fname: 
+    	hnum.SetLineColor(kBlack)
+    	hnum.SetMarkerStyle(20)
+    	hnum.SetMarkerSize(.85*hnum.GetMarkerSize())
+    hden    = file.Get(name.replace('_num','_den').replace('DT','RECO'))
+    ratname = name.replace('_num','').replace('DT','Kappa')
+    print 'ratname', ratname
+    hratio = hnum.Clone(ratname)
+    hratio.Divide(hden)
 
-    hden    = f.Get(name.replace('DT_num','RECO_den'))
-    if 'vs' in name: 
-        hden.GetXaxis().SetTitle('Pt')
-        hden.GetYaxis().SetTitle('#eta')
-    else:
-        hden.GetYaxis().SetTitle('#kappa')
-        hden.GetYaxis().SetRangeUser(0,0.02)
-        hden.GetXaxis().SetTitle(namelib[name.replace('DT_num','').replace('DTmeff','').replace('RECO_den','').replace('EleProbe','').replace('h','').replace('EleGen','')])
-    leg = TLegend(0.56,0.67,0.77,0.89)
-    leg.SetTextFont(42)
-    leg.SetTextSize(0.035)
-    leg.SetHeader("MC sample")
-    hnum.Divide(hden)
-    print 10*'*'
-    leg.AddEntry(hden," DYtoLL  ","lep")
-    hden.SetTitle('#kappa ' + name.replace('hPtvsEta','tag and probe').replace('vs','').replace('Minus','').replace('Plus','').replace('Charge','').replace('DT_num','').replace('RECO_den','').replace('Probe','tag and probe').replace('h','').replace('Ele','').replace('Pt','').replace('Eta','').replace('Gen','Gen Info'))
-
-    hden.Reset()
-    hden.Draw()
     
-    if 'vs' in name: hnum.Draw('samecolz')
-    else: hnum.Draw('same')
-
-    leg.SetFillStyle(0)
-    leg.Draw()                                                                                                                                                
+    hratio.SetTitle('')
+    hratio.GetXaxis().SetTitle('p_{T}[GeV]')
+    hratio.GetYaxis().SetTitle('#kappa = n(DT)/n(reco-lep)')    
+    hratio.GetYaxis().SetLabelSize(0.05)
+    hratio.GetXaxis().SetLabelSize(0.05)    
+    hratio.GetYaxis().SetTitleOffset(1.25)
+    hratio.Draw()
+    #if 'El' in name: funcs['f1'+ratname] = TF1('f1'+ratname,'[0]+[1]/pow(x,.5)+[2]*exp(-[3]*pow(x-[4],2))',20,2000)
+    #if 'Mu' in name: funcs['f1'+ratname] = TF1('f1'+ratname,'[0]+([1]/pow(x,2)+[2]/x)*exp(-[3]*pow(x-[4],2))',20,2000)
+	#funcs['f1'+ratname] = TF1('f1'+ratname,'[0]+([1]/pow(x,1)+[2]/pow(x,2))+[3]*exp(-[4]*pow(x-350,2))',20,2000)
+    #funcs['f1'+ratname] = TF1('f1'+ratname,'0.001*[0]+([1]/pow(x,1)+[2]/pow(x,2)+[5]/pow(x,3))+0.0002*exp(-[3]*pow(x-325,2))',20,2000)
+    #funcs['f1'+ratname] = TF1('f1'+ratname,'0.001*[0] + [1]/pow(x,1) + [2]/pow(x,2)+[5]/pow(x,0.5) + 0.0002*exp(-[3]*pow(x-325,2))',20,2000)
+    #funcs['f1'+ratname] = TF1('f1'+ratname,'0.001*[0] + [1]/pow(x,1) + [2]*x +[3]*exp(-[4]*(x-325)) ',20,2000)
+    #funcs['f1'+ratname] = TF1('f1'+ratname,'0.01*[0] + 0.01*[1]/x + 0.01*[2]/x/x + [3]*exp(-[4]*x)',20,2500)
+    funcs['f1'+ratname] = TF1('f1'+ratname,'0.1*[0] + 0.1*[1]/(pow(x,0.5)) + 0.1*[5]/(pow(x,1)) + 0.1*[2]/pow(x,2) + [3]*exp(-[4]*x)',30,2500)
+    funcs['f1'+ratname].SetParLimits(0,0, 1.9)
+    #funcs['f1'+ratname].SetParLimits(1,0, 9999)
+    #funcs['f1'+ratname].SetParLimits(2,0, 9999)
+    #funcs['f1'+ratname].SetParLimits(3,0, 0.999)
+    #funcs['f1'+ratname].SetParLimits(4,200, 400)
+            
+    hratio.Fit('f1'+ratname,'','SN',30,2500)
+    funcs['f1'+ratname].SetLineColor(hratio.GetLineColor())
+    leg = mklegend(x1=.22, y1=.66, x2=.79, y2=.82)
+    legname = ratname.split('_')[-1].replace('eta','eta ')
+    if 'Gen' in name: legname+=' (W+Jets MC, 2016 geom)'
+    leg.AddEntry(hratio,legname)
+    leg.Draw()
     c1.Update()
+    fnew.cd()
+    hratio.Write(hratio.GetName())
+    c1.Write('c_'+hratio.GetName())
+    #hratio.Write()
+    funcs['f1'+ratname].Write()
 
-    #pause()
-    #c1.Print('pdfs/kappa/kappa'+name.replace('DT_num','').replace('DTmeff','').replace('RECO_den','').replace('EleProbe','TagandProbe').replace('h','').replace('EleGen','GenInfo')+'.pdf')
-    c1.Write('ckappa'+name.replace('DT_num','').replace('DTmeff','').replace('RECO_den','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo'))
-    hnum.Write('kappa'+name.replace('DT_num','').replace('DTmeff','').replace('RECO_den','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo'))
-    print 'root file updated with histo', 'kappa'+name.replace('DT_num','').replace('DTmeff','').replace('RECO_den','').replace('EleProbe','tagNprobe').replace('h','').replace('EleGen','GenInfo')
+
+print 'just made', fnew.GetName()
 fnew.Close()
-print "Kappa file:", fnew, "created."
+exit(0)

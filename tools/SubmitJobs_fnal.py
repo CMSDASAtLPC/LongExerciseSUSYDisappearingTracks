@@ -1,27 +1,23 @@
 import os, sys
-import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument("-v", "--verbosity", type=bool, default=False,help="analyzer script to batch")
-parser.add_argument("-analyzer", "--analyzer", type=str,default='tools/ResponseMaker.py',help="analyzer")
-parser.add_argument("-fin", "--fnamekeyword", type=str,default='Summer16.SMS-T1tttt_mGluino-1200_mLSP-800',help="file")
 
+
+
+defaultInfile = "/eos/uscms//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root"
+defaultkey = defaultInfile.split('/')[-1].split('.root')[0]
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--verbosity", type=bool, default=False,help="analyzer script to batch")
 parser.add_argument("-analyzer", "--analyzer", type=str,default='tools/ResponseMaker.py',help="analyzer")
 parser.add_argument("-fin", "--fnamekeyword", type=str,default=defaultInfile,help="file")
-parser.add_argument("-jersf", "--JerUpDown", type=str, default='Nom',help="JER scale factor (Nom, Up, ...)")
 parser.add_argument("-dtmode", "--dtmode", type=str, default='PixAndStrips',help="PixAndStrips, PixOnly, PixOrStrips")
 parser.add_argument("-pu", "--pileup", type=str, default='Nom',help="Nom, Low, Med, High")
 args = parser.parse_args()
-inputFileNames = args.fnamekeyword
-inputFiles = glob(inputFileNames)
+fnamekeyword = args.fnamekeyword
 dtmode = args.dtmode
 analyzer = args.analyzer
-JerUpDown = args.JerUpDown
 pileup = args.pileup
     
-istest = False
+istest = True
 
 try: 
 	moreargs = ' '.join(sys.argv)
@@ -48,9 +44,8 @@ def main():
     for fname_ in fnamelines:
         if not (fnamekeyword in fname_): continue
         fname = fname_.strip()
-        job = analyzer.split('/')[-1].replace('.py','').replace('.jdl','')+'-'+fname.strip()+'Jer'+JerUpDown
+        job = analyzer.split('/')[-1].replace('.py','').replace('.jdl','')+'-'+fname.strip()
         job = job.replace('.root','')
-        job += job.replace('.root',Bootstrap+'.root')
         #print 'creating jobs:',job
         newjdl = open('jobs/'+job+'.jdl','w')
         newjdl.write(jdltemplate.replace('CWD',cwd).replace('JOBKEY',job))
@@ -64,8 +59,9 @@ def main():
         os.chdir('output/'+fnamekeyword.replace(' ',''))
         cmd =  'condor_submit '+'../../jobs/'+job+'.jdl'        
         print cmd
-        if not istest: os.system(cmd)
+        os.system(cmd)
         os.chdir('../../')
+        if istest: break
 
 
 jdltemplate = '''
@@ -76,7 +72,7 @@ Error = CWD/jobs/JOBKEY.err
 Log = CWD/jobs/JOBKEY.log
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files=CWD/tools, CWD/usefulthings, xxx
+transfer_input_files=CWD/tools, CWD/usefulthings, /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml, /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml
 x509userproxy = $ENV(X509_USER_PROXY)
 Queue 1
 '''

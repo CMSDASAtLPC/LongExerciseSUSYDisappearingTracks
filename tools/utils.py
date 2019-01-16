@@ -3,9 +3,12 @@ from array import array
 
 
 #binning for kappa factors
-#PtBinEdges = [0,30,40,50,60,90,120,180, 250,2500]
-#EtaBinEdges = [0, 1.4442,1.566, 2.4]
 
+#fine binning
+PtBinEdges = [0,30,40,50,60,90,120,180, 250,2500]
+EtaBinEdges = [0, 1.4442,1.566, 2.4]
+
+#coarse binning
 PtBinEdges = [0,30,2500]
 EtaBinEdges = [0, 1.4442,1.566, 2.4]
 

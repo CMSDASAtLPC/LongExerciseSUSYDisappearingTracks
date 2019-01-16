@@ -607,7 +607,6 @@ Kappa factors are derived using a data-driven tag and probe method. A well-recon
 The following command will run a script that generates histograms for the numberator (disappearing tracks) and denominator (prompt leptons) that are needed compute kappa:
 
 ```
-
 python tools/TagNProbeHistMaker.py --fnamekeyword Summer16.DYJetsToLL_M-50_Tune --dtmode PixAndStrips
 ```
 
@@ -616,14 +615,15 @@ When the script has finished running, you can run the fairly generic script,
 python tools/OverlayTwoHists.py
 ```
 
-, which, as the name suggests, overlays two histograms and creates a ratio plot - in this case, it is taking actual histograms from your file. You'll notice that the statistics are very low. **Question: What are you looking at? What is its relevance to the analysis?**
+, which, as the name suggests, overlays two histograms and creates a ratio plot - in this case, it is taking actual histograms from your file. You'll notice that the statistics are very low. **Question: What are you looking at? What is its relevance to the analysis?** There is one bug in the tag and probe script. The tag lepton pT is too small small to be realistic in real data. For this part of the analysis in data, we'll use a single electron and single muon trigger with online thresholds of around 20-27 GeV. You should update the pT threshold on the tag.  
 
 One of you (maybe not all) can proceed to do a larger submission on the condor batch system, which will generate a higher statistics version of these plots. The script SubmitJobs_condor.py creates one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
 ```
 mkdir output/
 mkdir jobs/
 
-python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL*.root"
+python tools/SubmitJobs_fnal.py --analyzer tools/TagNProbeHistMaker.py --fnamekeyword DYJetsToLL --dtmode PixAndStrips
+python tools/SubmitJobs_fnal.py --analyzer tools/TagNProbeHistMaker.py --fnamekeyword DYJetsToLL --dtmode PixOnly
 
 ```
 After the jobs are submitted, the status of the jobs can be checked by:
@@ -636,35 +636,40 @@ condor_q
 When the jobs are finished, merge the files using an hadd (pronounced like "H"-add) command, After that, we'll proceed to computing the kappa factors from the merged histogram file: 
 
 ```
-python tools/ahadd.py -f TagnProbe_DYJetsToLL.root Output/BDT_TagnProbeEleHists*.root
+mkdir RawKappaMaps
+python tools/mergeMcHists.py "RawKappaMaps/RawKapps_DYJets_PixOnly.root" "output/DYJetsToLL/TagnProbeHists_Summer16.DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_*PixOnly*.root"
+python tools/mergeMcHists.py "RawKappaMaps/RawKapps_DYJets_PixAndStrips.root" "output/DYJetsToLL/TagnProbeHists_Summer16.DYJetsToLL_M-50_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_*PixAndStrips*.root"
 ```
 
-*note likely for you*: I just realized it is likely that one of your group mates did the submission, so be sure to get the full path to their Output directory, and specify that in the last argument of the above command.
+You should now have some higher statistics versions of your invariant mass plots. You can modify the OverlayTwoHists.py to draw the new plots.
 
+It is recommended to backup your files in RawKappaMaps:
+```
+mv RawKappaMaps RawKappaMaps_backup
+cp -r /uscms_data/d3/sbein/RawKappaMaps .
+```
+
+You now have access to the tag and probe histograms from MC and data. Too see the tag and probe invariant mass distributions in data and MC, you can do:
+
+```
+mkdir pdfs
+mkdir pdfs/tagandprobe/
+python tools/CompareInvariantMass.py
+```
 #### step 2. Compute the kappa factors
+
+
 
 To compute kappas from the merged histograms, and then proceed to view those kappa factors, run the following two scripts in sequence:
 ```
-python tools/ComputeKappa.py TagnProbe_DYJetsToLL.root
-python tools/CompareKappas.py
+mkdir pdfs/closure
+mkdir pdfs/closure/tpkappa
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_DYJets_PixOnly.root KappaDYJets_PixOnly.root
+mv KappaDYJets_PixOnly.root usefulthings/
+python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndDataSplit.py PixAndStrips 
 ```
 You might find it useful to use a log scale when answering the next question.
-<b style='color:black'>Question 7. do you notice anything distinct about the shape of kappa as a function of pT? Eta? What can be said about the charge asymmetry?</b>
-
-##### optional look at kappa in real data
-
-The tag and probe script can also be run over real data. A subsample of 2016 data has been prepared to do this, as well as a slightly modified version of the tag and probe script. The modified tag and probe script implements the requirement that the trigger be fired, where the trigger path to be fired is:
-
-```
-python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_Data.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Run2016C-03Feb2017-v1.SingleElectron_*.root"
-```
-
-when the jobs finish you can do, as usual:
-
-```
-python tools/ahadd.py -f TagnProbe_SingleEleData.root Output/TagnProbeEleHists_Run2016C-03Feb2017-v1.SingleElectron_*.root
-python tools/Compute
-```
+<b style='color:black'>Question 7. How do the fit functions perform? You can modify them in the script that computes kappa. Do you notice anything distinct about the shape of kappa as a function of pT? Eta?</b>
 
 
 #### step 3. peform closure test
