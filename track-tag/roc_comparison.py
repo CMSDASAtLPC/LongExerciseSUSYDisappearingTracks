@@ -76,5 +76,5 @@ def plot_rocs(output_filename, tmva_files):
 
 if __name__ == "__main__":
 
-    plot_rocs("comparison.pdf", ["./output.root"])
+    plot_rocs("comparison.pdf", ["./path/to/output1.root", "./path/to/output2.root"])
 
