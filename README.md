@@ -6,7 +6,7 @@ If you're doing the exercise at the school, please send an email to me so I can 
 
 https://mattermost.web.cern.ch/cmsdaslpc2019/channels/shorttrackteam
 
-Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker
+Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker.
 
 ## Introduction
 
