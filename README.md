@@ -666,7 +666,7 @@ mkdir pdfs/closure
 mkdir pdfs/closure/tpkappa
 python tools/ComputeKappa.py RawKappaMaps/RawKapps_DYJets_PixOnly.root KappaDYJets_PixOnly.root
 mv KappaDYJets_PixOnly.root usefulthings/
-python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndDataSplit.py PixAndStrips 
+python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndData.py PixAndStrips 
 ```
 You might find it useful to use a log scale when answering the next question.
 <b style='color:black'>Question 7. How do the fit functions perform? You can modify them in the script that computes kappa. Do you notice anything distinct about the shape of kappa as a function of pT? Eta?</b>
