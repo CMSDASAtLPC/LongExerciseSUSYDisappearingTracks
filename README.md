@@ -25,9 +25,10 @@ ssh -y <username>@cmslpc-sl6.fnal.gov
 source /cvmfs/cms.cern.ch/cmsset_default.csh
 ```
 
-Then create a CMSSW working environment in your home folder: 
+Then create a CMSSW working environment in your working area. Make sure your working area is in the ~/nobackup directory, which has more storage space than your home directory.
 
 ```
+cd ~/nobackup
 mkdir longlivedLE
 cd longlivedLE
 cmsrel CMSSW_10_1_0
@@ -340,7 +341,7 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots for ```treeplotter.sh```:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.sy```:
 
 ```
 $ ./plot_track_variables.py
