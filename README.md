@@ -1,6 +1,5 @@
 # CMSDAS @ FNAL 2019: Disappearing tracks
 
-
 Welcome to the 2019 FNAL CMSDAS exercise on disappearing tracks! This long exercise will walk students through a number of steps needed to set up and implement an search for new physics at CMS. Enjoy :)
 
 If you're doing the exercise at the school, please send an email to me so I can sign you up for Mattermost (samuel.bein@gmail.com)
@@ -456,7 +455,7 @@ Note that by changing the number of events, you need to adjust the "Nev" variabl
 
 ##### Comparing TMVA results
 
-TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use roc_comparison.py to overlay different ROC curves, which you can specify in the last line: 
+TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use tmva_comparison.py to overlay different ROC curves, which you can specify in the last line: 
 
 ```
 plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
@@ -465,7 +464,7 @@ plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
 Run it with
 
 ```
-$ python roc_comparison.py
+$ python tmva_comparison.py
 ```
 
 ##### Selecting a lower cut on the BDT classifier
@@ -712,7 +711,19 @@ There are different approaches to measure the fake rate. One approach is to use 
 
 <b>Exercise: Loops over the nutples and select events with exactly two reconstructed leptons with an invariant mass compatible with that of the Z mass (±10 GeV). Plot the invariant dilepton distribution for electrons and muons.</b> What requirements can you add to improve the event selection?
 
-You should obtain a Z mass peak with only little QCD contribution.
+Some tips: You can use ```fakerate_loop.py``` to loop over the events of the ntuples. In the event loop, you can add the dilepton selection. Test the script with
+
+```
+./fakerate_loop.py root://path/to/input/file test.root
+```
+
+Once you are ready to run over the complete set of ntuples using condor submission, you can use
+
+```
+./fakerate_submit.py
+```
+
+Afterwards, use ```fakerate_analyze.py``` to plot the dilepton invariant mass distribution. You should obtain a Z mass peak with only little QCD contribution.
 
 Now, add the event cleaning in the main event loop:
 
@@ -753,7 +764,7 @@ Now, add the event cleaning in the main event loop:
             MinDeltaPhiMhtJets_cleaned = abs(jet.DeltaPhi(mhtvec))
 ```
 
-<b>Exercise: Include the disappearing track tag in the script and add a branch which contains the number of disappearing tracks per event.</b> Apply your signal region cuts as well. You can then plot this new variable and calculate the fake rate.
+<b>Exercise: Add branches which contain the number of disappearing tracks per event and the number of disappearing tracks per event due to fake tracks. Apply your signal region cuts as well. Then, plot these new branches and calculate the fake rate.</b>
 
 There is likely a prompt background contamination in the selected events, which you can measure in the following.
 
