@@ -6,6 +6,7 @@
 
 from ROOT import *
 from utils import *
+from distracklibs import *
 import os, sys
 from glob import glob
 csv_b = 0.8484
@@ -48,7 +49,7 @@ var_NLeptons = np.zeros(1,dtype=int)
 var_NPhotons = np.zeros(1,dtype=int)
 var_NTags = np.zeros(1,dtype=int)
 var_NPixelTags = np.zeros(1,dtype=int)
-var_NPixelStripsTags = np.zeros(1,dtype=int)
+var_NLongTags = np.zeros(1,dtype=int)
 var_DPhiMetSumTags = np.zeros(1,dtype=float)
 var_Track1BdtScore = np.zeros(1,dtype=float)
 var_Track1Dedx = np.zeros(1,dtype=float)
@@ -67,8 +68,8 @@ var_Track2Dxy = np.zeros(1,dtype=float)
 var_Track2Chisquare = np.zeros(1,dtype=float)
 var_Track2Pt = np.zeros(1,dtype=float)
 var_Track2Eta = np.zeros(1,dtype=float)
-var_Track1IsPixelStrips = np.zeros(1,dtype=int)
-var_Track2IsPixelStrips = np.zeros(1,dtype=int)
+var_Track1IsLong = np.zeros(1,dtype=int)
+var_Track2IsLong = np.zeros(1,dtype=int)
 var_Track1IsGenMatched = np.zeros(1,dtype=int)
 var_Track2IsGenMatched = np.zeros(1,dtype=int)
 
@@ -90,7 +91,7 @@ tEvent.Branch('NLeptons', var_NLeptons,'NLeptons/I')
 tEvent.Branch('NPhotons', var_NPhotons,'NPhotons/I')
 tEvent.Branch('NTags', var_NTags,'NTags/I')
 tEvent.Branch('NPixelTags', var_NPixelTags,'NPixelTags/I')
-tEvent.Branch('NPixelStripsTags', var_NPixelStripsTags,'NPixelStripsTags/I')
+tEvent.Branch('NLongTags', var_NLongTags,'NLongTags/I')
 tEvent.Branch('Track1Pt', var_Track1Pt,'Track1Pt/D')
 tEvent.Branch('Track2Pt', var_Track2Pt,'Track2Pt/D')
 tEvent.Branch('Track1Eta', var_Track1Eta,'Track1Eta/D')
@@ -107,8 +108,8 @@ tEvent.Branch('Track1Dedx', var_Track1Dedx,'Track1Dedx/D')
 tEvent.Branch('Track2Dedx', var_Track2Dedx,'Track2Dedx/D')
 tEvent.Branch('Track1MassFromDedx', var_Track1MassFromDedx,'Track1MassFromDedx/D')
 tEvent.Branch('Track2MassFromDedx', var_Track2MassFromDedx,'Track2MassFromDedx/D')
-tEvent.Branch('Track1IsPixelStrips', var_Track1IsPixelStrips,'Track1IsPixelStrips/I')
-tEvent.Branch('Track2IsPixelStrips', var_Track2IsPixelStrips,'Track2IsPixelStrips/I')
+tEvent.Branch('Track1IsLong', var_Track1IsLong,'Track1IsLong/I')
+tEvent.Branch('Track2IsLong', var_Track2IsLong,'Track2IsLong/I')
 tEvent.Branch('Track1IsGenMatched', var_Track1IsGenMatched,'Track1IsGenMatched/I')
 tEvent.Branch('Track2IsGenMatched', var_Track2IsGenMatched,'Track2IsGenMatched/I')
 tEvent.Branch('SumTagPtOverMht', var_SumTagPtOverMht,'SumTagPtOverMht/D')
@@ -121,16 +122,14 @@ if isDasAndSignal: tEvent.Branch('weight', var_weight,'weight/D')
 # declare readers for BDT #
 ###########################
 
-readerPixelOnly = TMVA.Reader()
+readerShort = TMVA.Reader()
 #pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
 ###pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
-pixelXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
-prepareReaderShort(readerPixelOnly, pixelXml)
-readerPixelStrips = TMVA.Reader()
-#trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
-###trackerXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel2-200-4-medium/weights/TMVAClassification_BDT.weights.xml'
-trackerXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
-prepareReaderLong(readerPixelStrips, trackerXml)
+pixelXml = 'usefulthings/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderShort(readerShort, pixelXml)
+readerLong = TMVA.Reader()
+trackerXml = 'usefulthings/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderLong(readerLong, trackerXml)
 
 c = TChain('TreeMaker2/PreSelection')
 filenamelist = glob(infilenames)
@@ -201,8 +200,8 @@ for ientry in range(nentries):
     var_NLeptons[0] = c.NElectrons+c.NMuons
 
     sumtagvec = TLorentzVector()
-    nPixelOnly = 0
-    nPixelStrips = 0
+    nShort = 0
+    nLong = 0
     
     mvas = []
     trkpts = []
@@ -220,7 +219,7 @@ for ientry in range(nentries):
             if not track.Pt() > 15 : continue
             if not abs(track.Eta()) < 2.4: continue
             if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-            mva_ = isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips)
+            mva_ = isDisappearingTrack_(track, itrack, c, readerShort, readerLong)
             if not mva_: continue
             ntags+=1
             mvas.append(mva_)
@@ -263,7 +262,7 @@ for ientry in range(nentries):
         var_Track1Dxy[0] = trkdxys[0]        
         var_Track1Dedx[0] = dedxs[0] 
         var_Track1MassFromDedx[0] = massfromdedxs[0] 
-        var_Track1IsPixelStrips[0] = ispixelstripss[0]
+        var_Track1IsLong[0] = ispixelstripss[0]
         var_Track1IsGenMatched[0] = ismatcheds[0]   
         
         var_Track2BdtScore[0] = -11
@@ -274,7 +273,7 @@ for ientry in range(nentries):
         var_Track2Dxy[0] = -11
         var_Track2Dedx[0] = -11
         var_Track2MassFromDedx[0] = -11
-        var_Track2IsPixelStrips[0] = -11
+        var_Track2IsLong[0] = -11
         var_Track2IsGenMatched[0] = -11
                  
     if len(mvas)>1:
@@ -286,11 +285,11 @@ for ientry in range(nentries):
         var_Track2Dxy[0] = trkdxys[1]        
         var_Track2Dedx[0] = dedxs[1] 
         var_Track2MassFromDedx[0] = massfromdedxs[1] 
-        var_Track2IsPixelStrips[0] = ispixelstripss[1]
+        var_Track2IsLong[0] = ispixelstripss[1]
         var_Track2IsGenMatched[0] = ismatcheds[1]   
     var_NTags[0] = ntags
     var_NPixelTags[0] = npix
-    var_NPixelStripsTags[0] = npixstrips        
+    var_NLongTags[0] = npixstrips        
         
         
     var_DPhiMetSumTags[0] = abs(mhtvec.DeltaPhi(sumtagvec))
