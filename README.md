@@ -341,7 +341,7 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.sy```:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.py```:
 
 ```
 $ ./plot_track_variables.py
