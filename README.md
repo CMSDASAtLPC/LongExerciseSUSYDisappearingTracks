@@ -6,7 +6,7 @@ If you're doing the exercise at the school, please send an email to me so I can 
 
 https://mattermost.web.cern.ch/cmsdaslpc2019/channels/shorttrackteam
 
-Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker.
+Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker
 
 ## Introduction
 
@@ -25,10 +25,9 @@ ssh -y <username>@cmslpc-sl6.fnal.gov
 source /cvmfs/cms.cern.ch/cmsset_default.csh
 ```
 
-Then create a CMSSW working environment in your working area. Make sure your working area is in the ~/nobackup directory, which has more storage space than your home directory.
+Then create a CMSSW working environment in your home folder: 
 
 ```
-cd ~/nobackup
 mkdir longlivedLE
 cd longlivedLE
 cmsrel CMSSW_10_1_0
@@ -341,10 +340,9 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.py```. It is located in the tools directory:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots for ```treeplotter.sh```:
 
 ```
-$ cd ../tools
 $ ./plot_track_variables.py
 ```
 
@@ -398,7 +396,7 @@ You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmv
   * 1a) View input variables
   * 4a) View BDT response of the test sample
   * 4b) View BDT response of both test & training sample
-  * 5b) View ROC curve
+  * 5a) View ROC curve
 
 You can use button (1a) to take a look at the normalized signal and background plots of the input variables. In the minimal example, only the impact parameter dz with respect to the primary vertex and the number of tracker layers with measurement are used.
 For each event, the BDT gives a BDT classifier ranging from -1 to 1 and indicates whether the event is background- or signal-like. A plot showing this classifier is accessible with button (4a). In this plot, we want to aim for a good separation between signal and background, which would allow us to put a cut on the BDT classifier to select disappearing tracks (signal).
@@ -461,7 +459,9 @@ Note that by changing the number of events, you need to adjust the "Nev" variabl
 TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use tmva_comparison.py to overlay different ROC curves, which you can specify in the last line: 
 
 ```
-plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
+cfg_dict = {
+            "configuration 1": ["./path/to/tmva/output.root", "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/*.root", "samples.cfg"],
+           }
 ```
 
 Run it with
