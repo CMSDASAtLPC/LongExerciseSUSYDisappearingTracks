@@ -44,7 +44,7 @@ cmsenv
 Now you need to clone the git repository which contains the analysis-specific code: 
 
 ```
-git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2019
+git clone git@github.com:CMSDASAtLPC/LongExerciseSUSYDisappearingTracks.git cmsdas2019
 cd cmsdas2019
 
 cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/ usefulthings/
