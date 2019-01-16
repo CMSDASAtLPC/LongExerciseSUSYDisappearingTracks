@@ -573,13 +573,13 @@ python tools/rgs_train.py
 This creates the file LLSUSY.root which contains a tree of signal and background counts for each possible selection set in the scan. To determine the most optimal cut set, run the (second) analysis RGS script:
 
 ```
-python tools/rgs_analyze.py
+python tools/rgs_analysis.py
 ```
 This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts, and an estimate of the signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
 
 You'll have noticed the script also draws a canvas. The scatter plot depicts the ROC cloud, which shows the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance of the various cut sets falling into each bin. 
 
-Open up tools/rgs_analyze.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
+Open up tools/rgs_analysis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
 
 <b style='color:black'>Question 5. What happened to the optimum thresholds after doubling the SU? How about the expected significance? </b>
 
@@ -659,15 +659,14 @@ python tools/CompareInvariantMass.py
 
 
 
-To compute kappas from the merged histograms, and then proceed to view those kappa factors, run the following two scripts in sequence:
+To compute kappas from the merged histograms, and then proceed to view those kappa factors, create pdfs folders and run the following two scripts in sequence:
 ```
 mkdir pdfs/closure
 mkdir pdfs/closure/tpkappa
-python tools/ComputeKappa.py RawKappaMaps/RawKapps_DYJets_PixOnly.root KappaDYJets_PixOnly.root
-mv KappaDYJets_PixOnly.root usefulthings/
+source bashscripts/doKappFitting.sh
 python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndData.py PixAndStrips 
 ```
-You might find it useful to use a log scale when answering the next question.
+The script doKappFitting.sh calls the same python code python/ComputeKappa.py for the various tag and probe categories (electron, muon, long, short, barrel, endcap). It creates pdfs files which you can scp locally and look at. If you're curious about the fitting, have a look in ComputeKappa.py to see the functional form; it can be changed and tweaked if necessary to see how the pdfs change. The current choice is purly emperical. You might find it useful to use a log scale when answering the next question.
 <b style='color:black'>Question 7. How do the fit functions perform? You can modify them in the script that computes kappa. Do you notice anything distinct about the shape of kappa as a function of pT? Eta?</b>
 
 
@@ -676,6 +675,8 @@ Step 3 : Construct a **single lepton CR** and weight each event by the correspon
 
 ```
 python tools/PromptBkgHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_25_RA2AnalysisTree.root"
+
+python tools/PromptBkgHistMaker.py --fnamekeyword Summer16.WJetsToLNu_M-50_Tune --dtmode PixAndStrips
 ```
 
 If the script runs ok, edit it and add your new signal region from the RGS optimization, and then do another test run to ensure there is no crash. Then, again please just one of you, can proceed to submit a large number of jobs:

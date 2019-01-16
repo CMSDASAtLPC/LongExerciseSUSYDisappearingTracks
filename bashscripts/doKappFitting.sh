@@ -1,0 +1,16 @@
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_TTJets_PixOnly.root KappaTTJets_PixOnly.root
+mv KappaTTJets_PixOnly.root usefulthings/ 
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_DYJets_PixOnly.root KappaDYJets_PixOnly.root
+mv KappaDYJets_PixOnly.root usefulthings/
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_AllMC_PixOnly.root KappaAllMC_PixOnly.root
+mv KappaAllMC_PixOnly.root usefulthings/
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_WJets_PixOnly.root KappaWJets_PixOnly.root
+mv KappaWJets_PixOnly.root usefulthings/
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_TTJets_PixAndStrips.root KappaTTJets_PixAndStrips.root
+mv KappaTTJets_PixAndStrips.root usefulthings/ 
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_DYJets_PixAndStrips.root KappaDYJets_PixAndStrips.root
+mv KappaDYJets_PixAndStrips.root usefulthings/ 
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_AllMC_PixAndStrips.root KappaAllMC_PixAndStrips.root
+mv KappaAllMC_PixAndStrips.root usefulthings/ 
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_WJets_PixAndStrips.root KappaWJets_PixAndStrips.root
+mv KappaWJets_PixAndStrips.root usefulthings/
