@@ -1,11 +1,7 @@
 #!/bin/env python
 from __future__ import division
-import glob
 from ROOT import *
-from CfgUtils import readSamplesConfig
 import treeplotter
-import numpy as np
-import multiprocessing
 
 plot_config = {
     "pt": {"binw": 25, "xmin": 0, "xmax": 1000, "xlabel": "p_{T} (GeV)", "ylabel": "number of tracks / 25 GeV", "logx": False, "logy": True},
