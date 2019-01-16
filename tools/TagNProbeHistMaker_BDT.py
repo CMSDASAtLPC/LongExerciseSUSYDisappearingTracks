@@ -73,13 +73,11 @@ for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
         dInvMassDTHist[newHistKey] = makeTh1("hInvMass"+str(newHistKey)+"DT_num"  , "hInvMass"+str(newHistKey)+"DT_num", 40, 60, 120)
         histoStyler(dInvMassDTHist[newHistKey], 1)
 
-shortXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
-longXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
-
-readerShort = TMVA.Reader()
+pixelXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderShort(readerShort, pixelXml)
 readerLong = TMVA.Reader()
-prepareReaderShort(readerShort, shortXml)
-prepareReaderLong(readerLong, longXml)
+trackerXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderLong(readerLong, trackerXml)
 
 def main():
     

@@ -2,9 +2,14 @@ from ROOT import *
 from array import array
 
 
-PtBinEdges = [0,30,40,50,60,90,120,180, 250,2500]
+#binning for kappa factors
+#PtBinEdges = [0,30,40,50,60,90,120,180, 250,2500]
+#EtaBinEdges = [0, 1.4442,1.566, 2.4]
+
+PtBinEdges = [0,30,2500]
 EtaBinEdges = [0, 1.4442,1.566, 2.4]
 
+#binning for functions that smear quality probes:
 PtBinEdgesForSmearing = [0,20, 30,40, 50, 70, 90, 120, 200, 300, 310]
 EtaBinEdgesForSmearing = [0,1.4442,1.566,2.4]
 
