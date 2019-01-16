@@ -46,6 +46,9 @@ Now you need to clone the git repository which contains the analysis-specific co
 ```
 git clone https://github.com/LongLivedSusy/cmsdas.git cmsdas2019
 cd cmsdas2019
+
+cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/ usefulthings/
+cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/ usefulthings/
 ```
 
 ## 2.) Introduction to tracking
@@ -605,15 +608,20 @@ The following command will run a script that generates histograms for the number
 
 ```
 
-python tools/TagNProbeHistMaker.py  --fnamekeyword /eos/uscms/store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root
+python tools/TagNProbeHistMaker.py --fnamekeyword Summer16.DYJetsToLL_M-50_Tune --dtmode PixAndStrips
 ```
 
-When the script has finished running, open up the file and view a few random histograms. You'll notice that the statistics are very low for the binned pT and eta distributions. 
-
-One of you (not all) can proceed to do a larger submission on the condor batch system, which will generate a higher statistics version of these plots. The script SubmitJobs_condor.py creates one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
+When the script has finished running, you can run the fairly generic script,
 ```
-mkdir Output/
-mkdir bird/
+python tools/OverlayTwoHists.py
+```
+
+, which, as the name suggests, overlays two histograms and creates a ratio plot - in this case, it is taking actual histograms from your file. You'll notice that the statistics are very low. **Question: What are you looking at? What is its relevance to the analysis?**
+
+One of you (maybe not all) can proceed to do a larger submission on the condor batch system, which will generate a higher statistics version of these plots. The script SubmitJobs_condor.py creates one job per input file, running the script specified in the first argument over each respective file. The output file for each job will be delivered to your Output directory. 
+```
+mkdir output/
+mkdir jobs/
 
 python tools/SubmitJobs_condor.py tools/TagNProbeHistMaker_BDT.py "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL*.root"
 
