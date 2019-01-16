@@ -1,23 +1,19 @@
 from ROOT import *
 from array import array
 
-r'''
-of the barrel (|eta| < 1.4442). The outer circumferences of the endcaps are obscured by services passing between the barrel and the endcaps, and this area is removed from the fiducial region by excluding the first ring of trigger towers of the endcaps (|eta| > 1.566). The fiducial region terminates at |eta| = 2.5 where the tracker coverage ends.
-'''
 
-PtBinEdges = [15, 30, 50, 70, 90, 120, 200, 300, 310]#for Akshansh
-EtaBinEdges = [0,1.4442,1.566,2.4]# for Akshansh
+PtBinEdges = [0,30,40,50,60,90,120,180, 250,2500]
+EtaBinEdges = [0, 1.4442,1.566, 2.4]
 
-PtBinEdges = [15, 30, 60, 120, 130]#try squat little bins
-EtaBinEdges = [0,1.4442,1.566,2.4]
+PtBinEdgesForSmearing = [0,20, 30,40, 50, 70, 90, 120, 200, 300, 310]
+EtaBinEdgesForSmearing = [0,1.4442,1.566,2.4]
 
-PtBinEdges = [0,20, 30,40, 50, 70, 90, 120, 200, 300, 310]
-EtaBinEdges = [0,1.4442,1.566,2.4]
+
 
 tl = TLatex()
 tl.SetNDC()
 cmsTextFont = 61
-extraTextFont = 52
+extraTextFont = 50
 lumiTextSize = 0.6
 lumiTextOffset = 0.2
 cmsTextSize = 0.75
@@ -27,68 +23,29 @@ originalfont = tl.GetTextFont()
 epsi = "#scale[1.3]{#font[122]{e}}"
 epsilon = 0.0001
 
-#ptbins = [(15, 30), (30,60), (60,90),(90,9999)]
-#etabins = [(0,1.1), (1.1,2.5)]
-
-#ptbins = [(15, 9999)]
-#etabins = [(0, 2.5)]
-
 
 binning = {}
-binning['Met']=[0,20,50,100,150,200,300,600,900]
+#binning['Met']=[0,20,50,100,150,250,400,650,800,900,1000]
+binning['Met']=[15,0,1200]
 binning['Mht']=binning['Met']
-#binning['TrkPt']=[15,30,50,100,300]
-#binning['TrkPt']=[15,30,50,70,90,120,200,300,400,410]#good for gen check, and two eta bins
-#binning['TrkPt']=[15,30,50,70,90,120,200,300,310]
 binning['TrkPt']=PtBinEdges#[15, 30, 60, 120, 130]#just seemed to work very well
-#binning['TrkEta']=[0,1.4442,1.566,2.4]
 binning['TrkEta']=EtaBinEdges
 binning['TrkLen']=[2, 1, 3]
 binning['NJets']=[10,0,10]
 binning['NLeptons']=[5,0,5]
-binning['BTags']=[0,1,2,3,4,5,6,7]
+binning['NElectrons']=binning['NLeptons']
+binning['NMuons']=binning['NLeptons']
+binning['NTags']=[3,0,3]
+binning['NPix']=binning['NTags']
+binning['NPixStrips']=binning['NTags']
+binning['BTags']=[4,0,4]
 binning['Ht']=[10,0,2000]
-binning['MinDeltaPhiMhtJets'] = [8,0,3.2]
-
-#ptbins = [(15, 30),(30,50),(50,90),(90,9999)]
-#etabins = [(0,1.1), (1.1,1.9), (1.9,2.4)]
-
-#ptbins = [(15, 30),(30,50),(50,70),(70,90),(90,120),(120,300)]
-#etabins = [(0,0.2),(0.2,0.4),(0.4,0.6),(0.6,0.8),(0.8,1.0),(1.0,1.2),(1.2,1.4),(1.4,1.6),(1.6,1.8),(1.8,2.0),(2.0,2.2),(2.2,2.4)]
-
-def findbin(thebins, value):
-	for bin in thebins:
-		if value>=bin[0] and value<=bin[1]:
-			return bin
-	if value>thebins[-1]: return thebins[-1]
-	if value<thebins[0]: return thebins[0]	
+binning['MinDPhiMhtJets'] = [16,0,3.2]
+binning['Track1MassFromDedx'] = [25,0,1000]
+binning['BinNumber'] = [33,0,33]
 
 
-
-
-selectionsets = {}
-inf = 9999
-#selectionsets order: HT,MET,NJets,DeltaPhi1,DeltaPhi2
-selectionsets['nocuts'] = [(0,inf),(0,inf),(0,inf),(0,inf),(0,inf)]
-selectionsets['highmet'] = [(0,inf),(250,inf),(0,inf),(0,inf),(0,inf)]
-CutStages = {}
-CutStages[1] = 'All tracks'
-CutStages[2] = 'pt>15, |eta|<2.4'
-CutStages[3] = 'd(xy)<0.02/0.01'#0.02 if pixel-only
-CutStages[4] = 'd(z)<0.05'
-CutStages[5] = 'Neut. PF sum (#DeltaR<0.05)'
-CutStages[6] = 'Ch. PF sum (DeltaR,0.01)'
-CutStages[7] = 'PF lepton overlap'
-CutStages[8] = 'PF relIso < 0.2'
-CutStages[9] = 'PF absIso < 10.0'
-CutStages[10] = '#geq2 hits, #geq2 layers'
-CutStages[11] = 'NO lost inner hits'
-CutStages[12] = '#geq2 lost outer hits'
-CutStages[13] = 'pT resolution'
-CutStages[14] = 'High purity'
-
-
-def histoStyler(h,color):
+def histoStyler(h,color=kBlack):
 	h.SetLineWidth(2)
 	h.SetLineColor(color)
 	h.SetMarkerColor(color)
@@ -123,6 +80,15 @@ def makeTh1VB(name, title, nbins, arrayOfBins):
 	histoStyler(h, 1)
 	return h
 	
+def makeTh2_(name, title, nbinsx, lowx, highx, nbinsy, lowy, highy): 
+	h = TH2F(name, title, nbinsx, lowx, highx, nbinsy, lowy, highy)
+	histoStyler(h)
+	return h
+	
+def makeTh2VB(name, title, nbinsx, arrayOfBinsx, nbinsy, arrayOfBinsy):
+	h = TH2F(name, title, nbinsx, np.asarray(arrayOfBinsx, 'd'), nbinsy, np.asarray(arrayOfBinsy, 'd'))
+	histoStyler(h)
+	return h
 	
 def graphStyler(g,color):
 	g.SetLineWidth(2)
@@ -171,7 +137,7 @@ def mklegend(x1=.22, y1=.66, x2=.69, y2=.82, color=kWhite):
 	lg.SetTextFont(42)
 	lg.SetBorderSize(0)
 	lg.SetShadowColor(kWhite)
-	lg.SetFillStyle(0)
+	lg.SetFillStyle(1001)
 	return lg
 	
 def mklegend_(x1=.22, y1=.66, x2=.69, y2=.82, color=kWhite):
@@ -189,6 +155,35 @@ def fillth1(h,x,weight=1):
 def fillth2(h,x,y,weight=1):
 	h.Fill(min(max(x,h.GetXaxis().GetBinLowEdge(1)+epsilon),h.GetXaxis().GetBinLowEdge(h.GetXaxis().GetNbins()+1)-epsilon), min(max(y,h.GetYaxis().GetBinLowEdge(1)+epsilon),h.GetYaxis().GetBinLowEdge(h.GetYaxis().GetNbins()+1)-epsilon),weight)
 
+def findbin(thebins, value):
+	for bin in thebins:
+		if value>=bin[0] and value<=bin[1]:
+			return bin
+	if value>thebins[-1]: return thebins[-1]
+	if value<thebins[0]: return thebins[0]	
+
+
+selectionsets = {}
+inf = 9999
+#selectionsets order: HT,MET,NJets,DeltaPhi1,DeltaPhi2
+selectionsets['nocuts'] = [(0,inf),(0,inf),(0,inf),(0,inf),(0,inf)]
+selectionsets['highmet'] = [(0,inf),(250,inf),(0,inf),(0,inf),(0,inf)]
+CutStages = {}
+CutStages[1] = 'All tracks'
+CutStages[2] = 'pt>15, |eta|<2.4'
+CutStages[3] = 'd(xy)<0.02/0.01'#0.02 if pixel-only
+CutStages[4] = 'd(z)<0.05'
+CutStages[5] = 'Neut. PF sum (#DeltaR<0.05)'
+CutStages[6] = 'Ch. PF sum (DeltaR,0.01)'
+CutStages[7] = 'PF lepton overlap'
+CutStages[8] = 'PF relIso < 0.2'
+CutStages[9] = 'PF absIso < 10.0'
+CutStages[10] = '#geq2 hits, #geq2 layers'
+CutStages[11] = 'NO lost inner hits'
+CutStages[12] = '#geq2 lost outer hits'
+CutStages[13] = 'pT resolution'
+CutStages[14] = 'High purity'
+
 
 def namewizard(name):
 	if 'Mht' == name:
@@ -201,7 +196,7 @@ def namewizard(name):
 		return r'n_{j}'        
 	if 'BTags' == name:
 		return r'n_{b}'                
-	if 'MinDeltaPhiMetJets' == name:
+	if 'MinDPhiMhtJets' == name:
 		return r'#Delta#phi_{min}'                        
 	if 'NLeptons' == name:
 		return r'n_{#ell}'
@@ -318,15 +313,16 @@ def pause(str_='push enter key when ready'):
 		sys.stdout.flush() 
 		raw_input('')
 
-datamc = 'MC'
-def stamp(lumi='35.9', showlumi = False):    
+datamc = 'Data'
+def stamp(lumi='35.9', showlumi = False, WorkInProgress = True):    
 	tl.SetTextFont(cmsTextFont)
 	tl.SetTextSize(0.98*tl.GetTextSize())
 	tl.DrawLatex(0.135,0.915, 'CMS')
 	tl.SetTextFont(extraTextFont)
 	tl.SetTextSize(1.0/0.98*tl.GetTextSize())
 	xlab = 0.213
-	tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
+	if WorkInProgress: tl.DrawLatex(xlab,0.915, ' Preliminary')
+	else: tl.DrawLatex(xlab,0.915, ('MC' in datamc)*' simulation '+'preliminary')
 	tl.SetTextFont(regularfont)
 	tl.SetTextSize(0.81*tl.GetTextSize())    
 	thingy = ''
@@ -355,44 +351,6 @@ def stamp2(lumi='35.9', showlumi = False):
 	tl.SetTextSize(1.0/0.81*tl.GetTextSize()) 
 
 
-#------------------------------------------------------------------------------
-def mkcdf(hist, minbin=1):
-	hist.Scale(1.0/hist.Integral(1,hist.GetXaxis().GetNbins()))
-	c = [0.0]*(hist.GetNbinsX()-minbin+2+1)
-	j=1
-	for ibin in xrange(minbin, hist.GetNbinsX()+1):
-		c[j] = c[j-1] + hist.GetBinContent(ibin)
-		j += 1
-	c[j] = hist.Integral()
-	return c
-
-def mkroc(name, hsig, hbkg, lcolor=kBlue, lwidth=2, ndivx=505, ndivy=505):
-	from array import array
-	csig = mkcdf(hsig)
-	cbkg = mkcdf(hbkg)
-	npts = len(csig)
-	esig = array('d')
-	ebkg = array('d')
-	for i in xrange(npts):
-		esig.append(1 - csig[npts-1-i])
-		ebkg.append(1 - cbkg[npts-1-i])
-	g = TGraph(npts,esig,ebkg)
-	g.SetName(name)
-	g.SetLineColor(lcolor)
-	g.SetLineWidth(lwidth)
-
-	g.GetXaxis().SetTitle("#epsilon_{s}")
-	g.GetXaxis().SetLimits(0,1)
-
-	g.GetYaxis().SetTitle("#epsilon_{b}")
-	g.GetHistogram().SetAxisRange(0,1, "Y")
-
-	g.GetHistogram().SetNdivisions(ndivx, "X")
-	g.GetHistogram().SetNdivisions(ndivy, "Y")
-	return g
-
-
-
 def calcTrackIso(trk, tracks):
 	ptsum =  -trk.pt()
 	for track in tracks:
@@ -417,6 +375,17 @@ def calcMiniIso(trk, tracks):
 		if dR<R: ptsum+=track.pt()
 	return ptsum/trk.pt()
 
+def isMatched(obj, col, dR=0.02, verbose = False):
+	matchedIdx = -1
+	bigDR = inf
+	for ic, thing in enumerate(col):
+		dr = thing.DeltaR(obj)
+		if verbose: print 'dr=',dr
+		if dr<dR:
+			ismatched = True
+			return thing
+	return False
+	
 def isMatched_(obj, col, dR=0.02, verbose = False):
 	matchedIdx = -1
 	bigDR = inf
@@ -425,31 +394,31 @@ def isMatched_(obj, col, dR=0.02, verbose = False):
 		if verbose: print 'dr=',dr
 		if dr<dR:
 			ismatched = True
-			matchedIdx = ic
-			break
-	if matchedIdx<0: return False
-	else: return col[matchedIdx]
+			return thing
+	return False
 
 def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', LinearScale=False, fractionthing='(bkg-obs)/obs'):
 	cGold.cd()
+	
 	pad1 = TPad("pad1", "pad1", 0, 0.4, 1, 1.0)
 	pad1.SetBottomMargin(0.0)
 	pad1.SetLeftMargin(0.12)
 	if not LinearScale:
 		pad1.SetLogy()
+	
 	pad1.SetGridx()
 	#pad1.SetGridy()
 	pad1.Draw()
 	pad1.cd()
 	for ih in range(1,len(hComponents[1:])+1):
-		print 'entry inventory', hComponents[ih].Integral(), hComponents[ih-1].Integral()
-		print 'adding',hComponents[ih-1],'to', hComponents[ih]
+		#print 'entry inventory', hComponents[ih].Integral(), hComponents[ih-1].Integral()
+		#print 'adding',hComponents[ih-1],'to', hComponents[ih]
 		hComponents[ih].Add(hComponents[ih-1])
-		print 'entry inventory', hComponents[ih].Integral(), hComponents[ih-1].Integral()        
+		#print 'entry inventory', hComponents[ih].Integral(), hComponents[ih-1].Integral()        
 	hComponents.reverse()        
 	if abs(hComponents[0].Integral(-1,999)-1)<0.001:
 		hComponents[0].GetYaxis().SetTitle('Normalized')
-	else: hComponents[0].GetYaxis().SetTitle('#rho(Events)')
+	else: hComponents[0].GetYaxis().SetTitle('#Events')
 	cGold.Update()
 	hTruth.GetYaxis().SetTitle('Normalized')
 	hTruth.GetYaxis().SetTitleOffset(1.15)
@@ -460,7 +429,7 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	
 	title0 = hTruth.GetTitle()
 	if datamc=='MC':
-		leg.AddEntry(hComponents[0],hComponents[0].GetTitle(),'lf')
+		for hcomp in hComponents: leg.AddEntry(hcomp,hcomp.GetTitle(),'lf')
 		leg.AddEntry(hTruth,hTruth.GetTitle(),'lpf')        
 	else:
 		for ihComp, hComp in enumerate(hComponents):
@@ -477,36 +446,41 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 	hTruth.Draw('p same')
 	hTruth.Draw('e same')    
 	cGold.Update()
+	
 	#hTruth.Draw('E1 same')
-	hComponents[0].Draw('axis same')                    
+	hComponents[0].Draw('axis same')           
 	leg.Draw()        
 	cGold.Update()
 	stampFab(lumi,datamc)
 	cGold.Update()
 	cGold.cd()
+	
 	pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.4)
 	pad2.SetTopMargin(0.0)
 	pad2.SetBottomMargin(0.3)
 	pad2.SetLeftMargin(0.12)
 	pad2.SetGridx()
+	#pad2.SetLogy()
+	
 	pad2.SetGridy()
 	pad2.Draw()
 	pad2.cd()
-	hTruthCopy = hTruth.Clone()
-	hRatio = hComponents[0].Clone('hRatio')
+	
+	hTruthCopy = hTruth.Clone('hTruthClone'+hComponents[0].GetName())
+	hRatio = hComponents[0].Clone('hRatioClone')#+hComponents[0].GetName()+'testing
 	hRatio.SetMarkerStyle(20)
 	#hFracDiff = hComponents[0].Clone('hFracDiff')
 	#hFracDiff.SetMarkerStyle(20)
 	hTruthCopy.SetMarkerStyle(20)
-	hTruthCopy.SetMarkerColor(1)    
+	hTruthCopy.SetMarkerColor(1) 
 	#histoStyler(hFracDiff, 1)
 	histoStyler(hTruthCopy, 1)
 	#hFracDiff.Add(hTruthCopy,-1)
 	#hFracDiff.Divide(hTruthCopy)
 	hRatio.Divide(hTruthCopy)
-
 	hRatio.GetYaxis().SetRangeUser(0.0,.1)###
 	hRatio.SetTitle('')
+	
 	if 'prediction' in title0: hFracDiff.GetYaxis().SetTitle('(RS-#Delta#phi)/#Delta#phi')
 	else: hRatio.GetYaxis().SetTitle(fractionthing)
 	hRatio.GetXaxis().SetTitleSize(0.12)
@@ -530,11 +504,13 @@ def FabDraw(cGold,leg,hTruth,hComponents,datamc='mc',lumi=35.9, title = '', Line
 def stampFab(lumi,datamc='MC'):
 	tl.SetTextFont(cmsTextFont)
 	tl.SetTextSize(1.6*tl.GetTextSize())
-	tl.DrawLatex(0.15,0.82, 'CMS')
+	tl.DrawLatex(0.152,0.82, 'CMS')
 	tl.SetTextFont(extraTextFont)
-	tl.DrawLatex(0.23,0.82, ('MC' in datamc)*' simulation '+'preliminary')
+	tl.DrawLatex(0.14,0.74, ('MC' in datamc)*' simulation'+' preliminary')
 	tl.SetTextFont(regularfont)
-	#tl.DrawLatex(0.57,0.82,'#sqrt{s} = 13 TeV, L = '+str(lumi)+' fb^{-1}')
+	if lumi=='': tl.DrawLatex(0.62,0.82,'#sqrt{s} = 13 TeV')
+	else: tl.DrawLatex(0.5,0.82,'#sqrt{s} = 13 TeV, L = '+str(lumi)+' fb^{-1}')
+	#tl.DrawLatex(0.64,0.82,'#sqrt{s} = 13 TeV')#, L = '+str(lumi)+' fb^{-1}')	
 	tl.SetTextSize(tl.GetTextSize()/1.6)
 	
 
@@ -559,21 +535,7 @@ _neutralPtSum_ = array('f',[0])
 _chargedPtSum_ = array('f',[0])
 _pixelLayersWithMeasurement_ = array('f',[0])
 _trackerLayersWithMeasurement_ = array('f',[0])
-_pt_ = array('f',[0])
-_eta_ = array('f',[0])
-_phi_ = array('f',[0])
 _nMissingMiddleHits_ = array('f',[0])
-_deDxHarmonic2_ = array('f',[0])
-_trkMiniRelIso_ = array('f',[0])
-_passExo16044JetIso_ = array('f',[0])
-_passExo16044LepIso_ = array('f',[0])
-_passExo16044Tag_ = array('f',[0])
-_trackJetIso_ = array('f',[0])
-_trackLeptonIso_ = array('f',[0])
-_madHT_ = array('f',[0])
-_MET_ = array('f',[0])
-_HT_ = array('f',[0])
-_nCandPerEevent_ = array('f',[0])
 
 
 def prepareReaderLong(reader, xmlfilename):
@@ -607,31 +569,8 @@ def evaluateBDT(reader, trackfv):
         _nMissingOuterHits_[0] = trackfv[6]
         _ptErrOverPt2_[0] = trackfv[7]
         return  reader.EvaluateMVA("BDT")
-
-def evaluateBDT(reader, trackfv):
-        _dxyVtx_[0] = trackfv[0]
-        _dzVtx_[0] = trackfv[1]
-        _matchedCaloEnergy_[0] = trackfv[2]
-        _trkRelIso_[0] = trackfv[3]
-        _nValidPixelHits_[0] = trackfv[4]
-        _nValidTrackerHits_[0] = trackfv[5]
-        _nMissingOuterHits_[0] = trackfv[6]
-        _ptErrOverPt2_[0] = trackfv[7]
-        return  reader.EvaluateMVA("BDT")
     
-    
-def isBasicTrack(tree,itrack):		
-	if not abs(track.Eta())<2.4: return False
-	if not (abs(track.Eta())<1.4442 or abs(track.Eta())>1.566): return False		
-	if not tree.tracks_trkRelIso[itrack]<0.2: return False		
-	if not abs(tree.tracks_dxyVtx[itrack])<0.02: return False						
-	if not abs(tree.tracks_dzVtx[itrack])<0.05: return False
-	if not bool(tree.tracks_trackQualityHighPurity[itrack]): return False	
-	if not (tree.tracks_nMissingInnerHits[itrack]==0): return False 		
-	if not track.Pt()*tree.tracks_trkRelIso[itrack]<10: return False
-	return True
-
-	
+'''    
 def isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips):###from Akshansh
         moh_ = c.tracks_nMissingOuterHits[itrack]
         phits = c.tracks_nValidPixelHits[itrack]
@@ -642,47 +581,85 @@ def isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips):#
         long   = tlayers>=7 and (thits-phits)>0
         pixelStrips = medium or long
         if pixelStrips:
-                if not moh_>=2: return False
-        if not (c.tracks_nMissingInnerHits[itrack]==0): return False
-        if not (pixelOnly or pixelStrips): return False                                                                                                         
-        if not c.tracks_passPFCandVeto[itrack]: return False
+                if not moh_>=2: return 0
+        if not (c.tracks_nMissingInnerHits[itrack]==0): return 0
+        if not (pixelOnly or pixelStrips): return 0                                                                                                         
+        if not c.tracks_passPFCandVeto[itrack]: return 0
         pterr = c.tracks_ptError[itrack]/(track.Pt()*track.Pt())        
         dxyVtx = abs(c.tracks_dxyVtx[itrack])
         dzVtx = abs(c.tracks_dzVtx[itrack])        
-        if not (c.tracks_trkRelIso[itrack]<0.2 and dzVtx<0.1 and pterr<10 and c.tracks_nMissingMiddleHits[itrack]==0): return False
-        if not (c.tracks_trackQualityHighPurity[itrack]): return False
+        if not (c.tracks_trkRelIso[itrack]<0.2 and dzVtx<0.1 and pterr<10): return 0
+        if not (c.tracks_trackQualityHighPurity[itrack]): return 0
         nhits = c.tracks_nValidTrackerHits[itrack]
         nlayers = c.tracks_trackerLayersWithMeasurement[itrack]
-        if not (nlayers>=2 and nhits>=2): return False
-        matchedCalo = c.tracks_matchedCaloEnergy[itrack]
-        if not c.tracks_chi2perNdof[itrack]<2.88: return False#
-        if not dxyVtx < 0.1: return False#  
+        if not (nlayers>=2 and nhits>=2): return 0
+        matchedCalo = c.tracks_matchedCaloEnergy[itrack]        
+        if not dxyVtx < 0.1: return 0
+        #if not c.tracks_trackJetIso[itrack]>0.45: return False
+        #if not c.tracks_minDrLetpons[itrack]>0.01: return False	        
         trackfv = [dxyVtx, dzVtx, matchedCalo, c.tracks_trkRelIso[itrack], phits, thits, moh_, pterr]
         if pixelOnly:
                 mva_ = evaluateBDT(readerPixelOnly, trackfv)
-                if not mva_ > 0.4: return False###.4
-                else: return mva_
+                if not mva_ > 0.15: return 0###.1
+                else: return 1
         elif pixelStrips:
-                mva_ = evaluateBDT(readerPixelStrips, trackfv)
-                if not mva_ > 0.25:return False###.2
-                else: return mva_
+                mva_ = evaluateBDT(readerPixelStrips, trackfv)             
+                if not mva_ > 0.25:return 0###.25
+                else: return 2
         else:
-                return False
-                
-def isBaselineTrack(track, track_id, c):
+                return 0
+
+def isBaselineTrack(track, itrack, c, hMask):
 	if not abs(track.Eta())< 2.4 : return False
-	if (abs(track.Eta()) > 1.4442 and abs(track.Eta()) < 1.566): return False
-	if not bool(c.tracks_trackQualityHighPurity[track_id]) : return False
-	if not (c.tracks_ptError[track_id]/(track.Pt()*track.Pt()) < 10): return False
-	if not abs(c.tracks_dxyVtx[track_id]) < 0.02: return False
-	if not abs(c.tracks_dzVtx[track_id]) < 0.01 : return False
-	if not c.tracks_trkRelIso[track_id] < 0.2: return False
-	if not (c.tracks_trackerLayersWithMeasurement[track_id] >= 2 and c.tracks_nValidTrackerHits[track_id] >= 2): return False
-	if not c.tracks_nMissingInnerHits[track_id]==0: return False
+	if not (abs(track.Eta()) < 1.4442 or abs(track.Eta()) > 1.566): return False
+	if not bool(c.tracks_trackQualityHighPurity[itrack]) : return False
+	if not (c.tracks_ptError[itrack]/(track.Pt()*track.Pt()) < 10): return False
+	if not abs(c.tracks_dxyVtx[itrack]) < 0.1: return False
+	if not abs(c.tracks_dzVtx[itrack]) < 0.1 : return False
+	if not c.tracks_trkRelIso[itrack] < 0.2: return False
+	if not (c.tracks_trackerLayersWithMeasurement[itrack] >= 2 and c.tracks_nValidTrackerHits[itrack] >= 2): return False
+	if not c.tracks_nMissingInnerHits[itrack]==0: return False
+	if not c.tracks_nMissingMiddleHits[itrack]==0: return False	
+	if hMask!='':
+		xax, yax = hMask.GetXaxis(), hMask.GetYaxis()
+		ibinx, ibiny = xax.FindBin(track.Phi()), yax.FindBin(track.Eta())
+		if hMask.GetBinContent(ibinx, ibiny)==0: return False
 	return True
-	                
+'''                
 def overflow(h):
     bin = h.GetNbinsX()+1
     c = h.GetBinContent(bin)
     h.AddBinContent((bin-1),c)
+  
+def passQCDHighMETFilter(t):
+    metvec = mkmet(t.MET, t.METPhi)
+    for ijet, jet in enumerate(t.Jets):
+        if not (jet.Pt() > 200): continue
+        if not (t.Jets_muonEnergyFraction[ijet]>0.5):continue 
+        if (abs(jet.DeltaPhi(metvec)) > (3.14159 - 0.4)): return False
+    return True  
+    
+def mkmet(metPt, metPhi):
+    met = TLorentzVector()
+    met.SetPtEtaPhiE(metPt, 0, metPhi, metPt)
+    return met
+    
+def passesUniversalSelection(t):
+    if not (bool(t.JetID) and  t.NVtx>0): return False
+    if not (t.Electrons.size()==0 and t.Muons.size()==0 and t.isoElectronTracks==0 and t.isoMuonTracks==0 and t.isoPionTracks==0): return False
+    if not  passQCDHighMETFilter(t): return False
+    if not t.PFCaloMETRatio<2: return False
+    #if not t.globalSuperTightHalo2016Filter: return False
+    if not t.globalTightHalo2016Filter: return False
+    if not t.HBHEIsoNoiseFilter: return False
+    if not t.HBHENoiseFilter: return False
+    if not t.BadChargedCandidateFilter: return False
+    if not t.BadPFMuonFilter: return False
+    if not t.CSCTightHaloFilter: return False
+    #if not t.ecalBadCalibFilter: return False #this says it's deprecated
+    #if not t.EcalDeadCellTriggerPrimitiveFilter: return False
+    if not t.eeBadScFilter: return False         
+    return True
+    
+    
 	

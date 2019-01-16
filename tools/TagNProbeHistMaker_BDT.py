@@ -20,7 +20,7 @@ hNTrackerLayersDT = TH1F('hNTrackerLayersDT','hNTrackerLayersDT',11,0,11)
 
 try: inputFileNames = sys.argv[1]
 except: 
-    inputFileNames = "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_391_RA2AnalysisTree.root"
+    inputFileNames = "root://cmsxrootd.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root"
     print 'running on small default DYtoLL sample', inputFileNames
     
 inputFiles = glob(inputFileNames)
@@ -73,23 +73,25 @@ for iPtBin, PtBin in enumerate(PtBinEdges[:-1]):
         dInvMassDTHist[newHistKey] = makeTh1("hInvMass"+str(newHistKey)+"DT_num"  , "hInvMass"+str(newHistKey)+"DT_num", 40, 60, 120)
         histoStyler(dInvMassDTHist[newHistKey], 1)
 
-##adapt script for BDT disappearing track
-readerPixelOnly = TMVA.Reader()
-pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas-res/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
-prepareReader(readerPixelOnly, pixelXml)
-readerPixelStrips = TMVA.Reader()
-trackerXml = '/nfs/dust/cms/user/kutznerv/cmsdas-res/BDTs/newpresel2-200-4-medium-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
-prepareReader(readerPixelStrips, trackerXml)
+shortXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
+longXml = '/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
+
+readerShort = TMVA.Reader()
+readerLong = TMVA.Reader()
+prepareReaderShort(readerShort, shortXml)
+prepareReaderLong(readerLong, longXml)
 
 def main():
     
     for f in range(0,x_):
         print 'file number:', f, ':',inputFiles[f]
+        
         c.Add(inputFiles[f])
         
     nentries = c.GetEntries()
     print nentries, ' events to be analyzed'
     verbosity = 1000
+    print 'inputfiles', inputFiles
     identifier = inputFiles[0][inputFiles[0].rfind('/')+1:].replace('.root','').replace('Summer16.','').replace('RA2AnalysisTree','')
     identifier+='nFiles'+str(len(inputFiles))
 
@@ -251,7 +253,7 @@ def main():
             if not track.Pt() > 15 : continue
             if not abs(track.Eta()) < 2.4: continue
             if abs(abs(track.Eta()) < 1.566) and abs(track.Eta()) > 1.4442: continue
-            if not isDisappearingTrack_(track, itrack, c, readerPixelOnly, readerPixelStrips): continue
+            if not isDisappearingTrack_(track, itrack, c, readerShort, readerLong): continue
             disappearingTracks.append([track,itrack])
 
         RecoElectrons = []

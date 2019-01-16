@@ -606,8 +606,7 @@ The following command will run a script that generates histograms for the number
 
 ```
 
-python tools/TagNProbeHistMaker_BDT.py root://cmsxrootd.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root
-
+python tools/TagNProbeHistMaker.py  --fnamekeyword /eos/uscms/store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_104_RA2AnalysisTree.root
 ```
 
 When the script has finished running, open up the file and view a few random histograms. You'll notice that the statistics are very low for the binned pT and eta distributions. 
