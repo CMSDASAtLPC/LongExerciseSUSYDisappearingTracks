@@ -4,7 +4,7 @@ import multiprocessing
 from GridEngineTools import runParallel
 
 runmode = "grid"
-output_folder = "output_dileptons"
+output_folder = "."
 files_per_job = 3
 files_per_sample = -1
 
@@ -12,10 +12,11 @@ os.system("mkdir -p %s" % output_folder)
 commands = []
 
 # select DESY location:
-ntuples_folder = "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2"
+#ntuples_folder = "/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2"
 
 # select FNAL location:
 # ntuples_folder = "root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/"
+ntuples_folder = "/eos/uscms/store/user/lpcsusyhad/sbein/cmsdas19/Ntuples"
 
 cmssw8_samples = [
                     "Summer16.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
@@ -72,9 +73,17 @@ for sample in cmssw8_samples:
     file_segments = [ifile_list[x:x+files_per_job] for x in range(0,len(ifile_list),files_per_job)]
 
     for inFile_segment in file_segments:
-            
+                        
         out_tree = output_folder + "/" + inFile_segment[0].split("/")[-1].split(".root")[0] + "_fakes.root"
         commands.append("./fakerate_loop.py %s %s" % (str(inFile_segment).replace(", ", ",").replace("[", "").replace("]", ""), out_tree))
+
+        # for FNAL:
+        commands[-1] = commands[-1].replace("/eos/uscms/", "root://cmseos.fnal.gov/")
+
+
+#FIXME -- remove to submit all jobs
+commands = [commands[0]]
+#FIXME -- remove to submit all jobs
 
 raw_input("submit %s jobs?" % len(commands))
 os.system("cp fakerate_loop.py %s/" % output_folder)

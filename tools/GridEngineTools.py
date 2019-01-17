@@ -8,23 +8,31 @@ import datetime
 import subprocess
 import multiprocessing
 
-jobscript = '''#!/bin/zsh
-echo "$QUEUE $JOB $HOST"
+jobscript = '''
+#!/bin/bash
+export PATH=${PATH}:/cvmfs/cms.cern.ch/common
+export CMS_PATH=/cvmfs/cms.cern.ch
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-export SCRAM_ARCH=slc6_amd64_gcc530
-cd CMSBASE
-#cmsenv
+
+tar -zxvf gridpack.tgz
+init_dir=$(pwd)
+cd CMSSW_10_1_0/src/cmsdas2019/tools/
 eval `scramv1 runtime -sh`
-echo $CMSSW_BASE
-cd CWD
-COMMAND
+
+#cd ${_CONDOR_SCRATCH_DIR}
+
+COMMAND 1000
+
 if [ $? -eq 0 ]
 then
     echo "Success"
 else
     echo "Failed"
 fi
+
+
 '''
+
 
 def ShellExec(command):
     os.system(command)
@@ -100,10 +108,11 @@ def runCommands(commands, dryrun=False, birdDir="submission", cmsbase=False, qsu
 
             submission_file_content = """
                 universe = vanilla
-                should_transfer_files = IF_NEEDED
+                should_transfer_files = YES
+                WhenToTransferOutput = ON_EXIT
+                Transfer_Input_Files = $ENV(CMSSW_BASE)/src/cmsdas2019/tools/fakerate_loop.py,$ENV(CMSSW_BASE)/src/cmsdas2019/tools/submission/gridpack.tgz
                 log = %s.sh.log$(Cluster)
-                executable = /bin/bash
-                arguments = %s.sh
+                executable = %s.sh
                 initialdir = %s
                 error = %s.sh.e$(Cluster)
                 output = %s.sh.o$(Cluster)
