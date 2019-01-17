@@ -574,13 +574,13 @@ python tools/rgs_train.py
 This creates the file LLSUSY.root which contains a tree of signal and background counts for each possible selection set in the scan. To determine the most optimal cut set, run the (second) analysis RGS script:
 
 ```
-python tools/rgs_analyze.py
+python tools/rgs_analyis.py
 ```
 This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts, and an estimate of the signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
 
 You'll have noticed the script also draws a canvas. The scatter plot depicts the ROC cloud, which shows the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance of the various cut sets falling into each bin. 
 
-Open up tools/rgs_analyze.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
+Open up tools/rgs_analyis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyis.py script.
 
 <b style='color:black'>Question 5. What happened to the optimum thresholds after doubling the SU? How about the expected significance? </b>
 
@@ -727,7 +727,7 @@ There are different approaches to measure the fake rate. One approach is to use 
 Some tips: You can use ```fakerate_loop.py``` to loop over the events of the ntuples. In the event loop, you can add the dilepton selection. Test the script with
 
 ```
-./fakerate_loop.py root://path/to/input/file test.root
+./fakerate_loop.py root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_163_RA2AnalysisTree.root test.root
 ```
 
 Once you are ready to run over the complete set of ntuples using condor submission, you can use
