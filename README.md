@@ -699,15 +699,17 @@ python tools/mergeMcHists.py output/totalweightedbkgsDataDrivenMC.root "output/S
 python tools/closurePromptBkg.py output/totalweightedbkgsDataDrivenMC.root outputClosure.root
 ```
 
-You can also copy the necessary input files from here:
+You can also copy the real data versions of the control region histograms:
 
 ```
 cp /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/totalweightedbkgs*.root output/
+cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/mergedRoots .
 ```
 
 It is also important to validate the procedure in the real data. A good test region is a ttbar-enhanced control region, where we select one good muon or electron and at least one b-tagged jet. The test is made in the low MHT sideband from 100-250:
 
 ```
+mkdir pdfs/closure/prompt-bkg-validation/
 python tools/closureDataValidation.py
 ```
 

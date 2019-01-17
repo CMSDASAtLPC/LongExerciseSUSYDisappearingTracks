@@ -144,7 +144,7 @@ for key in sorted(keys):
 		hFakes.SetFillColor(kOrange)
 		hFakes.SetFillStyle(1001)		
 		if 'PixOnly' in name: fudgefactor = 4.0
-		else: fudgefactor = 3.0		
+		else: fudgefactor = 0.5
 		hFakes.Scale(fudgefactor)
 		hratio = FabDraw(c1,leg,hTruth,[hFakes,hElMethod,hMuMethod],datamc='data',lumi=lumi/1000, title = '', LinearScale=False, fractionthing='pred. / obs')
 	else:
