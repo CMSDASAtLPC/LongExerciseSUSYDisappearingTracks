@@ -46,7 +46,7 @@ def main():
 	x, y = array( 'd' ), array( 'd' )
 	zmax = 0
 	izmax = -1
-	sys = 0.30 #fractional uncertainty on b
+	sys = 3 #fractional uncertainty on b
 
 	msize = 0.30  # marker size for points in ROC plot
 	xbins =  25   # number of bins in x (background)
@@ -71,7 +71,7 @@ def main():
 		if not t.NJets<7: continue
 		if b<.1: continue
 		if not s>0.01: continue
-		z = s/TMath.Sqrt(s+b+pow(sys*b,2))
+		z = s/TMath.Sqrt(b+pow(sys*b,2))
 		if z>zmax: 
 			zmax = z
 			izmax = ientry
@@ -87,7 +87,7 @@ def main():
 	t.Show(izmax)
 	s = t.count_s
 	b = t.count_b
-	z = s/TMath.Sqrt(s+b+pow(sys*b,2))
+	z = s/TMath.Sqrt(b+pow(sys*b,2))
 	print 's=%.2f, b=%.2f, z=%.2f' % (s, b, z)
 	groc = TGraph( n, x, y )
 	groc.SetLineColor( 1 )

@@ -71,7 +71,7 @@ def main():
 	treename   = "tEvent"  # name of Root tree 
 	weightname = "weight"    # name of event weight variable
 	#lumi = 35900 # in 1/pb
-	lumi = 150000
+	lumi = 135000
 	# One can add an optional selection, which, if true, keeps the event.
 	selection  = "(Mht >= 150 && NTags==1)"
 
