@@ -739,7 +739,17 @@ Some tips: You can use ```fakerate_loop.py``` to loop over the events of the ntu
 ./fakerate_loop.py root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_163_RA2AnalysisTree.root test.root
 ```
 
-Once you are ready to run over the complete set of ntuples using condor submission, you can use
+Once you are ready to run over the complete set of ntuples using condor submission, first create a gridpack:
+
+```
+cd $CMSSW_BASE/..
+tar -czf gridpack.tgz CMSSW_10_1_0
+mkdir CMSSW_10_1_0/src/cmsdas2019/tools/submission
+mv gridpack.tgz CMSSW_10_1_0/src/cmsdas2019/tools/submission/
+cd -
+```
+
+Then submit your condor jobs:
 
 ```
 ./fakerate_submit.py
