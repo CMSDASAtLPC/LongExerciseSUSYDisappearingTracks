@@ -18,10 +18,11 @@ tar -zxvf gridpack.tgz
 init_dir=$(pwd)
 cd CMSSW_10_1_0/src/cmsdas2019/tools/
 eval `scramv1 runtime -sh`
+cd -
 
 #cd ${_CONDOR_SCRATCH_DIR}
 
-COMMAND 1000
+COMMAND
 
 if [ $? -eq 0 ]
 then

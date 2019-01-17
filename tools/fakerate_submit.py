@@ -5,8 +5,8 @@ from GridEngineTools import runParallel
 
 runmode = "grid"
 output_folder = "."
-files_per_job = 3
-files_per_sample = -1
+files_per_job = 1
+files_per_sample = 1
 
 os.system("mkdir -p %s" % output_folder)
 commands = []
@@ -17,6 +17,7 @@ commands = []
 # select FNAL location:
 # ntuples_folder = "root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/"
 ntuples_folder = "/eos/uscms/store/user/lpcsusyhad/sbein/cmsdas19/Ntuples"
+#ntuples_folder = "root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples"
 
 cmssw8_samples = [
                     "Summer16.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
@@ -78,12 +79,10 @@ for sample in cmssw8_samples:
         commands.append("./fakerate_loop.py %s %s" % (str(inFile_segment).replace(", ", ",").replace("[", "").replace("]", ""), out_tree))
 
         # for FNAL:
-        commands[-1] = commands[-1].replace("/eos/uscms/", "root://cmseos.fnal.gov/")
+        commands[-1] = commands[-1].replace("/eos/uscms/", "root://cmseos.fnal.gov//")
 
 
-#FIXME -- remove to submit all jobs
 commands = [commands[0]]
-#FIXME -- remove to submit all jobs
 
 raw_input("submit %s jobs?" % len(commands))
 os.system("cp fakerate_loop.py %s/" % output_folder)
