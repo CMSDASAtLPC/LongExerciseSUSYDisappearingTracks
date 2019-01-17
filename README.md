@@ -701,6 +701,15 @@ python tools/closurePromptBkg.py output/totalweightedbkgsDataDrivenMC.root outpu
 
 You can also copy the necessary input files from here:
 
+```
+cp /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/totalweightedbkgs*.root output/
+```
+
+It is also important to validate the procedure in the real data. A good test region is a ttbar-enhanced control region, where we select one good muon or electron and at least one b-tagged jet. The test is made in the low MHT sideband from 100-250:
+
+```
+python tools/closureDataValidation.py
+```
 
 ### 5.b) Fake track background
 
