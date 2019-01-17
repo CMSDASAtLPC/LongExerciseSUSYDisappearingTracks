@@ -6,7 +6,7 @@ If you're doing the exercise at the school, please send an email to me so I can 
 
 https://mattermost.web.cern.ch/cmsdaslpc2019/channels/shorttrackteam
 
-Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker.
+Note about the samples: This exercise is built largely on pre-made ntuples, and is thus mostly independent of CMSSW. The code that generated the ntuples is contained in the repo: https://github.com/longlivedsusy/treemaker
 
 ## Introduction
 
@@ -25,10 +25,9 @@ ssh -y <username>@cmslpc-sl6.fnal.gov
 source /cvmfs/cms.cern.ch/cmsset_default.csh
 ```
 
-Then create a CMSSW working environment in your working area. Make sure your working area is in the ~/nobackup directory, which has more storage space than your home directory.
+Then create a CMSSW working environment in your home folder: 
 
 ```
-cd ~/nobackup
 mkdir longlivedLE
 cd longlivedLE
 cmsrel CMSSW_10_1_0
@@ -341,7 +340,7 @@ You are looking at a couple of observables that are key to selecting signal disa
 
 ### 3.b) Plot signal and background
 
-We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots from ```treeplotter.py```:
+We will now plot the signal alongside with the stacked main MC backgrounds on track level. The script ```plot_track_variables.py``` contains some predefined plots for ```treeplotter.sh```:
 
 ```
 $ ./plot_track_variables.py
@@ -460,7 +459,9 @@ Note that by changing the number of events, you need to adjust the "Nev" variabl
 TMVA stores the output by default in "output.root" and a folder containing the weights of the BDT along with a C helper class to apply the weights to a given event. You can use tmva_comparison.py to overlay different ROC curves, which you can specify in the last line: 
 
 ```
-plot_rocs("comparison.pdf", ["./output1.root", "./output2.root", ...])
+cfg_dict = {
+            "configuration 1": ["./path/to/tmva/output.root", "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/*.root", "samples.cfg"],
+           }
 ```
 
 Run it with
@@ -573,13 +574,21 @@ python tools/rgs_train.py
 This creates the file LLSUSY.root which contains a tree of signal and background counts for each possible selection set in the scan. To determine the most optimal cut set, run the (second) analysis RGS script:
 
 ```
+<<<<<<< HEAD
 python tools/rgs_analysis.py
+=======
+python tools/rgs_analyis.py
+>>>>>>> 9c6c41e776bc5df23024fcbdcc2b4375950223e4
 ```
 This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts, and an estimate of the signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
 
 You'll have noticed the script also draws a canvas. The scatter plot depicts the ROC cloud, which shows the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance of the various cut sets falling into each bin. 
 
+<<<<<<< HEAD
 Open up tools/rgs_analysis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
+=======
+Open up tools/rgs_analyis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyis.py script.
+>>>>>>> 9c6c41e776bc5df23024fcbdcc2b4375950223e4
 
 <b style='color:black'>Question 5. What happened to the optimum thresholds after doubling the SU? How about the expected significance? </b>
 
@@ -664,7 +673,7 @@ To compute kappas from the merged histograms, and then proceed to view those kap
 mkdir pdfs/closure
 mkdir pdfs/closure/tpkappa
 source bashscripts/doKappFitting.sh
-python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndData.py PixAndStrips 
+python tools/PlotKappaClosureAndData.py PixOnly && python tools/PlotKappaClosureAndData.py PixAndStrips
 ```
 The script doKappFitting.sh calls the same python code python/ComputeKappa.py for the various tag and probe categories (electron, muon, long, short, barrel, endcap). It creates pdfs files which you can scp locally and look at. If you're curious about the fitting, have a look in ComputeKappa.py to see the functional form; it can be changed and tweaked if necessary to see how the pdfs change. The current choice is purly emperical. You might find it useful to use a log scale when answering the next question.
 <b style='color:black'>Question 7. How do the fit functions perform? You can modify them in the script that computes kappa. Do you notice anything distinct about the shape of kappa as a function of pT? Eta?</b>
@@ -727,7 +736,7 @@ There are different approaches to measure the fake rate. One approach is to use 
 Some tips: You can use ```fakerate_loop.py``` to loop over the events of the ntuples. In the event loop, you can add the dilepton selection. Test the script with
 
 ```
-./fakerate_loop.py root://path/to/input/file test.root
+./fakerate_loop.py root://cmseos.fnal.gov//store/user/lpcsusyhad/sbein/cmsdas19/Ntuples/Summer16.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1_163_RA2AnalysisTree.root test.root
 ```
 
 Once you are ready to run over the complete set of ntuples using condor submission, you can use
