@@ -14,3 +14,7 @@ python tools/ComputeKappa.py RawKappaMaps/RawKapps_AllMC_PixAndStrips.root Kappa
 mv KappaAllMC_PixAndStrips.root usefulthings/ 
 python tools/ComputeKappa.py RawKappaMaps/RawKapps_WJets_PixAndStrips.root KappaWJets_PixAndStrips.root
 mv KappaWJets_PixAndStrips.root usefulthings/
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_Run2016_PixOnly.root KappaRun2016_PixOnly.root
+mv KappaRun2016_PixOnly.root usefulthings/
+python tools/ComputeKappa.py RawKappaMaps/RawKapps_Run2016_PixAndStrips.root KappaRun2016_PixAndStrips.root
+mv KappaRun2016_PixAndStrips.root usefulthings/

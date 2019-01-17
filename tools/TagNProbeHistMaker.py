@@ -56,7 +56,7 @@ newfname = 'TagnProbeHists_'+identifier+'.root'
 if PixMode: newfname = newfname.replace('.root','_PixOnly.root')
 if PixStripsMode: newfname = newfname.replace('.root','_PixAndStrips.root')
 if CombineMode: newfname = newfname.replace('.root','_PixOrStrips.root')
-newfname = newfname.replace('RA2AnalysisTree_','').replace('_PixOnly.root_PixOnly.root','_PixOnly.root').replace('_PixAndStrips.root_PixAndStrips.root','_PixOnly.root')
+newfname = newfname.replace('RA2AnalysisTree_','').replace('_PixOnly.root_PixOnly.root','_PixOnly.root').replace('_PixAndStrips.root_PixAndStrips.root','_PixAndStrips.root')
 fnew = TFile(newfname,'recreate')
 
 

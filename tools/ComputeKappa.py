@@ -60,7 +60,7 @@ for key in keys:
     #funcs['f1'+ratname] = TF1('f1'+ratname,'0.001*[0] + [1]/pow(x,1) + [2]/pow(x,2)+[5]/pow(x,0.5) + 0.0002*exp(-[3]*pow(x-325,2))',20,2000)
     #funcs['f1'+ratname] = TF1('f1'+ratname,'0.001*[0] + [1]/pow(x,1) + [2]*x +[3]*exp(-[4]*(x-325)) ',20,2000)
     #funcs['f1'+ratname] = TF1('f1'+ratname,'0.01*[0] + 0.01*[1]/x + 0.01*[2]/x/x + [3]*exp(-[4]*x)',20,2500)
-    funcs['f1'+ratname] = TF1('f1'+ratname,'0.1*[0] + 0.1*[1]/(pow(x,0.5)) + 0.1*[5]/(pow(x,1)) + 0.1*[2]/pow(x,2) + [3]*exp(-[4]*x)',30,2500)
+    funcs['f1'+ratname] = TF1('f1'+ratname,'0.1*[0] + 0.1*[1]/(pow(x,0.5)) + 0.1*[5]/(pow(x,1)) + 0.1*[2]/pow(x,2) + [3]*exp(-[4]*x)',30,2500)###good one
     funcs['f1'+ratname].SetParLimits(0,0, 1.9)
     #funcs['f1'+ratname].SetParLimits(1,0, 9999)
     #funcs['f1'+ratname].SetParLimits(2,0, 9999)

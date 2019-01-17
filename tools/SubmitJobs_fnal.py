@@ -17,7 +17,7 @@ dtmode = args.dtmode
 analyzer = args.analyzer
 pileup = args.pileup
     
-istest = True
+istest = False
 
 try: 
 	moreargs = ' '.join(sys.argv)
@@ -44,7 +44,7 @@ def main():
     for fname_ in fnamelines:
         if not (fnamekeyword in fname_): continue
         fname = fname_.strip()
-        job = analyzer.split('/')[-1].replace('.py','').replace('.jdl','')+'-'+fname.strip()
+        job = analyzer.split('/')[-1].replace('.py','').replace('.jdl','')+'-'+fname.strip()+dtmode
         job = job.replace('.root','')
         #print 'creating jobs:',job
         newjdl = open('jobs/'+job+'.jdl','w')
