@@ -186,7 +186,7 @@ def quick_fakerate(variable, binWidth, xmin, xmax, xlabel = "", path = "./output
 if __name__ == "__main__":
 
     config = "samples_all.cfg"
-    path = "output_dileptons/"
+    path = "submission/"
     output_folder = "plots_fakerate"
     cutstring = "PFCaloMETRatio<5"
 
