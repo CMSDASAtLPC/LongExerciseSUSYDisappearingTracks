@@ -95,11 +95,11 @@ events = fwlite.Events("tracks_and_vertices.root")
 tracks = fwlite.Handle("std::vector<reco::Track>")
 
 for i, event in enumerate(events):
-    if i >= 5: break            # only the first 5 events
-    print "Event", i
-    event.getByLabel("generalTracks", tracks)
-    for j, track in enumerate(tracks.product()):
-        print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
+if i >= 5: break            # only the first 5 events
+print "Event", i
+event.getByLabel("generalTracks", tracks)
+for j, track in enumerate(tracks.product()):
+print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
 ```
 
 The first three lines load the FWLite framework, the data file, and prepare a handle for the track collection using its full C++ name (```std::vector```). In each event, we load the tracks labeled "generalTracks" and loop over them, printing out the five basic track variables for each.
@@ -126,39 +126,39 @@ MVAs   = fwlite.Handle("std::vector<float>")
 ```
 
 The event loop should be updated to this: 
- 
+
 ```
 for i, event in enumerate(events):
-    if i >= 5: break            # only the first 5 events
-    print "Event", i
-    event.getByLabel("generalTracks", tracks)
-    event.getByLabel("generalTracks", "MVAValues", MVAs)
+if i >= 5: break            # only the first 5 events
+print "Event", i
+event.getByLabel("generalTracks", tracks)
+event.getByLabel("generalTracks", "MVAValues", MVAs)
 
-    numTotal = tracks.product().size()
-    numLoose = 0
-    numTight = 0
-    numHighPurity = 0
+numTotal = tracks.product().size()
+numLoose = 0
+numTight = 0
+numHighPurity = 0
 
-    for j, (track, mva) in enumerate(zip(tracks.product(), MVAs.product())):
-        if track.quality(track.qualityByName("loose")):      numLoose      += 1
-        if track.quality(track.qualityByName("tight")):      numTight      += 1
-        if track.quality(track.qualityByName("highPurity")): numHighPurity += 1
+for j, (track, mva) in enumerate(zip(tracks.product(), MVAs.product())):
+if track.quality(track.qualityByName("loose")):      numLoose      += 1
+if track.quality(track.qualityByName("tight")):      numTight      += 1
+if track.quality(track.qualityByName("highPurity")): numHighPurity += 1
 
-        print "    Track", j,
-        print track.charge()/track.pt(),
-        print track.phi(),
-        print track.eta(),
-        print track.dxy(),
-        print track.dz(),
-        print track.numberOfValidHits(),
-        print track.algoName(),
-        print mva
+print "    Track", j,
+print track.charge()/track.pt(),
+print track.phi(),
+print track.eta(),
+print track.dxy(),
+print track.dz(),
+print track.numberOfValidHits(),
+print track.algoName(),
+print mva
 
-    print "Event", i,
-    print "numTotal:", numTotal,
-    print "numLoose:", numLoose,
-    print "numTight:", numTight,
-    print "numHighPurity:", numHighPurity
+print "Event", i,
+print "numTotal:", numTotal,
+print "numLoose:", numLoose,
+print "numTight:", numTight,
+print "numHighPurity:", numHighPurity
 ```
 
 To plot some track variables, use ROOT and make a python loop like in the example below (name this file ```plot_track_quantities.py```).
@@ -176,13 +176,13 @@ hist_phi  = ROOT.TH1F("phi", "phi", 100, -3.2, 3.2)
 hist_normChi2 = ROOT.TH1F("normChi2", "normChi2", 100, 0.0, 10.0)
 
 for i, event in enumerate(events):
-    event.getByLabel("generalTracks", tracks)
-    for track in tracks.product():
-        hist_pt.Fill(track.pt())
-        hist_eta.Fill(track.eta())
-        hist_phi.Fill(track.phi())
-        hist_normChi2.Fill(track.normalizedChi2())
-    if i > 1000: break
+event.getByLabel("generalTracks", tracks)
+for track in tracks.product():
+hist_pt.Fill(track.pt())
+hist_eta.Fill(track.eta())
+hist_phi.Fill(track.phi())
+hist_normChi2.Fill(track.normalizedChi2())
+if i > 1000: break
 
 c = ROOT.TCanvas( "c", "c", 800, 800)
 
@@ -221,10 +221,10 @@ events = fwlite.Events("tracks_and_vertices.root")
 tracks = fwlite.Handle("std::vector<reco::Track>")
 
 for i, event in enumerate(events):
-    event.getByLabel("generalTracks", tracks)
-    for track in tracks.product():
-        print track.pt(), track.p(), track.px(), track.py(), track.pz()
-    if i > 100: break
+event.getByLabel("generalTracks", tracks)
+for track in tracks.product():
+print track.pt(), track.p(), track.px(), track.py(), track.pz()
+if i > 100: break
 ```
 
 <b>Exercise: Now we can use this to do some kinematics. Assuming that the particle is a pion, calculate its kinetic energy.</b>
@@ -249,18 +249,18 @@ pz_histogram = ROOT.TH1F("pz", "pz", 100, -1000.0, 1000.0)
 
 events.toBegin()                # start event loop from the beginning
 for event in events:
-    event.getByLabel("generalTracks", tracks)
-    total_px = 0.0
-    total_py = 0.0
-    total_pz = 0.0
-    for track in tracks.product():
-        total_px += track.px()
-        total_py += track.py()
-        total_pz += track.pz()
-    px_histogram.Fill(total_px)
-    py_histogram.Fill(total_py)
-    pz_histogram.Fill(total_pz)
-    # no break statement; we're looping over all events
+event.getByLabel("generalTracks", tracks)
+total_px = 0.0
+total_py = 0.0
+total_pz = 0.0
+for track in tracks.product():
+total_px += track.px()
+total_py += track.py()
+total_pz += track.pz()
+px_histogram.Fill(total_px)
+py_histogram.Fill(total_py)
+pz_histogram.Fill(total_pz)
+# no break statement; we're looping over all events
 
 c = ROOT.TCanvas ("c" , "c", 800, 800)
 px_histogram.Draw()
@@ -272,7 +272,7 @@ c.SaveAs("track_pz.png")
 ```
 
 While this is running, ask yourself what you expect the total_px, total_py, total_pz distributions should look like. (It can take a few minutes; Python is slow when used on large numbers of events.) Can you explain the relative variances of the distributions? 
- 
+
 Finally, let's look for resonances. Given two tracks,   
 
 ```
@@ -297,15 +297,15 @@ To increase the chances that pairs of randomly chosen tracks are descendants of 
 ![](https://raw.githubusercontent.com/LongLivedSusy/cmsdas/master/tracking/cms_quarterview.png) 
 
 Normally, one would access muons through the reco::Muon object since this contains additional information about the quality of the muon hypothesis. For simplicity, we will access their track collection in the same way that we have been accessing the main track collection. We only need to replace "generalTracks" with "globalMuons". Add the following loop to ```kinematics.py```. 
- 
+
 ```
 events.toBegin()
 for i, event in enumerate(events):
-    if i >= 5: break            # only the first 5 events
-    print "Event", i
-    event.getByLabel("globalMuons", tracks)
-    for j, track in enumerate(tracks.product()):
-        print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
+if i >= 5: break            # only the first 5 events
+print "Event", i
+event.getByLabel("globalMuons", tracks)
+for j, track in enumerate(tracks.product()):
+print "    Track", j, track.charge()/track.pt(), track.phi(), track.eta(), track.dxy(), track.dz()
 ```
 
 Notice how few muon tracks there are compared to the same code executed for "generalTracks". In fact, you only see as many muons as you do because this data sample was collected with a muon trigger. (The muon definition in the trigger is looser than the "globalMuons" algorithm, which is why there are some events with fewer than two "globalMuons".)
@@ -365,8 +365,8 @@ After having looked at some of the tracking variables, you now have to develop a
 #### Track categorization
 
 We define two basic track categories. Tracks which are reconstructed in the pixel tracker are classified as pixel-only tracks, while tracks in both the pixel and strips tracker are classified as pixel+strips tracks:
-   * pixel-only tracks: equal number of pixel and tracker layers with measurement
-   * pixel+strips tracks: tracker layers with measurement > pixel layers with measurement
+* pixel-only tracks: equal number of pixel and tracker layers with measurement
+* pixel+strips tracks: tracker layers with measurement > pixel layers with measurement
 
 #### Boosted decision trees
 
@@ -395,10 +395,10 @@ The configuration and training of the BDT is set up in a ROOT macro, tmva.cxx. I
 </center>
 
 You can find the TMVA documentation [here](https://root.cern.ch/download/doc/tmva/TMVAUsersGuide.pdf). The most imporant functions accessible here are:
-  * 1a) View input variables
-  * 4a) View BDT response of the test sample
-  * 4b) View BDT response of both test & training sample
-  * 5a) View ROC curve
+* 1a) View input variables
+* 4a) View BDT response of the test sample
+* 4b) View BDT response of both test & training sample
+* 5a) View ROC curve
 
 You can use button (1a) to take a look at the normalized signal and background plots of the input variables. In the minimal example, only the impact parameter dz with respect to the primary vertex and the number of tracker layers with measurement are used.
 For each event, the BDT gives a BDT classifier ranging from -1 to 1 and indicates whether the event is background- or signal-like. A plot showing this classifier is accessible with button (4a). In this plot, we want to aim for a good separation between signal and background, which would allow us to put a cut on the BDT classifier to select disappearing tracks (signal).
@@ -409,9 +409,9 @@ Button (5a) reveals the "receiver-operator curve", or ROC. For each event, the s
 
 Have a look at the tmva.cxx macro. On the top, you can specify whether you want to train using pixel-only or pixel+strips tracks by adjusting the path. After that, the signal and the relevant background files are added:
 
-  * W jets -> lepton + neutrino binned in HT
-  * TTbar jets binned in HT
-  * Drell-Yan jets -> dilepton binned in HT
+* W jets -> lepton + neutrino binned in HT
+* TTbar jets binned in HT
+* Drell-Yan jets -> dilepton binned in HT
 
 Each sample is added to TMVA with the correct weight of cross section * luminosity / number of events.
 
@@ -431,18 +431,18 @@ factory->BookMethod(TMVA::Types::kBDT, "BDT", "NTrees=200:MaxDepth=4");
 where we configure a BDT with 200 trees and a maximum depth of 4.
 
 Relevant tracking variables available in the tree are:
-  * chargedPtSum, the sum of charged particles around a small cone around the track
-  * chi2perNdof, indicating the goodness of the track fit
-  * deDxHarmonic2, the deposited energy per distance
-  * dxyVtx and dzVtx, the impact parameter indicating the displacement of the track with respect to the primary vertex
-  * eta, phi, pt, the kinematic variables
-  * matchedCaloEnergy, the deposited energy in the calorimeter for a small cone around the track
-  * nMissing*Hits, missing hits on the track trajectory (no hits detected)
-  * nValid*Hits, number of hits of the track
-  * pixel/trackerLayersWithMeasurement, number of tracker layers with measurement
-  * ptErrOverPt2, the error on pT divided by pT^2
-  * trackQuality*, a set of track quality criteria. High purity tracks are recommended
-  * trkRelIso, the track isolation
+* chargedPtSum, the sum of charged particles around a small cone around the track
+* chi2perNdof, indicating the goodness of the track fit
+* deDxHarmonic2, the deposited energy per distance
+* dxyVtx and dzVtx, the impact parameter indicating the displacement of the track with respect to the primary vertex
+* eta, phi, pt, the kinematic variables
+* matchedCaloEnergy, the deposited energy in the calorimeter for a small cone around the track
+* nMissing*Hits, missing hits on the track trajectory (no hits detected)
+* nValid*Hits, number of hits of the track
+* pixel/trackerLayersWithMeasurement, number of tracker layers with measurement
+* ptErrOverPt2, the error on pT divided by pT^2
+* trackQuality*, a set of track quality criteria. High purity tracks are recommended
+* trkRelIso, the track isolation
 
 <b style='color:black'>Exercise: Find the best combination of input variables and the best BDT configuration. Compare different ROCs and check for overtraining to get the maximum in signal and background rejection efficiency.</b>
 
@@ -462,8 +462,8 @@ TMVA stores the output by default in "output.root" and a folder containing the w
 
 ```
 cfg_dict = {
-            "configuration 1": ["./path/to/tmva/output.root", "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/*.root", "samples.cfg"],
-           }
+    "configuration 1": ["./path/to/tmva/output.root", "/eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/tracks-pixelonly/*.root", "samples.cfg"],
+   }
 ```
 
 Run it with
@@ -510,10 +510,10 @@ After clicking through a few plots, can you identify which are the
 main backgrounds? 
 
 <b style='color:black'>Question 1: What is the main background in 
-  events with low missing transverse momentum, MHT?</b>
+events with low missing transverse momentum, MHT?</b>
 
 <b style='color:black'>Question 2: What is the main background in 
-  events with at least 2 b-tagged jets?</b>
+events with at least 2 b-tagged jets?</b>
 
 ### 4.b) Skimming signal events 
 
@@ -531,7 +531,7 @@ python tools/SkimTreeMaker.py /eos/uscms/store/user/cmsdas/2019/long_exercises/D
 
 
 <b style='color:black'>Question 3: How many skimmed events are there?</b>
-  
+
 Create a directory called Signal for the new file, move the new file into Signal/ 
 and re-run the plot maker:
 
@@ -576,21 +576,13 @@ python tools/rgs_train.py
 This creates the file LLSUSY.root which contains a tree of signal and background counts for each possible selection set in the scan. To determine the most optimal cut set, run the (second) analysis RGS script:
 
 ```
-<<<<<<< HEAD
 python tools/rgs_analysis.py
-=======
-python tools/rgs_analyis.py
->>>>>>> 9c6c41e776bc5df23024fcbdcc2b4375950223e4
 ```
 This will print the optimum set of thresholds to the screen, as well as the signal and background count corresponding to each set of cuts, and an estimate of the signal significance, z.  How does the RGS optimal selection compare to your hand-picked selection? Hopefully better - if not, you are pretty darn good at eyeball optimization!
 
 You'll have noticed the script also draws a canvas. The scatter plot depicts the ROC cloud, which shows the set of signal and background efficiencies corresponding to each step of the scan. The color map in the background indicates the highest value of the significance of the various cut sets falling into each bin. 
 
-<<<<<<< HEAD
-Open up tools/rgs_analysis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyze.py script. 
-=======
-Open up tools/rgs_analyis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analyis.py script.
->>>>>>> 9c6c41e776bc5df23024fcbdcc2b4375950223e4
+Open up tools/rgs_analysis.py and have a look. You'll notice the significance measure is the simplified z = s/sqrt(b+db^2), where the user can specify the systematic uncertainty (SU) db. The fractional SU is currently set to 0.05. Try changing this value to something larger and rerunning rgs_analysis.py script. 
 
 <b style='color:black'>Question 5. What happened to the optimum thresholds after doubling the SU? How about the expected significance? </b>
 
