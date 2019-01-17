@@ -54,7 +54,7 @@ def runParallel(commands, runmode, dryrun=False, cmsbase=False, qsubOptions=Fals
         return runCommands(commands, dryrun=dryrun, cmsbase=cmsbase, qsubOptions=qsubOptions, dontCheckOnJobs=dontCheckOnJobs, use_more_mem=use_more_mem, use_more_time=use_more_time, burst_mode=burst_mode)
 
 
-def runCommands(commands, dryrun=False, birdDir="bird", cmsbase=False, qsubOptions=False, dontCheckOnJobs=False, useGUI=False, use_more_mem=False, use_more_time=False, burst_mode=False):
+def runCommands(commands, dryrun=False, birdDir="submission", cmsbase=False, qsubOptions=False, dontCheckOnJobs=False, useGUI=False, use_more_mem=False, use_more_time=False, burst_mode=False):
 
     print "Starting submission..."
 
