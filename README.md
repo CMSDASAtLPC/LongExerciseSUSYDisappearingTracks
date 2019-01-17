@@ -49,6 +49,8 @@ cd cmsdas2019
 
 cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel2-200-4-medium-updated/ usefulthings/
 cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/track-tag/cmssw8-newpresel3-200-4-short-updated/ usefulthings/
+cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/usefulthings/DataDrivenSmear_DYJets_Pix* usefulthings/
+cp -r /eos/uscms/store/user/cmsdas/2019/long_exercises/DisappearingTracks/usefulthings/DataDrivenSmear_Run2016_Pix*.root usefulthings/
 ```
 
 ## 2.) Introduction to tracking
