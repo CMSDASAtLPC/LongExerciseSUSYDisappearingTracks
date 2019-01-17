@@ -46,7 +46,7 @@ def main():
 	x, y = array( 'd' ), array( 'd' )
 	zmax = 0
 	izmax = -1
-	sys = 3 #fractional uncertainty on b
+	sys = 0.3 #fractional uncertainty on b
 
 	msize = 0.30  # marker size for points in ROC plot
 	xbins =  25   # number of bins in x (background)
