@@ -242,16 +242,15 @@ def getBinNumber(fv):
 ##############################################
 # declare readers and selection code for BDT #
 ##############################################
-if phase==0:
-    pixelXml =       '/nfs/dust/cms/user/kutznerv/disapptrks/track-tag/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
-    LongXml = '/nfs/dust/cms/user/kutznerv/disapptrks/track-tag/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
-else:
-    pixelXml = '/nfs/dust/cms/user/kutznerv/disapptrks/track-tag/cmssw10-newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
-    LongXml = '/nfs/dust/cms/user/kutznerv/disapptrks/track-tag/cmssw10-newpresel2-200-4-medium/weights/TMVAClassification_BDT.weights.xml'    
 readerShort = TMVA.Reader()
-readerLong = TMVA.Reader()
+#pixelXml = '/nfs/dust/cms/user/kutznerv/cmsdas/BDTs/newpresel3-200-4-short-nodxyVtx/weights/TMVAClassification_BDT.weights.xml'
+###pixelXml = '/nfs/dust/cms/user/kutznerv/shorttrack/fake-tracks/newpresel3-200-4-short/weights/TMVAClassification_BDT.weights.xml'
+pixelXml = 'usefulthings/cmssw8-newpresel3-200-4-short-updated/weights/TMVAClassification_BDT.weights.xml'
 prepareReaderShort(readerShort, pixelXml)
-prepareReaderLong(readerLong, LongXml)
+readerLong = TMVA.Reader()
+trackerXml = 'usefulthings/cmssw8-newpresel2-200-4-medium-updated/weights/TMVAClassification_BDT.weights.xml'
+prepareReaderLong(readerLong, trackerXml)
+
 
 fMask = TFile('usefulthings/Masks.root')
 if 'Run2016' in fnamekeyword: hMask = fMask.Get('hEtaVsPhiDT_maskData-2016Data-2016')
