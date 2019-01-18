@@ -9,7 +9,6 @@ import os, sys
 from glob import glob
 
 from distracklibs import *
-execfile(distracklibs)
 
 hAnalysisBins = TH1F('hAnalysisBins','hAnalysisBins',33,0,33)
 histoStyler(hAnalysisBins, kBlack)
