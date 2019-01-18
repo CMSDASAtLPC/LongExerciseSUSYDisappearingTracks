@@ -8,14 +8,13 @@ from utils import *
 import os, sys
 from glob import glob
 
-distracklibs = os.environ['CMSSW_BASE']+'/src/analysis/tools/distracklibs.py'
+from distracklibs import *
 execfile(distracklibs)
 
 hAnalysisBins = TH1F('hAnalysisBins','hAnalysisBins',33,0,33)
 histoStyler(hAnalysisBins, kBlack)
 
-defaultInfile = '/pnfs/desy.de/cms/tier2/store/user/sbein/NtupleHub/Production2016v2/Summer16.WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_20_RA2AnalysisTree.root'
-defaultInfile = '/nfs/dust/cms/user/beinsam/CommonNtuples/MC_BSM/LongLivedSMS/ntuple_sidecar/g1800_chi1400_27_200970_step4_100.root'
+defaultInfile = 'root://cmsxrootd.fnal.gov//store/user/cmsdas/2019/long_exercises/DisappearingTracks/Ntuples/g1800_chi1400_27_200970_step4_100.root'
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--verbosity", type=bool, default=False,help="analyzer script to batch")
